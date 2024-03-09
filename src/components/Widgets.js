@@ -166,9 +166,9 @@ export const TeamMembersWidget = () => {
   const TeamMember = (props) => {
     const { name, statusKey, image, icon, btnText } = props;
     const status = {
-      online: { color: "success", label: "Online" },
-      inMeeting: { color: "warning", label: "In a meeting" },
-      offline: { color: "danger", label: "Offline" }
+      online: { color: "success", label: "Super Admin" },
+      inMeeting: { color: "warning", label: "Admin" },
+      offline: { color: "danger", label: "User" }
     };
 
     const statusColor = status[statusKey] ? status[statusKey].color : 'danger'
@@ -202,7 +202,7 @@ export const TeamMembersWidget = () => {
   return (
     <Card border="light" className="shadow-sm">
       <Card.Header className="border-bottom border-light d-flex justify-content-between">
-        <h5 className="mb-0">Team members</h5>
+        <h5 className="mb-0">Team Members</h5>
         <Button variant="secondary" size="sm">See all</Button>
       </Card.Header>
       <Card.Body>

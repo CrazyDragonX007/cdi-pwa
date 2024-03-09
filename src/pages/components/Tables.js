@@ -12,6 +12,7 @@ import UKFlag from "../../assets/img/flags/united-kingdom.svg";
 import FranceFlag from "../../assets/img/flags/france.svg";
 import JapanFlag from "../../assets/img/flags/japan.svg";
 import GermanyFlag from "../../assets/img/flags/germany.svg";
+import { TransactionsTable } from "../../components/Tables";
 
 
 export default () => {
@@ -140,3 +141,4 @@ import GermanyFlag from "src/assets/img/flags/germany.svg";`}
     </article>
   );
 };
+

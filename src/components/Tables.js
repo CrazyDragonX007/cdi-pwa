@@ -254,7 +254,9 @@ export const TransactionsTable = () => {
 
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
+      
       <Card.Body className="pt-0">
+      <h5 style={{padding:'10px', marginTop: '10px'}}>Vehicle Inspection Submissions</h5>
         <Table hover className="user-table align-items-center">
           <thead>
             <tr>

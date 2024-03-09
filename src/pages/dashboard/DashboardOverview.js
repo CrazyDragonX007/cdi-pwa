@@ -1,12 +1,13 @@
 
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCashRegister, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import { faCashRegister, faTruck, faTruckLoading, faTruckPickup, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-bootstrap';
 
 import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
 import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
+import { TransactionsTable } from "../../components/Tables";
 
 export default () => {
   return (
@@ -42,69 +43,77 @@ export default () => {
       </div>
 
       <Row className="justify-content-md-center">
-        <Col xs={12} className="mb-4 d-none d-sm-block">
-          <SalesValueWidget
-            title="Sales Value"
-            value="10,567"
-            percentage={10.57}
-          />
-        </Col>
-        <Col xs={12} className="mb-4 d-sm-none">
+       
+        {/* <Col xs={12} className="mb-4 d-sm-none">
           <SalesValueWidgetPhone
             title="Sales Value"
             value="10,567"
             percentage={10.57}
           />
-        </Col>
+        </Col> */}
         <Col xs={12} sm={6} xl={4} className="mb-4">
           <CounterWidget
-            category="Customers"
+            category="Vehicle Inspection Submissions"
             title="345k"
             period="Feb 1 - Apr 1"
             percentage={18.2}
-            icon={faChartLine}
+            icon={faTruckLoading}
             iconColor="shape-secondary"
           />
         </Col>
 
         <Col xs={12} sm={6} xl={4} className="mb-4">
           <CounterWidget
-            category="Revenue"
+            category="Vehicle Moving Submissions"
             title="$43,594"
             period="Feb 1 - Apr 1"
             percentage={28.4}
-            icon={faCashRegister}
+            icon={faTruckPickup}
             iconColor="shape-tertiary"
           />
         </Col>
 
         <Col xs={12} sm={6} xl={4} className="mb-4">
-          <CircleChartWidget
-            title="Traffic Share"
-            data={trafficShares} />
+        <CounterWidget
+            category="Total Report Submissions"
+            title="$43,594"
+            period="Feb 1 - Apr 1"
+            percentage={28.4}
+            icon={faChartLine}
+            iconColor="shape-tertiary"
+          />
         </Col>
-      </Row>
+        {/* <Col xs={12} className="mb-4 d-none d-sm-block">
+          <SalesValueWidget
+            title="Sales Value"
+            value="10,567"
+            percentage={10.57}
+          />
+        </Col> */}
 
+      </Row>
+      
       <Row>
         <Col xs={12} xl={12} className="mb-4">
           <Row>
-            <Col xs={12} xl={8} className="mb-4">
+            <Col xs={12} xl={12} className="mb-4">
               <Row>
                 <Col xs={12} className="mb-4">
-                  <PageVisitsTable />
+                  <TransactionsTable />
                 </Col>
-
-                <Col xs={12} lg={6} className="mb-4">
-                  <TeamMembersWidget />
-                </Col>
-
-                <Col xs={12} lg={6} className="mb-4">
+                {/* <Col xs={12} lg={6} className="mb-4">
                   <ProgressTrackWidget />
-                </Col>
+                </Col> */}
               </Row>
             </Col>
+            <Row>
+            <Col xs={12} className="mb-4">
+                  <TeamMembersWidget />
+                </Col>
+              </Row>
+            
 
-            <Col xs={12} xl={4}>
+            {/* <Col xs={12} xl={4}>
               <Row>
                 <Col xs={12} className="mb-4">
                   <BarChartWidget
@@ -122,7 +131,7 @@ export default () => {
                   <AcquisitionWidget />
                 </Col>
               </Row>
-            </Col>
+            </Col> */}
           </Row>
         </Col>
       </Row>
