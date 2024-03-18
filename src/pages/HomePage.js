@@ -7,6 +7,11 @@ import Presentation from "./Presentation";
 import Upgrade from "./Upgrade";
 import DashboardOverview from "./dashboard/DashboardOverview";
 import Transactions from "./Transactions";
+import VehicleMovingForm from './VehicleMovingForm';
+import DailyReports from './DailyReports';
+import Drawings from './Drawings';
+import Contracts from './Contracts';
+
 import Settings from "./Settings";
 import BootstrapTables from "./tables/BootstrapTables";
 import Signin from "./examples/Signin";
@@ -113,6 +118,10 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DashboardOverview.path} component={DashboardOverview} />
     <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} />
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
+    <RouteWithSidebar exact path={Routes.VehicleMovingForm.path} component={VehicleMovingForm} />
+    <RouteWithSidebar exact path={Routes.DailyReports.path} component={DailyReports} />
+    <RouteWithSidebar exact path={Routes.Drawings.path} component={Drawings} />
+    <RouteWithSidebar exact path={Routes.Contracts.path} component={Contracts} />
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
 

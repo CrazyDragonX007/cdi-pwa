@@ -13,15 +13,15 @@ export default () => {
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
             <Breadcrumb.Item><FontAwesomeIcon icon={faHome} /></Breadcrumb.Item>
             <Breadcrumb.Item>CDI</Breadcrumb.Item>
-            <Breadcrumb.Item active>Vehicle Inspection Forms</Breadcrumb.Item>
+            <Breadcrumb.Item active>Vehicle Moving Form</Breadcrumb.Item>
           </Breadcrumb>
-          <h4>Vehicle Inspection Forms</h4>
+          <h4>Vehicle Moving Form</h4>
           {/* <p className="mb-0">Your web analytics dashboard template.</p> */}
         </div>
         <div className="btn-toolbar mb-2 mb-md-0">
           <ButtonGroup>
             {/* <Button variant="outline-primary" size="sm">Share</Button> */}
-            <Button variant="outline-primary" size="sm">Export</Button>
+            <Button variant="outline-primary" size="sm">Export to CSV</Button>
           </ButtonGroup>
         </div>
       </div>

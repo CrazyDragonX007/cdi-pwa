@@ -198,9 +198,29 @@ export default (props = {}) => {
                 icon={faInbox}
               /> */}
               <NavItem
-                title="Transactions"
+                title="Vehicle Inspection Form"
                 icon={faHandHoldingUsd}
                 link={Routes.Transactions.path}
+              />
+              <NavItem
+                title="Vehicle Moving Form"
+                icon={faHandHoldingUsd}
+                link={Routes.VehicleMovingForm.path}
+              />
+              <NavItem
+                title="Daily Reports"
+                icon={faHandHoldingUsd}
+                link={Routes.DailyReports.path}
+              />
+              <NavItem
+                title="Contracts"
+                icon={faHandHoldingUsd}
+                link={Routes.Contracts.path}
+              />
+              <NavItem
+                title="Drawings"
+                icon={faHandHoldingUsd}
+                link={Routes.Drawings.path}
               />
               <NavItem
                 title="Settings"

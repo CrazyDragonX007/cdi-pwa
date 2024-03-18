@@ -3,7 +3,11 @@ export const Routes = {
     // pages
     Presentation: { path: "/" },
     DashboardOverview: { path: "/dashboard/overview" },
+    VehicleMovingForm: {path: "/vmform"},
+    DailyReports: {path: "/dailyreports"},
     Transactions: { path: "/transactions" },
+    Contracts: {path: "/contracts"},
+    Drawings: { path: "/drawings" },
     Settings: { path: "/settings" },
     Upgrade: { path: "/upgrade" },
     BootstrapTables: { path: "/tables/bootstrap-tables" },
