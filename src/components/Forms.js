@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
 import Datetime from "react-datetime";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ChoosePhotoWidget } from "./Widgets";
 import { faCalendarAlt, faClock } from "@fortawesome/free-solid-svg-icons";
 import {
   Col,
@@ -435,20 +436,25 @@ export const VI_Form = () => {
           </Row>
           <Row>
             <Col md={6} className="mb-3">
-              <Form.Group id="notesVI">
+            <Form.Group id="uploadVI">
+                <Form.Label>Upload Attachments</Form.Label>
+                <ChoosePhotoWidget
+                 
+                  
+                />
+              </Form.Group>
+              
+            </Col>
+            <Col md={6} className="mb-3">
+            <Form.Group id="notesVI">
+
                 <Form.Label>Notes</Form.Label>
                 <Form.Control
                   required
                   as="textarea"
-                  rows={3}
+                  rows={5}
                 />
-              </Form.Group>
-            </Col>
-            <Col md={6} className="mb-3">
-              <Form.Group id="phone">
-                <Form.Label>Upload</Form.Label>
-               
-              </Form.Group>
+            </Form.Group>
             </Col>
           </Row>
 

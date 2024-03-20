@@ -13,7 +13,7 @@ export default () => {
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
-        <Dropdown className="btn-toolbar">
+        {/* <Dropdown className="btn-toolbar">
           <Dropdown.Toggle as={Button} variant="primary" size="sm" className="me-2">
             <FontAwesomeIcon icon={faPlus} className="me-2" />New Task
           </Dropdown.Toggle>
@@ -34,12 +34,12 @@ export default () => {
               <FontAwesomeIcon icon={faRocket} className="text-danger me-2" /> Upgrade to Pro
             </Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown> */}
 
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <Button variant="outline-primary" size="sm">Share</Button>
           <Button variant="outline-primary" size="sm">Export</Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
       </div>
 
       <Row className="justify-content-md-center">
@@ -96,6 +96,11 @@ export default () => {
       <Row>
         <Col xs={12} xl={12} className="mb-4">
           <Row>
+          <Col xs={12} className="mb-4">
+                  <TeamMembersWidget />
+                </Col>
+              </Row>
+            <Row>
             <Col xs={12} xl={12} className="mb-4">
               <Row>
                 <Col xs={12} className="mb-4">
@@ -106,11 +111,7 @@ export default () => {
                 </Col> */}
               </Row>
             </Col>
-            <Row>
-            <Col xs={12} className="mb-4">
-                  <TeamMembersWidget />
-                </Col>
-              </Row>
+            
             
 
             {/* <Col xs={12} xl={4}>
