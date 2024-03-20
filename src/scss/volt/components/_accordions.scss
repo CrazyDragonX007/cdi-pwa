@@ -23,10 +23,10 @@
     .accordion-button {
         background-color: transparent;
         &:not(.collapsed) {
-            color: $secondary;
+            color: $white;
         }
         &:focus {
-            border-color: $gray-300;
+            
             box-shadow: none;
         }
     }

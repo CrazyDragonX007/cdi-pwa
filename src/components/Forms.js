@@ -46,7 +46,14 @@ class WeatherData extends React.Component {
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
-  const [selectedOption, setSelectedOption] = useState("0");
+  const [selectedOption01, setSelectedOption01] = useState("0");
+  const [selectedOption02, setSelectedOption02] = useState("0");
+  const [selectedOption03, setSelectedOption03] = useState("0");
+  const [selectedOption04, setSelectedOption04] = useState("0");
+  const [selectedOption05, setSelectedOption05] = useState("0");
+  const [selectedOption06, setSelectedOption06] = useState("0");
+  const [selectedOption07, setSelectedOption07] = useState("0");
+  const [selectedOption08, setSelectedOption08] = useState("0");
   return (
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
@@ -139,24 +146,24 @@ export const VI_Form = () => {
                 <Form.Label>Is there any new physical or mechanical damage or missing pieces to the unit?</Form.Label>
                 <Form.Check
                   type="radio"
-                  name="option"
-                  id="no"
+                  name="option01"
+                  id="no01"
                   label="No"
                   value="0"
-                  checked={selectedOption === "0"}
-                  onChange={(e) => setSelectedOption(e.target.value)}
+                  checked={selectedOption01 === "0"}
+                  onChange={(e1) => setSelectedOption01(e1.target.value)}
                 />
                 <Form.Check
                   type="radio"
-                  name="option"
-                  id="yes"
+                  name="option01"
+                  id="yes01"
                   label="Yes"
                   value="1"
-                  checked={selectedOption === "1"}
-                  onChange={(e) => setSelectedOption(e.target.value)}
+                  checked={selectedOption01 === "1"}
+                  onChange={(e1) => setSelectedOption01(e1.target.value)}
                 />
               </Form.Group>
-              {selectedOption === "1" && (
+              {selectedOption01 === "1" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -164,28 +171,261 @@ export const VI_Form = () => {
               )}
           </Col>
           <Col md={6} className="mb-3">
-          <Form.Group id="physicalDamage">
-                <Form.Label>Does the unit appear to have any leaks? (fuel,oil, hydraulic, coolant)</Form.Label>
+          <Form.Group id="leaks">
+                <Form.Label>Are the safety devices present and functioning properly? (seat belts, safety gates/chains/bars)</Form.Label>
                 <Form.Check
                   type="radio"
-                  name="option"
-                  id="no"
+                  name="option02"
+                  id="no02"
                   label="No"
                   value="0"
-                  checked={selectedOption === "0"}
-                  onChange={(e) => setSelectedOption(e.target.value)}
+                  checked={selectedOption02 === "0"}
+                  onChange={(e2) => setSelectedOption02(e2.target.value)}
                 />
                 <Form.Check
                   type="radio"
-                  name="option"
-                  id="yes"
+                  name="option02"
+                  id="yes02"
                   label="Yes"
                   value="1"
-                  checked={selectedOption === "1"}
-                  onChange={(e) => setSelectedOption(e.target.value)}
+                  checked={selectedOption02 === "1"}
+                  onChange={(e2) => setSelectedOption02(e2.target.value)}
                 />
               </Form.Group>
-              {selectedOption === "1" && (
+              {selectedOption02 === "1" && (
+                <Form.Group>
+                  <Form.Label>Please Specify</Form.Label>
+                  <Form.Control as="textarea" rows={3} />
+                </Form.Group>
+              )}
+          </Col>
+          </Row>
+          <Row>
+          <Col md={6} className="mb-3">
+          <Form.Group id="physicalDamage">
+                <Form.Label>Is the unit in a clean state and free from personal items, trash and debris?</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="option03"
+                  id="yes03"
+                  label="Yes"
+                  value="0"
+                  checked={selectedOption03 === "0"}
+                  onChange={(e3) => setSelectedOption03(e3.target.value)}
+                />
+                <Form.Check
+                  type="radio"
+                  name="option03"
+                  id="no03"
+                  label="No"
+                  value="1"
+                  checked={selectedOption03 === "1"}
+                  onChange={(e3) => setSelectedOption03(e3.target.value)}
+                />
+              </Form.Group>
+              {selectedOption03 === "1" && (
+                <Form.Group>
+                  <Form.Label>Please Specify</Form.Label>
+                  <Form.Control as="textarea" rows={3} />
+                </Form.Group>
+              )}
+          </Col>
+          <Col md={6} className="mb-3">
+          <Form.Group id="leaks">
+                <Form.Label>Does the unit have sufficient oil?</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="option04"
+                  id="yes04"
+                  label="Yes"
+                  value="0"
+                  checked={selectedOption04 === "0"}
+                  onChange={(e4) => setSelectedOption04(e4.target.value)}
+                />
+                <Form.Check
+                  type="radio"
+                  name="option04"
+                  id="no04"
+                  label="No"
+                  value="1"
+                  checked={selectedOption04 === "1"}
+                  onChange={(e4) => setSelectedOption04(e4.target.value)}
+                />
+              </Form.Group>
+              {selectedOption04 === "1" && (
+                <Form.Group>
+                  <Form.Label>Please Specify</Form.Label>
+                  <Form.Control as="textarea" rows={3} />
+                </Form.Group>
+              )}
+          </Col>
+          </Row>
+          <Row>
+          <Col md={6} className="mb-3">
+          <Form.Group id="physicalDamage">
+                <Form.Label>Are the lights, horn and alarms in good working order?</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="option05"
+                  id="yes05"
+                  label="Yes"
+                  value="0"
+                  checked={selectedOption05 === "0"}
+                  onChange={(e5) => setSelectedOption05(e5.target.value)}
+                />
+                <Form.Check
+                  type="radio"
+                  name="option05"
+                  id="no05"
+                  label="No"
+                  value="1"
+                  checked={selectedOption05 === "1"}
+                  onChange={(e5) => setSelectedOption05(e5.target.value)}
+                />
+              </Form.Group>
+              {selectedOption05 === "1" && (
+                <Form.Group>
+                  <Form.Label>Please Specify</Form.Label>
+                  <Form.Control as="textarea" rows={3} />
+                </Form.Group>
+              )}
+          </Col>
+          <Col md={6} className="mb-3">
+          <Form.Group id="leaks">
+                <Form.Label>Does the unit appear to have any leaks?</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="option06"
+                  id="no06"
+                  label="No"
+                  value="0"
+                  checked={selectedOption06 === "0"}
+                  onChange={(e6) => setSelectedOption06(e6.target.value)}
+                />
+                <Form.Check
+                  type="radio"
+                  name="option06"
+                  id="yes06"
+                  label="Yes"
+                  value="1"
+                  checked={selectedOption06 === "1"}
+                  onChange={(e6) => setSelectedOption06(e6.target.value)}
+                />
+              </Form.Group>
+              {selectedOption06 === "1" && (
+                <Form.Group>
+                  <Form.Label>Please Specify</Form.Label>
+                  <Form.Control as="textarea" rows={3} />
+                </Form.Group>
+              )}
+          </Col>
+          </Row>
+          <Row>
+          <Col md={6} className="mb-3">
+          <Form.Group id="physicalDamage">
+                <Form.Label>What is the fuel level? (if applicable)</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="option08"
+                  id="full"
+                  label="Full - 3/4"
+                  value="0"
+                />
+                <Form.Check
+                  type="radio"
+                  name="option08"
+                  id="half"
+                  label="1/2"
+                  value="1"  
+                />
+                <Form.Check
+                  type="radio"
+                  name="option08"
+                  id="less"
+                  label="1/4 or Less"
+                  value="1" 
+                />
+                
+              </Form.Group>
+              
+          </Col>
+          <Col md={6} className="mb-3">
+          <Form.Group id="leaks">
+                <Form.Label>Is the park brake functioning correctly?</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="option07"
+                  id="yes07"
+                  label="Yes"
+                  value="0"
+                  
+                />
+                <Form.Check
+                  type="radio"
+                  name="option07"
+                  id="no07"
+                  label="No"
+                  value="1"
+                  
+                  
+                />
+              </Form.Group>
+              
+          </Col>
+          </Row>
+          <Row>
+          <Col md={6} className="mb-3">
+          <Form.Group id="physicalDamage">
+                <Form.Label>Are all the operating upper/lower and emergency controls functioning properly?</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="option07"
+                  id="yes07"
+                  label="Yes"
+                  value="0"
+                  checked={selectedOption07 === "0"}
+                  onChange={(e7) => setSelectedOption07(e7.target.value)}
+                />
+                <Form.Check
+                  type="radio"
+                  name="option07"
+                  id="no07"
+                  label="No"
+                  value="1"
+                  checked={selectedOption07 === "1"}
+                  onChange={(e7) => setSelectedOption07(e7.target.value)}
+                />
+              </Form.Group>
+              {selectedOption07 === "1" && (
+                <Form.Group>
+                  <Form.Label>Please Specify</Form.Label>
+                  <Form.Control as="textarea" rows={3} />
+                </Form.Group>
+              )}
+          </Col>
+          <Col md={6} className="mb-3">
+          <Form.Group id="leaks">
+                <Form.Label>Is the operators manual,safety,warning decals and capacity plate onboard and legible?</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="option08"
+                  id="no08"
+                  label="No"
+                  value="0"
+                  checked={selectedOption08 === "0"}
+                  onChange={(e8) => setSelectedOption08(e8.target.value)}
+                />
+                <Form.Check
+                  type="radio"
+                  name="option08"
+                  id="yes08"
+                  label="Yes"
+                  value="1"
+                  checked={selectedOption08 === "1"}
+                  onChange={(e8) => setSelectedOption08(e8.target.value)}
+                />
+              </Form.Group>
+              {selectedOption08 === "1" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -195,122 +435,27 @@ export const VI_Form = () => {
           </Row>
           <Row>
             <Col md={6} className="mb-3">
-              <Form.Group id="emal">
-                <Form.Label>Email</Form.Label>
+              <Form.Group id="notesVI">
+                <Form.Label>Notes</Form.Label>
                 <Form.Control
                   required
-                  type="email"
-                  placeholder="name@company.com"
+                  as="textarea"
+                  rows={3}
                 />
               </Form.Group>
             </Col>
             <Col md={6} className="mb-3">
               <Form.Group id="phone">
-                <Form.Label>Phone</Form.Label>
-                <Form.Control
-                  required
-                  type="number"
-                  placeholder="+12-345 678 910"
-                />
+                <Form.Label>Upload</Form.Label>
+               
               </Form.Group>
             </Col>
           </Row>
 
-          <h5 className="my-4">Address</h5>
-          <Row>
-            <Col sm={9} className="mb-3">
-              <Form.Group id="address">
-                <Form.Label>Address</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your home address"
-                />
-              </Form.Group>
-            </Col>
-            <Col sm={3} className="mb-3">
-              <Form.Group id="addressNumber">
-                <Form.Label>Number</Form.Label>
-                <Form.Control required type="number" placeholder="No." />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={4} className="mb-3">
-              <Form.Group id="city">
-                <Form.Label>City</Form.Label>
-                <Form.Control required type="text" placeholder="City" />
-              </Form.Group>
-            </Col>
-            <Col sm={4} className="mb-3">
-              <Form.Group className="mb-2">
-                <Form.Label>Select state</Form.Label>
-                <Form.Select id="state" defaultValue="0">
-                  <option value="0">State</option>
-                  <option value="AL">Alabama</option>
-                  <option value="AK">Alaska</option>
-                  <option value="AZ">Arizona</option>
-                  <option value="AR">Arkansas</option>
-                  <option value="CA">California</option>
-                  <option value="CO">Colorado</option>
-                  <option value="CT">Connecticut</option>
-                  <option value="DE">Delaware</option>
-                  <option value="DC">District Of Columbia</option>
-                  <option value="FL">Florida</option>
-                  <option value="GA">Georgia</option>
-                  <option value="HI">Hawaii</option>
-                  <option value="ID">Idaho</option>
-                  <option value="IL">Illinois</option>
-                  <option value="IN">Indiana</option>
-                  <option value="IA">Iowa</option>
-                  <option value="KS">Kansas</option>
-                  <option value="KY">Kentucky</option>
-                  <option value="LA">Louisiana</option>
-                  <option value="ME">Maine</option>
-                  <option value="MD">Maryland</option>
-                  <option value="MA">Massachusetts</option>
-                  <option value="MI">Michigan</option>
-                  <option value="MN">Minnesota</option>
-                  <option value="MS">Mississippi</option>
-                  <option value="MO">Missouri</option>
-                  <option value="MT">Montana</option>
-                  <option value="NE">Nebraska</option>
-                  <option value="NV">Nevada</option>
-                  <option value="NH">New Hampshire</option>
-                  <option value="NJ">New Jersey</option>
-                  <option value="NM">New Mexico</option>
-                  <option value="NY">New York</option>
-                  <option value="NC">North Carolina</option>
-                  <option value="ND">North Dakota</option>
-                  <option value="OH">Ohio</option>
-                  <option value="OK">Oklahoma</option>
-                  <option value="OR">Oregon</option>
-                  <option value="PA">Pennsylvania</option>
-                  <option value="RI">Rhode Island</option>
-                  <option value="SC">South Carolina</option>
-                  <option value="SD">South Dakota</option>
-                  <option value="TN">Tennessee</option>
-                  <option value="TX">Texas</option>
-                  <option value="UT">Utah</option>
-                  <option value="VT">Vermont</option>
-                  <option value="VA">Virginia</option>
-                  <option value="WA">Washington</option>
-                  <option value="WV">West Virginia</option>
-                  <option value="WI">Wisconsin</option>
-                  <option value="WY">Wyoming</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col sm={4}>
-              <Form.Group id="zip">
-                <Form.Label>ZIP</Form.Label>
-                <Form.Control required type="tel" placeholder="ZIP" />
-              </Form.Group>
-            </Col>
-          </Row>
+          
           <div className="mt-3">
             <Button variant="primary" type="submit">
-              Save All
+              Submit
             </Button>
           </div>
         </Form>

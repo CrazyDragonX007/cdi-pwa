@@ -24,7 +24,7 @@
 	}
 
 	.nav-item {
-		border: $border-width solid transparent;
+		
 		&.active {
 			& > .nav-link {
 				color: $white;
@@ -190,7 +190,7 @@
 			width:.5rem;
 		}
 		&:not(.collapsed) {
-			background-color:#2e3650;
+			background-color:#ffffff;
 			&::after{
 				transform: rotate(90deg);
     			transition: all .2s ease;

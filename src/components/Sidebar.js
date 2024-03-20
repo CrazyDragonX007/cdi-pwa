@@ -198,12 +198,12 @@ export default (props = {}) => {
                 icon={faInbox}
               /> */}
               <NavItem
-                title="Inspection Form"
+                title="Inspection Forms"
                 icon={faHandHoldingUsd}
                 link={Routes.VehicleInspectionForms.path}
               />
               <NavItem
-                title="Moving Form"
+                title="Moving Forms"
                 icon={faHandHoldingUsd}
                 link={Routes.VehicleMovingForm.path}
               />
@@ -212,16 +212,12 @@ export default (props = {}) => {
                 icon={faHandHoldingUsd}
                 link={Routes.DailyReports.path}
               />
-              <NavItem
-                title="Contracts"
-                icon={faHandHoldingUsd}
-                link={Routes.Contracts.path}
-              />
-              <NavItem
-                title="Drawings"
-                icon={faHandHoldingUsd}
-                link={Routes.Drawings.path}
-              />
+              
+              <CollapsableNavItem
+                eventKey="forms/"
+                title="Forms"
+                icon={faTable}
+              >
               <NavItem
                 title="VI Form"
                 icon={faCog}
@@ -236,6 +232,17 @@ export default (props = {}) => {
                 title="DR Form"
                 icon={faCog}
                 link={Routes.DRForm.path}
+              /></CollapsableNavItem>
+
+              <NavItem
+                title="Contracts"
+                icon={faHandHoldingUsd}
+                link={Routes.Contracts.path}
+              />
+              <NavItem
+                title="Drawings"
+                icon={faHandHoldingUsd}
+                link={Routes.Drawings.path}
               />
               {/* <NavItem
                 external
@@ -254,7 +261,7 @@ export default (props = {}) => {
                 icon={faMapPin}
               /> */}
 
-              <CollapsableNavItem
+              {/* <CollapsableNavItem
                 eventKey="tables/"
                 title="Tables"
                 icon={faTable}
@@ -263,11 +270,11 @@ export default (props = {}) => {
                   title="Bootstrap Table"
                   link={Routes.BootstrapTables.path}
                 />
-              </CollapsableNavItem>
+              </CollapsableNavItem> */}
 
               <CollapsableNavItem
                 eventKey="examples/"
-                title="Page Examples"
+                title="Auth"
                 icon={faFileAlt}
               >
                 <NavItem title="Sign In" link={Routes.Signin.path} />
@@ -276,16 +283,16 @@ export default (props = {}) => {
                   title="Forgot password"
                   link={Routes.ForgotPassword.path}
                 />
-                <NavItem
+                {/* <NavItem
                   title="Reset password"
                   link={Routes.ResetPassword.path}
-                />
-                <NavItem title="Lock" link={Routes.Lock.path} />
+                /> */}
+                {/* <NavItem title="Lock" link={Routes.Lock.path} />
                 <NavItem title="404 Not Found" link={Routes.NotFound.path} />
                 <NavItem
                   title="500 Server Error"
                   link={Routes.ServerError.path}
-                />
+                /> */}
               </CollapsableNavItem>
 
               {/* <NavItem
