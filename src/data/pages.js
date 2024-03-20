@@ -22,15 +22,15 @@ export default [
     },
     {
         "id": 2,
-        "name": "Transactions",
+        "name": "Vehicle Inspection Forms",
         "image": TransactionsImg,
-        "link": Routes.Transactions.path
+        "link": Routes.VehicleInspectionForms.path
     },
     {
         "id": 3,
-        "name": "Settings",
+        "name": "VIForm",
         "image": SettingsImg,
-        "link": Routes.Settings.path
+        "link": Routes.VIForm.path
     },
     {
         "id": 4,

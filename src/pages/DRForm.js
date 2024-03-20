@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Button, Dropdown } from "@themesberg/react-bootstrap";
 import { ChoosePhotoWidget, ProfileCardWidget } from "../components/Widgets";
-import { GeneralInfoForm } from "../components/Forms";
+import { DR_Form } from "../components/Forms";
 
 import Profile3 from "../assets/img/team/profile-picture-3.jpg";
 
@@ -90,7 +90,7 @@ export default () => {
 
       <Row>
         <Col xs={12} xl={12}>
-          <GeneralInfoForm />
+          <DR_Form />
         </Col>
 
         {/* <Col xs={12} xl={4}>

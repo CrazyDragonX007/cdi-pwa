@@ -198,12 +198,12 @@ export default (props = {}) => {
                 icon={faInbox}
               /> */}
               <NavItem
-                title="Vehicle Inspection Form"
+                title="Inspection Form"
                 icon={faHandHoldingUsd}
-                link={Routes.Transactions.path}
+                link={Routes.VehicleInspectionForms.path}
               />
               <NavItem
-                title="Vehicle Moving Form"
+                title="Moving Form"
                 icon={faHandHoldingUsd}
                 link={Routes.VehicleMovingForm.path}
               />
@@ -223,9 +223,19 @@ export default (props = {}) => {
                 link={Routes.Drawings.path}
               />
               <NavItem
-                title="Settings"
+                title="VI Form"
                 icon={faCog}
-                link={Routes.Settings.path}
+                link={Routes.VIForm.path}
+              />
+              <NavItem
+                title="VM Form"
+                icon={faCog}
+                link={Routes.VMForm.path}
+              />
+              <NavItem
+                title="DR Form"
+                icon={faCog}
+                link={Routes.DRForm.path}
               />
               {/* <NavItem
                 external
