@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faEye, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup } from '@themesberg/react-bootstrap';
@@ -9,6 +9,9 @@ import { Routes } from "../routes";
 import { pageVisits, pageTraffic, pageRanking } from "../data/tables";
 import transactions from "../data/transactions";
 import commands from "../data/commands";
+
+import axios from 'axios'; 
+import moment from 'moment';
 
 const ValueChange = ({ value, suffix }) => {
   const valueIcon = value < 0 ? faAngleDown : faAngleUp;
@@ -23,6 +26,11 @@ const ValueChange = ({ value, suffix }) => {
     </span> : "--"
   );
 };
+
+const apiURL = 'http://localhost:8000';
+const getVehicleMovingFormUrl = `${apiURL}/crud/getVehicleMovingForm`;
+const getVehicleInspectionFormUrl = `${apiURL}/crud/getVehicleInspectionForm`;
+const getDailyReports = `${apiURL}/crud/getDailyReports`
 
 export const PageVisitsTable = () => {
   const TableRow = (props) => {
@@ -187,110 +195,277 @@ export const RankingTable = () => {
   );
 };
 
-export const TransactionsTable = () => {
-  const totalTransactions = transactions.length;
+export const VIFTable = () => {
+  const [forms, setForms] = useState([]);
+  const [totalForms, setTotalForms] = useState(0);
 
-  const TableRow = (props) => {
-    const { invoiceNumber, subscription, price, issueDate, dueDate, status } = props;
-    const statusVariant = status === "Paid" ? "success"
-      : status === "Due" ? "warning"
-        : status === "Canceled" ? "danger" : "primary";
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getVehicleInspectionFormUrl);
+        setForms(response.data);
+        setTotalForms(response.data.length);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-    return (
-      <tr>
-        <td>
-          <Card.Link as={Link} to={Routes.Invoice.path} className="fw-normal">
-            {invoiceNumber}
-          </Card.Link>
-        </td>
-        <td>
-          <span className="fw-normal">
-            {subscription}
-          </span>
-        </td>
-        <td>
-          <span className="fw-normal">
-            {issueDate}
-          </span>
-        </td>
-        <td>
-          <span className="fw-normal">
-            {dueDate}
-          </span>
-        </td>
-        <td>
-          <span className="fw-normal">
-            ${parseFloat(price).toFixed(2)}
-          </span>
-        </td>
-        <td>
-          <span className={`fw-normal text-${statusVariant}`}>
-            {status}
-          </span>
-        </td>
-        <td>
-          <Dropdown as={ButtonGroup}>
-            <Dropdown.Toggle as={Button} split variant="link" className="text-dark m-0 p-0">
-              <span className="icon icon-sm">
-                <FontAwesomeIcon icon={faEllipsisH} className="icon-dark" />
-              </span>
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item>
-                <FontAwesomeIcon icon={faEye} className="me-2" /> View Details
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <FontAwesomeIcon icon={faEdit} className="me-2" /> Edit
-              </Dropdown.Item>
-              <Dropdown.Item className="text-danger">
-                <FontAwesomeIcon icon={faTrashAlt} className="me-2" /> Remove
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </td>
-      </tr>
-    );
+    fetchData();
+  }, []);
+
+  const formatDateTime = (dateTime) => {
+    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
   };
-
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
-      
       <Card.Body className="pt-0">
-      <h5 style={{padding:'10px', marginTop: '10px'}}>Vehicle Inspection Submissions</h5>
+        <h5 style={{ padding: '10px', marginTop: '10px' }}>Vehicle Inspection Submissions</h5>
         <Table hover className="user-table align-items-center">
           <thead>
             <tr>
               <th className="border-bottom">#</th>
-              <th className="border-bottom">Bill For</th>
-              <th className="border-bottom">Issue Date</th>
-              <th className="border-bottom">Due Date</th>
-              <th className="border-bottom">Total</th>
-              <th className="border-bottom">Status</th>
-              <th className="border-bottom">Action</th>
+              {/* <th className="border-bottom">User ID</th> */}
+              <th className="border-bottom">Date Time</th>
+              {/* <th className="border-bottom">First Name</th> */}
+              <th className="border-bottom">Vehicle Name</th>
+              <th className="border-bottom">Vehicle No</th>
+              <th className="border-bottom">Pickup Jobsite</th>
+              <th className="border-bottom">Dropoff Location</th>
+              <th className="border-bottom">Inspected By</th>
+              <th className="border-bottom">Physical Damage</th>
+              <th className="border-bottom">Leak Status</th>
+              <th className="border-bottom">LHA Condition</th>
+              <th className="border-bottom">Safety Devices Condition</th>
+              <th className="border-bottom">Up Low Emergency Controls</th>
+              <th className="border-bottom">Oil Capacity</th>
+              <th className="border-bottom">Safety Warning Decals Condition</th>
+              <th className="border-bottom">Park Brake Condition</th>
+              <th className="border-bottom">Image Object</th>
+              <th className="border-bottom">Notes</th>
+              {/* <th className="border-bottom">Last Name</th> */}
             </tr>
           </thead>
           <tbody>
-            {transactions.map(t => <TableRow key={`transaction-${t.invoiceNumber}`} {...t} />)}
+            {forms.map((form, index) => (
+              <tr key={index}>
+                <td>{form.formID}</td>
+                {/* <td>{form.userID}</td> */}
+                <td>{formatDateTime(form.dateTime)}</td>
+                {/* <td>{form.firstName}</td> */}
+                <td>{form.vehicleName}</td>
+                <td>{form.vehicleNo}</td>
+                <td>{form.pickupJobsite}</td>
+                <td>{form.dropoffLocation}</td>
+                <td>{form.inspectedBy}</td>
+                <td>{form.physicalDamage}</td>
+                <td>{form.leakStatus}</td>
+                <td>{form.lhaCondition}</td>
+                <td>{form.safetyDevicesCondition}</td>
+                <td>{form.up_lowEmergencyControls}</td>
+                <td>{form.oilCapacity}</td>
+                <td>{form.safetyWarningDecalsCondition}</td>
+                <td>{form.parkBrakeCondition}</td>
+                <td>{form.imageObject}</td>
+                <td>{form.notes}</td>
+                {/* <td>{form.lastName}</td> */}
+              </tr>
+            ))}
           </tbody>
         </Table>
         <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
           <Nav>
             <Pagination className="mb-2 mb-lg-0">
-              <Pagination.Prev>
-                Previous
-              </Pagination.Prev>
+              <Pagination.Prev>Previous</Pagination.Prev>
               <Pagination.Item active>1</Pagination.Item>
               <Pagination.Item>2</Pagination.Item>
               <Pagination.Item>3</Pagination.Item>
               <Pagination.Item>4</Pagination.Item>
               <Pagination.Item>5</Pagination.Item>
-              <Pagination.Next>
-                Next
-              </Pagination.Next>
+              <Pagination.Next>Next</Pagination.Next>
             </Pagination>
           </Nav>
           <small className="fw-bold">
-            Showing <b>{totalTransactions}</b> out of <b>25</b> entries
+            Showing <b>{totalForms}</b> out of <b>25</b> entries
+          </small>
+        </Card.Footer>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export const VMFTable = () => {
+  const [forms, setForms] = useState([]);
+  const [totalForms, setTotalForms] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getVehicleMovingFormUrl);
+        setForms(response.data);
+        console.log(response.data)
+        setTotalForms(response.data.length);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDateTime = (dateTime) => {
+    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
+  };
+  return (
+    <Card border="light" className="table-wrapper table-responsive shadow-sm">
+      <Card.Body className="pt-0">
+        <h5 style={{ padding: '10px', marginTop: '10px' }}>Vehicle Moving Form Submissions</h5>
+        <Table hover className="user-table align-items-center">
+          <thead>
+            <tr>
+              <th className="border-bottom">#</th>
+              <th className="border-bottom">User ID</th>
+              <th className="border-bottom">Date Time</th>
+              <th className="border-bottom">First Name</th>
+              <th className="border-bottom">Last Name</th>
+              <th className="border-bottom">Vehicle Name</th>
+              <th className="border-bottom">Vehicle No</th>
+              <th className="border-bottom">Pickup Jobsite</th>
+              <th className="border-bottom">Dropoff Location</th>
+              <th className="border-bottom">Notes</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            {forms.map((form, index) => (
+              <tr key={index}>
+                <td>{form.formID}</td>
+                <td>{form.userID}</td>
+                <td>{formatDateTime(form.dateTime)}</td>
+                <td>{form.firstName}</td>
+                <td>{form.lastName}</td>
+                <td>{form.vehicleName}</td>
+                <td>{form.vehicleNo}</td>
+                <td>{form.pickupJobsite}</td>
+                <td>{form.dropoffLocation}</td>
+                <td>{form.notes}</td>
+                
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+          <Nav>
+            <Pagination className="mb-2 mb-lg-0">
+              <Pagination.Prev>Previous</Pagination.Prev>
+              <Pagination.Item active>1</Pagination.Item>
+              <Pagination.Item>2</Pagination.Item>
+              <Pagination.Item>3</Pagination.Item>
+              <Pagination.Item>4</Pagination.Item>
+              <Pagination.Item>5</Pagination.Item>
+              <Pagination.Next>Next</Pagination.Next>
+            </Pagination>
+          </Nav>
+          <small className="fw-bold">
+            Showing <b>{totalForms}</b> out of <b>25</b> entries
+          </small>
+        </Card.Footer>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export const DRTable = () => {
+  const [forms, setForms] = useState([]);
+  const [totalForms, setTotalForms] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getDailyReports);
+        setForms(response.data);
+        setTotalForms(response.data.length);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDateTime = (dateTime) => {
+    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
+  };
+
+  
+  // Coordinates of Springfield, MO
+  // const latitude = '37.2090° N';
+  // const longitude = '93.2923° W';
+  // const API_KEY = '7036f0b118db1fe7096dddf444b4a0bb';
+  // const getWeatherDetails = async (latitude, longitude) => {
+  //   try {
+  //     const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
+  //     console.log(response.data.weather);
+  //     return response.data.weather[0].description;
+      
+  //   } catch (error) {
+  //     console.error('Error fetching weather data:', error);
+  //     return 'Weather data not available';
+  //   }
+  // };
+  
+  return (
+    <Card border="light" className="table-wrapper table-responsive shadow-sm">
+      <Card.Body className="pt-0">
+        <h5 style={{ padding: '10px', marginTop: '10px' }}>Vehicle Inspection Submissions</h5>
+        <Table hover className="user-table align-items-center">
+          <thead>
+            <tr>
+              <th className="border-bottom">#</th>
+              <th className="border-bottom">User ID</th>
+              <th className="border-bottom">Date Time</th>
+              <th className="border-bottom">First Name</th>
+              <th className="border-bottom">Last Name</th>
+              <th className="border-bottom">Project Name</th>
+              <th className="border-bottom">Project Location</th>
+              <th className="border-bottom">Scope of Work</th>
+              <th className="border-bottom">Work Performed</th>
+              <th className="border-bottom">Weather Details</th>
+              <th className="border-bottom">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {forms.map((form, index) => (
+              <tr key={index}>
+                <td></td>
+                <td>{form.userID}</td>
+                <td>{formatDateTime(form.dateTime)}</td>
+                <td>{form.firstName}</td>
+                <td>{form.lastName}</td>
+                <td>{form.projectName}</td>
+                <td>{form.projectLocation}</td>
+                <td>{form.scopeOfWork}</td>
+                <td>{form.workPerformed}</td>
+                <td>{form.weatherDetails}</td>
+                {/* <td>{getWeatherDetails('37.2090° N', '93.2923° W')}</td> */}
+                <td>{form.notes}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+          <Nav>
+            <Pagination className="mb-2 mb-lg-0">
+              <Pagination.Prev>Previous</Pagination.Prev>
+              <Pagination.Item active>1</Pagination.Item>
+              <Pagination.Item>2</Pagination.Item>
+              <Pagination.Item>3</Pagination.Item>
+              <Pagination.Item>4</Pagination.Item>
+              <Pagination.Item>5</Pagination.Item>
+              <Pagination.Next>Next</Pagination.Next>
+            </Pagination>
+          </Nav>
+          <small className="fw-bold">
+            Showing <b>{totalForms}</b> out of <b>25</b> entries
           </small>
         </Card.Footer>
       </Card.Body>

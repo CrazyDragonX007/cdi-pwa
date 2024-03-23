@@ -181,8 +181,8 @@ export default (props = {}) => {
                 <FontAwesomeIcon icon={faTimes} />
               </Nav.Link>
             </div>
-            <Nav className="flex-column pt-md-0 pt-3">
-              <NavItem link={Routes.Presentation.path} image={logoImg} />
+            <Nav className="flex-column pt-md-0 pt-3 ">
+              <NavItem link={Routes.Presentation.path} image={logoImg}/>
 
               <NavItem
                 title="Overview"

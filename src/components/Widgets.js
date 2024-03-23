@@ -1,7 +1,7 @@
 
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faChartArea, faChartBar, faChartLine, faFlagUsa, faFolderOpen, faGlobeEurope, faPaperclip, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faChartArea, faChartBar, faChartLine, faUser, faFlagUsa, faFolderOpen, faGlobeEurope, faPaperclip, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { faAngular, faBootstrap, faReact, faVuejs } from "@fortawesome/free-brands-svg-icons";
 import { Col, Row, Card, Image, Button, ListGroup, ProgressBar } from '@themesberg/react-bootstrap';
 import { CircleChart, BarChart, SalesValueChart, SalesValueChartphone } from "./Charts";
@@ -10,7 +10,7 @@ import Profile1 from "../assets/img/team/profile-picture-1.jpg";
 import ProfileCover from "../assets/img/profile-cover.jpg";
 
 import teamMembers from "../data/teamMembers";
-
+import axios from "axios";
 
 export const ProfileCardWidget = () => {
   return (
@@ -162,52 +162,63 @@ export const BarChartWidget = (props) => {
   );
 };
 
+const apiURL = 'http://localhost:8000';
+const getUsers = `${apiURL}/crud/getUsers`;
+
 export const TeamMembersWidget = () => {
-  const TeamMember = (props) => {
-    const { name, statusKey, image, icon, btnText } = props;
-    const status = {
-      online: { color: "success", label: "Super Admin" },
-      inMeeting: { color: "warning", label: "Admin" },
-      offline: { color: "danger", label: "User" }
+  const [teamMembers, setTeamMembers] = useState([]);
+
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        const response = await axios.get(getUsers);
+        setTeamMembers(response.data);
+      } catch (error) {
+        console.error('Error fetching team members:', error);
+      }
     };
 
-    const statusColor = status[statusKey] ? status[statusKey].color : 'danger'
-      , statusLabel = status[statusKey] ? status[statusKey].label : 'Offline';
+    fetchTeamMembers();
+  }, []);
 
-    return (
-      <ListGroup.Item className="px-0">
-        <Row className="align-items-center">
-          <Col className="col-auto">
-            <a href="#top" className="user-avatar">
-              <Image src={image} className="rounded-circle" />
-            </a>
-          </Col>
-          <Col className="ms--2">
-            <h4 className="h6 mb-0">
-              <a href="#!">{name}</a>
-            </h4>
-            <span className={`text-${statusColor}`}>● </span>
-            <small>{statusLabel}</small>
-          </Col>
-          <Col className="col-auto">
-            <Button variant="tertiary" size="sm">
-              <FontAwesomeIcon icon={icon} className="me-1" /> {btnText}
-            </Button>
-          </Col>
-        </Row>
-      </ListGroup.Item>
-    );
+  const getStatusLabel = (accessRole) => {
+    switch (accessRole) {
+      case 0:
+        return { color: 'success', label: 'Super Admin' };
+      case 1:
+        return { color: 'warning', label: 'Admin' };
+      case 2:
+        return { color: 'danger', label: 'User' };
+      default:
+        return { color: 'danger', label: 'Offline' };
+    }
   };
 
   return (
     <Card border="light" className="shadow-sm">
       <Card.Header className="border-bottom border-light d-flex justify-content-between">
         <h5 className="mb-0">Team Members</h5>
-        <Button variant="secondary" size="sm">See all</Button>
       </Card.Header>
       <Card.Body>
         <ListGroup className="list-group-flush list my--3">
-          {teamMembers.map(tm => <TeamMember key={`team-member-${tm.id}`} {...tm} />)}
+          {teamMembers.map((member) => (
+            <ListGroup.Item key={member.user_id} className="px-0">
+              <Row className="align-items-center">
+                <Col className="col-auto">
+                  <a href="">
+                  <FontAwesomeIcon icon={faUser} className="rounded-circle" />
+                  </a>
+                </Col>
+                <Col className="ms--2">
+                  <h4 className="h6 mb-0">
+                    <a href="#!">{`${member.firstName} ${member.lastName}`}</a>
+                  </h4>
+                  <span className={`text-${getStatusLabel(member.accessRole).color}`}>● </span>
+                  <small>{getStatusLabel(member.accessRole).label}</small>
+                </Col>
+              </Row>
+            </ListGroup.Item>
+          ))}
         </ListGroup>
       </Card.Body>
     </Card>

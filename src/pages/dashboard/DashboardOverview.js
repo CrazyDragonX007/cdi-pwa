@@ -5,9 +5,9 @@ import { faCashRegister, faTruck, faTruckLoading, faTruckPickup, faChartLine, fa
 import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-bootstrap';
 
 import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
-import { PageVisitsTable } from "../../components/Tables";
+import { PageVisitsTable, VIFTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
-import { TransactionsTable } from "../../components/Tables";
+
 
 export default () => {
   return (
@@ -104,7 +104,7 @@ export default () => {
             <Col xs={12} xl={12} className="mb-4">
               <Row>
                 <Col xs={12} className="mb-4">
-                  <TransactionsTable />
+                  <VIFTable />
                 </Col>
                 {/* <Col xs={12} lg={6} className="mb-4">
                   <ProgressTrackWidget />
