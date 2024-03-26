@@ -13,6 +13,8 @@ import {
   InputGroup,
 } from "@themesberg/react-bootstrap";
 
+import axios from "axios";
+
 class WeatherData extends React.Component {
   constructor(props) {
     super(props);
@@ -43,10 +45,15 @@ class WeatherData extends React.Component {
     }
   } }
 
-
+  const apiURL = 'http://localhost:8000';
+  const getUsers = `${apiURL}/crud/getUsers`;
+  const createVehicleInspectionForm = `${apiURL}/crud/createVehicleInspectionForm`
+  const createVehicleMovingForm = `${apiURL}/crud/createVehicleMovingForm`
+  const createDailyReports = `${apiURL}/crud/createDailyReports`
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
+  console.log(date)
   const [selectedOption01, setSelectedOption01] = useState("0");
   const [selectedOption02, setSelectedOption02] = useState("0");
   const [selectedOption03, setSelectedOption03] = useState("0");
@@ -55,12 +62,52 @@ export const VI_Form = () => {
   const [selectedOption06, setSelectedOption06] = useState("0");
   const [selectedOption07, setSelectedOption07] = useState("0");
   const [selectedOption08, setSelectedOption08] = useState("0");
+
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [users, setUsers] = useState([]);
+  
+    useEffect(() => {
+      fetch(getUsers)
+        .then((response) => response.json())
+        .then((data) => setUsers(data))
+        .catch((error) => console.error('Error fetching data:', error));
+    }, []); 
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      const formData = {
+        dateTime: date,
+        vehicleName: e.target.vehicleName.value,
+        vehicleNo: e.target.vehicleNo.value,
+        inspectedBy: e.target.inspectedBy.value,
+        physicalDamage: selectedOption01,
+        leakStatus: selectedOption02,
+        lhaCondition: selectedOption03,
+        safetyDevicesCondition: selectedOption04,
+        up_lowEmergencyControls: selectedOption05,
+        oilCapacity: selectedOption06,
+        safetyWarningDecalsCondition: selectedOption07,
+        parkBrakeCondition: selectedOption08,
+        // imageObject: e.target.imageObject.value,
+        notes: e.target.notes.value,
+      };
+  
+      try {
+        const response = await axios.post(createVehicleInspectionForm, formData);
+        console.log('Form submitted successfully:', response.data.message);
+        setFormSubmitted(true);
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
+    };
+  
+  
   return (
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
         <h5 className="mb-4">Daily Equipment Inspection Report</h5>
-        <Form>
-          <Row>
+        <Form onSubmit={handleSubmit}>
+          {/* <Row>
             <Col md={6} className="mb-3">
               <Form.Group id="firstName">
                 <Form.Label>First Name</Form.Label>
@@ -81,10 +128,10 @@ export const VI_Form = () => {
                 />
               </Form.Group>
             </Col>
-          </Row>
+          </Row> */}
           <Row className="align-items-center">
             <Col md={3} className="mb-3">
-              <Form.Group id="birthday">
+              <Form.Group id="dateTime">
                 <Form.Label>Date & Time</Form.Label>
                 <Datetime
                   
@@ -96,6 +143,7 @@ export const VI_Form = () => {
                       </InputGroup.Text>
                       <Form.Control
                         required
+                        name="dateTime"
                         type="text"
                         value={date ? moment(date).format("MM/DD/YYYY HH:mm:ss") : ""}
                         placeholder="Enter Date & Time"
@@ -109,19 +157,19 @@ export const VI_Form = () => {
               </Form.Group>
             </Col>
             <Col md={3} className="mb-3">
-              <Form.Group id="">
-                <Form.Label>Inspected By</Form.Label>
-                <Form.Select defaultValue="0">
-                  <option value="0">User 1</option>
-                  <option value="1">User 2</option>
-                  
-                </Form.Select>
-              </Form.Group>
+            <Form.Group id="inspectedBy">
+              <Form.Label>Inspected By</Form.Label>
+              <Form.Select defaultValue="0" name = "inspectedBy">
+              {users.map((user) => (
+                  <option key={user.user_id} value={`${user.firstName} ${user.lastName}`}>{user.firstName} {user.lastName}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
             </Col>
             <Col md={3} className="mb-3">
-              <Form.Group id="gender">
+              <Form.Group id="vehicleName">
                 <Form.Label>Vehicle</Form.Label>
-                <Form.Select defaultValue="0">
+                <Form.Select defaultValue="0" name="vehicleName">
                   <option value="0">Vehicle</option>
                   <option value="1">Boom Lift</option>
                   <option value="2">Engine Driven Scissor Lift</option>
@@ -131,11 +179,12 @@ export const VI_Form = () => {
               </Form.Group>
             </Col>
             <Col md={3} className="mb-3">
-              <Form.Group id="">
+              <Form.Group id="vehicleNo">
                 <Form.Label>Vehicle No.</Form.Label>
                 <Form.Control
                   required
                   type="text"
+                  name="vehicleNo"
                   placeholder="Vehicle Number"
                 />
               </Form.Group>
@@ -172,7 +221,7 @@ export const VI_Form = () => {
               )}
           </Col>
           <Col md={6} className="mb-3">
-          <Form.Group id="leaks">
+          <Form.Group id="safetyDevicesCondition">
                 <Form.Label>Are the safety devices present and functioning properly? (seat belts, safety gates/chains/bars)</Form.Label>
                 <Form.Check
                   type="radio"
@@ -203,7 +252,7 @@ export const VI_Form = () => {
           </Row>
           <Row>
           <Col md={6} className="mb-3">
-          <Form.Group id="physicalDamage">
+          <Form.Group id="cleanStatus">
                 <Form.Label>Is the unit in a clean state and free from personal items, trash and debris?</Form.Label>
                 <Form.Check
                   type="radio"
@@ -232,7 +281,7 @@ export const VI_Form = () => {
               )}
           </Col>
           <Col md={6} className="mb-3">
-          <Form.Group id="leaks">
+          <Form.Group id="oilStatus">
                 <Form.Label>Does the unit have sufficient oil?</Form.Label>
                 <Form.Check
                   type="radio"
@@ -263,7 +312,7 @@ export const VI_Form = () => {
           </Row>
           <Row>
           <Col md={6} className="mb-3">
-          <Form.Group id="physicalDamage">
+          <Form.Group id="lhaCondition">
                 <Form.Label>Are the lights, horn and alarms in good working order?</Form.Label>
                 <Form.Check
                   type="radio"
@@ -292,7 +341,7 @@ export const VI_Form = () => {
               )}
           </Col>
           <Col md={6} className="mb-3">
-          <Form.Group id="leaks">
+          <Form.Group id="leakStatus">
                 <Form.Label>Does the unit appear to have any leaks?</Form.Label>
                 <Form.Check
                   type="radio"
@@ -323,7 +372,7 @@ export const VI_Form = () => {
           </Row>
           <Row>
           <Col md={6} className="mb-3">
-          <Form.Group id="physicalDamage">
+          <Form.Group id="oilCapacity">
                 <Form.Label>What is the fuel level? (if applicable)</Form.Label>
                 <Form.Check
                   type="radio"
@@ -351,7 +400,7 @@ export const VI_Form = () => {
               
           </Col>
           <Col md={6} className="mb-3">
-          <Form.Group id="leaks">
+          <Form.Group id="parkBrakeCondition">
                 <Form.Label>Is the park brake functioning correctly?</Form.Label>
                 <Form.Check
                   type="radio"
@@ -376,7 +425,7 @@ export const VI_Form = () => {
           </Row>
           <Row>
           <Col md={6} className="mb-3">
-          <Form.Group id="physicalDamage">
+          <Form.Group id="up_lowEmergencyControls">
                 <Form.Label>Are all the operating upper/lower and emergency controls functioning properly?</Form.Label>
                 <Form.Check
                   type="radio"
@@ -405,7 +454,7 @@ export const VI_Form = () => {
               )}
           </Col>
           <Col md={6} className="mb-3">
-          <Form.Group id="leaks">
+          <Form.Group id="safetyWarningDecalsCondition">
                 <Form.Label>Is the operators manual,safety,warning decals and capacity plate onboard and legible?</Form.Label>
                 <Form.Check
                   type="radio"
@@ -436,7 +485,7 @@ export const VI_Form = () => {
           </Row>
           <Row>
             <Col md={6} className="mb-3">
-            <Form.Group id="uploadVI">
+            <Form.Group id="uploadImageObjectVI">
                 <Form.Label>Upload Attachments</Form.Label>
                 <ChoosePhotoWidget
                  
@@ -451,6 +500,7 @@ export const VI_Form = () => {
                 <Form.Label>Notes</Form.Label>
                 <Form.Control
                   required
+                  name = "notes"
                   as="textarea"
                   rows={5}
                 />
@@ -463,6 +513,7 @@ export const VI_Form = () => {
             <Button variant="primary" type="submit">
               Submit
             </Button>
+            {formSubmitted && <p className="mt-3">Form submitted successfully!</p>}
           </div>
         </Form>
       </Card.Body>
@@ -470,368 +521,377 @@ export const VI_Form = () => {
   );
 };
 
+
 export const VM_Form = () => {
-  const [dateTime, setDateTime] = useState("");
-  console.log(dateTime)
+  const [dateTime, setDateTime] = useState('');
+  // console.log(dateTime)
   
+  const [formData, setFormData] = useState({
+    userID: 1, // Assuming this is the user ID
+    firstName: '',
+    lastName: '',
+    vehicleName: '',
+    vehicleNo: '',
+    pickupJobsite: '',
+    dropoffLocation: '',
+    notes: ''
+  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleDateTimeChange = (date) => {
+    setDateTime(date);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(createVehicleMovingForm, {
+        userID: 1, // Assuming you have a specific user ID
+        dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
+        ...formData
+      });
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error inserting data:', error);
+    }
+  };
+
   return (
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
         <h5 className="mb-4">Vehicle Moving Form</h5>
-        <Form>
-          <Row>
-            <Col md={6} className="mb-3">
-              <Form.Group id="firstName">
-                <Form.Label>First Name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your first name"
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} className="mb-3">
-              <Form.Group id="lastName">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your last name"
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row className="align-items-center">
-            <Col md={4} className="mb-4">
-              <Form.Group id="datetimeVM">
-                <Form.Label>Date & Time</Form.Label>
-                <Datetime
-                  
-                  onChange={setDateTime}
-                  renderInput={(props, openCalendar) => (
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faCalendarAlt} />
-                      </InputGroup.Text>
-                      <Form.Control
-                        required
-                        type="text"
-                        value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                        placeholder="Enter Date & Time"
-                    
-                        onFocus={openCalendar}
-                        onChange={() => {}}
-                      />
-                    </InputGroup>
-                  )}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={4} className="mb-4">
-            <Form.Group id="gender">
-                <Form.Label>Vehicle</Form.Label>
-                <Form.Select defaultValue="0">
-                  <option value="0">Vehicle</option>
-                  <option value="1">Boom Lift</option>
-                  <option value="2">Engine Driven Scissor Lift</option>
-                  <option value="3">Telehandler</option>
-                  <option value="4">Electric Scissor Lift</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col md={4} className="mb-4">
-            <Form.Group id="">
-                <Form.Label>Vehicle No.</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Vehicle Number"
-                />
-              </Form.Group>
-            </Col>
-            
-          </Row>
-          <Row>
-            <Col md={6} className="mb-3">
-            <Form.Group id="pickupJobsite">
-                <Form.Label>Pickup Location</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your home address"
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} className="mb-3">
-            <Form.Group id="dropoffLocation">
-                <Form.Label>Dropoff Location</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your home address"
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          {/* <h5 className="my-4">Address</h5>
-          <Col md={6} className="mb-3">
-              <Form.Group id="emal">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  required
-                  type="email"
-                  placeholder="name@company.com"
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} className="mb-3">
-              <Form.Group id="phone">
-                <Form.Label>Phone</Form.Label>
-                <Form.Control
-                  required
-                  type="number"
-                  placeholder="+12-345 678 910"
-                />
-              </Form.Group>
-            </Col>
-          <Row>
-            <Col sm={9} className="mb-3">
-              <Form.Group id="address">
-                <Form.Label>Address</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your home address"
-                />
-              </Form.Group>
-            </Col>
-            <Col sm={3} className="mb-3">
-              <Form.Group id="addressNumber">
-                <Form.Label>Number</Form.Label>
-                <Form.Control required type="number" placeholder="No." />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={4} className="mb-3">
-              <Form.Group id="city">
-                <Form.Label>City</Form.Label>
-                <Form.Control required type="text" placeholder="City" />
-              </Form.Group>
-            </Col>
-            <Col sm={4} className="mb-3">
-              <Form.Group className="mb-2">
-                <Form.Label>Select state</Form.Label>
-                <Form.Select id="state" defaultValue="0">
-                  <option value="0">State</option>
-                  <option value="AL">Alabama</option>
-                  <option value="AK">Alaska</option>
-                  <option value="AZ">Arizona</option>
-                  <option value="AR">Arkansas</option>
-                  <option value="CA">California</option>
-                  <option value="CO">Colorado</option>
-                  <option value="CT">Connecticut</option>
-                  <option value="DE">Delaware</option>
-                  <option value="DC">District Of Columbia</option>
-                  <option value="FL">Florida</option>
-                  <option value="GA">Georgia</option>
-                  <option value="HI">Hawaii</option>
-                  <option value="ID">Idaho</option>
-                  <option value="IL">Illinois</option>
-                  <option value="IN">Indiana</option>
-                  <option value="IA">Iowa</option>
-                  <option value="KS">Kansas</option>
-                  <option value="KY">Kentucky</option>
-                  <option value="LA">Louisiana</option>
-                  <option value="ME">Maine</option>
-                  <option value="MD">Maryland</option>
-                  <option value="MA">Massachusetts</option>
-                  <option value="MI">Michigan</option>
-                  <option value="MN">Minnesota</option>
-                  <option value="MS">Mississippi</option>
-                  <option value="MO">Missouri</option>
-                  <option value="MT">Montana</option>
-                  <option value="NE">Nebraska</option>
-                  <option value="NV">Nevada</option>
-                  <option value="NH">New Hampshire</option>
-                  <option value="NJ">New Jersey</option>
-                  <option value="NM">New Mexico</option>
-                  <option value="NY">New York</option>
-                  <option value="NC">North Carolina</option>
-                  <option value="ND">North Dakota</option>
-                  <option value="OH">Ohio</option>
-                  <option value="OK">Oklahoma</option>
-                  <option value="OR">Oregon</option>
-                  <option value="PA">Pennsylvania</option>
-                  <option value="RI">Rhode Island</option>
-                  <option value="SC">South Carolina</option>
-                  <option value="SD">South Dakota</option>
-                  <option value="TN">Tennessee</option>
-                  <option value="TX">Texas</option>
-                  <option value="UT">Utah</option>
-                  <option value="VT">Vermont</option>
-                  <option value="VA">Virginia</option>
-                  <option value="WA">Washington</option>
-                  <option value="WV">West Virginia</option>
-                  <option value="WI">Wisconsin</option>
-                  <option value="WY">Wyoming</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col sm={4}>
-              <Form.Group id="zip">
-                <Form.Label>ZIP</Form.Label>
-                <Form.Control required type="tel" placeholder="ZIP" />
-              </Form.Group>
-            </Col>
-          </Row> */}
-          <div className="mt-3">
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </div>
-        </Form>
+        <Form onSubmit={handleSubmit}>
+      <Row>
+        <Col md={6} className="mb-3">
+          <Form.Group id="firstName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              required
+              name="firstName"
+              type="text"
+              placeholder="Enter your first name"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+          <Form.Group id="lastName">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              required
+              name="lastName"
+              type="text"
+              placeholder="Enter your last name"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row className="align-items-center">
+        <Col md={4} className="mb-4">
+        <Form.Group id="datetimeVM">
+            <Form.Label>Date & Time</Form.Label>
+            <Datetime
+              onChange={handleDateTimeChange}
+              value={dateTime}
+              renderInput={(props, openCalendar) => (
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faCalendarAlt} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    required
+                    name="dateTime"
+                    type="text"
+                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                    placeholder="Enter Date & Time"
+                    onFocus={openCalendar}
+                    onChange={() => {}}
+                  />
+                </InputGroup>
+              )}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={4} className="mb-4">
+          <Form.Group id="gender">
+            <Form.Label>Vehicle</Form.Label>
+            <Form.Select
+              name="vehicleName"
+              value={formData.vehicleName}
+              onChange={handleChange}
+            >
+              <option value="">Vehicle</option>
+              <option value="Boom Lift">Boom Lift</option>
+              <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
+              <option value="Telehandler">Telehandler</option>
+              <option value="Electric Scissor Lift">Electric Scissor Lift</option>
+            </Form.Select>
+          </Form.Group>
+        </Col>
+        <Col md={4} className="mb-4">
+          <Form.Group id="vehicleNo">
+            <Form.Label>Vehicle No.</Form.Label>
+            <Form.Control
+              required
+              name="vehicleNo"
+              type="text"
+              placeholder="Vehicle Number"
+              value={formData.vehicleNo}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={6} className="mb-3">
+          <Form.Group id="pickupJobsite">
+            <Form.Label>Pickup Location</Form.Label>
+            <Form.Control
+              required
+              name="pickupJobsite"
+              type="text"
+              placeholder="Enter your home address"
+              value={formData.pickupJobsite}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+          <Form.Group id="dropoffLocation">
+            <Form.Label>Dropoff Location</Form.Label>
+            <Form.Control
+              required
+              name="dropoffLocation"
+              type="text"
+              placeholder="Enter your home address"
+              value={formData.dropoffLocation}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={12} className="mb-3">
+          <Form.Group id="notesVM">
+            <Form.Label>Notes</Form.Label>
+            <Form.Control
+              required
+              name="notes"
+              as="textarea"
+              rows={3}
+              value={formData.notes}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <div className="mt-3">
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+        
+      </div>
+    </Form>
       </Card.Body>
     </Card>
   );
 };
 
 
-
 export const DR_Form = () => {
-  const [dateTime, setDateTime] = useState("");
- 
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    projectName: '',
+    projectLocation: '',
+    scopeOfWork: '',
+    workPerformed: '',
+    weatherDetails: '',
+    notes: ''
+  });
+  const [dateTime, setDateTime] = useState('');
+
+  const handleDateTimeChange = (date) => {
+    setDateTime(date);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(createDailyReports, {
+        userID: 1, // Assuming you have a specific user ID
+        dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
+        ...formData
+      });
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error inserting data:', error);
+    }
+  };
+
   return (
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
         <h5 className="mb-4">Daily Report</h5>
-        <Form>
-          <Row>
-            <Col md={6} className="mb-3">
-              <Form.Group id="firstName">
-                <Form.Label>First Name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your first name"
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} className="mb-3">
-              <Form.Group id="lastName">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your last name"
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row className="align-items-center">
-            <Col md={4} className="mb-4">
-              <Form.Group id="datetimeDR">
-                <Form.Label>Date & Time</Form.Label>
-                <Datetime
-                  
-                  onChange={setDateTime}
-                  renderInput={(props, openCalendar) => (
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faCalendarAlt} />
-                      </InputGroup.Text>
-                      <Form.Control
-                        required
-                        type="text"
-                        value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                        placeholder="Enter Date & Time"
-                        onFocus={openCalendar}
-                        onChange={() => {}}
-                      />
-                    </InputGroup>
-                  )}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={4} className="mb-4">
-            <Form.Group id="">
-                <Form.Label>Weather Details</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="" disabled
-                />
-              </Form.Group>
-            </Col>
-            
-            <Col md={4} className="mb-4">
-              <Form.Group id="">
-                <Form.Label>Scope of Work.</Form.Label>
-                <Form.Select defaultValue="0">
-                  <option value="0">Steel</option>
-                  <option value="1">Dry Wall</option>
-                  <option value="2">Light Gauge Framing</option>
-                  <option value="3">Ceilings</option>
-                
-                </Form.Select>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6} className="mb-4">
-            <Form.Group id="projectNameDR">
-                <Form.Label>Project Name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder=""
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} className="mb-4">
-            <Form.Group id="projectLocationDR">
-                <Form.Label>Project Location</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder=""
-                />
-              </Form.Group>
-            </Col>
-            
-          </Row>
-          <Row>
-          <Col md={6} className="mb-4">
-            <Form.Group id="workPerformedDR">
-                <Form.Label>Work Performed</Form.Label>
-                <Form.Control
-                  required
-                  as="textarea"
-                  rows={3}
-                  placeholder=""
-                />
-              </Form.Group>
-            </Col>
-          <Col md={6} className="mb-4">
-            <Form.Group id="notesDR">
-                <Form.Label>Notes</Form.Label>
-                <Form.Control
-                  required
-                  as="textarea"
-                  rows={3}
-                  placeholder=""
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          
-          <div className="mt-3">
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </div>
-        </Form>
+        <Form onSubmit={handleSubmit}>
+      <Row>
+        <Col md={6} className="mb-3">
+          <Form.Group id="firstName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              required
+              name="firstName"
+              type="text"
+              placeholder="Enter your first name"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+          <Form.Group id="lastName">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              required
+              name="lastName"
+              type="text"
+              placeholder="Enter your last name"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row className="align-items-center">
+        <Col md={4} className="mb-4">
+          <Form.Group id="datetimeDR">
+            <Form.Label>Date & Time</Form.Label>
+            <Datetime
+              onChange={handleDateTimeChange}
+              value={dateTime}
+              renderInput={(props, openCalendar) => (
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faCalendarAlt} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    required
+                    name="dateTime"
+                    type="text"
+                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                    placeholder="Enter Date & Time"
+                    onFocus={openCalendar}
+                    onChange={() => {}}
+                  />
+                </InputGroup>
+              )}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={4} className="mb-4">
+          <Form.Group id="weatherDetails">
+            <Form.Label>Weather Details</Form.Label>
+            <Form.Control
+              required
+              name="weatherDetails"
+              type="text"
+              placeholder=""
+              disabled
+            />
+          </Form.Group>
+        </Col>
+        <Col md={4} className="mb-4">
+          <Form.Group id="scopeOfWork">
+            <Form.Label>Scope of Work</Form.Label>
+            <Form.Select
+              name="scopeOfWork"
+              value={formData.scopeOfWork}
+              onChange={handleChange}
+            >
+              <option value="">Select Scope of Work</option>
+              <option value="Steel">Steel</option>
+              <option value="Dry Wall">Dry Wall</option>
+              <option value="Light Gauge Framing">Light Gauge Framing</option>
+              <option value="Ceilings">Ceilings</option>
+            </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={6} className="mb-4">
+          <Form.Group id="projectNameDR">
+            <Form.Label>Project Name</Form.Label>
+            <Form.Control
+              required
+              name="projectName"
+              type="text"
+              placeholder=""
+              value={formData.projectName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-4">
+          <Form.Group id="projectLocationDR">
+            <Form.Label>Project Location</Form.Label>
+            <Form.Control
+              required
+              name="projectLocation"
+              type="text"
+              placeholder=""
+              value={formData.projectLocation}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={6} className="mb-4">
+          <Form.Group id="workPerformedDR">
+            <Form.Label>Work Performed</Form.Label>
+            <Form.Control
+              required
+              name="workPerformed"
+              as="textarea"
+              rows={3}
+              placeholder=""
+              value={formData.workPerformed}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-4">
+          <Form.Group id="notesDR">
+            <Form.Label>Notes</Form.Label>
+            <Form.Control
+              required
+              name="notes"
+              as="textarea"
+              rows={3}
+              placeholder=""
+              value={formData.notes}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <div className="mt-3">
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </div>
+    </Form>
       </Card.Body>
     </Card>
   );
