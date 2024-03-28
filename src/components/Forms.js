@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useHistory } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
 import Datetime from "react-datetime";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +15,7 @@ import {
 
 import axios from "axios";
 import Contracts from "../pages/ProjectDetails";
+import {useHistory} from "react-router-dom";
 
 class WeatherData extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class WeatherData extends React.Component {
   const createVehicleInspectionForm = `${apiURL}/crud/createVehicleInspectionForm`
   const createVehicleMovingForm = `${apiURL}/crud/createVehicleMovingForm`
   const createDailyReports = `${apiURL}/crud/createDailyReports`
-  const createProjects = `${apiURL}/crud/createProject`
+  const createProject = `${apiURL}/crud/createProject`
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
@@ -908,24 +909,19 @@ export const Project_Form = () => {
     projectStatus: 'Active'
   });
   const [projectName, setProjectName] = useState('');
+  const [projectStatus, setProjectStatus] = useState('Active');
   const history = useHistory();
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('projectName', projectName);
+    const formData = {
+        projectName,
+      projectStatus
+    }
     try {
-      const response = await axios.post(createProjects, formData);
+      const response = await axios.post(createProject, formData);
       history.push(`/${Contracts}/${projectName}`);
-      console.log('Response:', response.data);
-      setFormData({
-        projectName: '',
-        projectStatus: 'Active'
-      });
+      console.log('Response:', response);
     } catch (error) {
       console.error('Error inserting data:', error);
     }
@@ -956,8 +952,8 @@ export const Project_Form = () => {
                         <Form.Label>Project Status</Form.Label>
                         <Form.Select
                           name="projectStatus"
-                          value={formData.projectStatus}
-                          onChange={handleChange}
+                          value={projectStatus}
+                          onChange={(e)=>setProjectStatus(e.target.value)}
                         >
                           <option value="Active">Active</option>
                           <option value="Hold">Hold</option>
