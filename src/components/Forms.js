@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useHistory } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
 import Datetime from "react-datetime";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ChoosePhotoWidget } from "./Widgets";
-import { faCalendarAlt, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import {
   Col,
   Row,
@@ -15,6 +14,7 @@ import {
 
 import axios from "axios";
 import Contracts from "../pages/ProjectDetails";
+import {useHistory} from "react-router-dom";
 
 class WeatherData extends React.Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class WeatherData extends React.Component {
   const createVehicleInspectionForm = `${apiURL}/crud/createVehicleInspectionForm`
   const createVehicleMovingForm = `${apiURL}/crud/createVehicleMovingForm`
   const createDailyReports = `${apiURL}/crud/createDailyReports`
-  const createProjects = `${apiURL}/crud/createProject`
+  const createProject = `${apiURL}/crud/createProject`
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
@@ -77,23 +77,24 @@ export const VI_Form = () => {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const formData = {
-        dateTime: date,
-        vehicleName: e.target.vehicleName.value,
-        vehicleNo: e.target.vehicleNo.value,
-        inspectedBy: e.target.inspectedBy.value,
-        physicalDamage: selectedOption01,
-        leakStatus: selectedOption02,
-        lhaCondition: selectedOption03,
-        safetyDevicesCondition: selectedOption04,
-        up_lowEmergencyControls: selectedOption05,
-        oilCapacity: selectedOption06,
-        safetyWarningDecalsCondition: selectedOption07,
-        parkBrakeCondition: selectedOption08,
-        // imageObject: e.target.imageObject.value,
-        notes: e.target.notes.value,
-      };
-  
+        const formData = new FormData();
+        formData.append('dateTime', date);
+        formData.append('vehicleName', e.target.vehicleName.value);
+        formData.append('vehicleNo', e.target.vehicleNo.value);
+        formData.append('inspectedBy', e.target.inspectedBy.value);
+        formData.append('physicalDamage', selectedOption01);
+        formData.append('leakStatus', selectedOption02);
+        formData.append('lhaCondition', selectedOption03);
+        formData.append('safetyDevicesCondition', selectedOption04);
+        formData.append('up_lowEmergencyControls', selectedOption05);
+        formData.append('oilCapacity', selectedOption06);
+        formData.append('safetyWarningDecalsCondition', selectedOption07);
+        formData.append('parkBrakeCondition', selectedOption08);
+        formData.append('notes', e.target.notes.value);
+      const files = document.getElementById('img01').files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append('file', files[i]);
+        }
       try {
         const response = await axios.post(createVehicleInspectionForm, formData);
         console.log('Form submitted successfully:', response.data.message);
@@ -487,24 +488,25 @@ export const VI_Form = () => {
           </Row>
           <Row>
             <Col md={6} className="mb-3">
-            <Form.Group id="uploadImageObjectVI">
-                <Form.Label>Upload Attachments</Form.Label>
-                <ChoosePhotoWidget
-                 
-                  
-                />
-              </Form.Group>
-              
+                <Form.Group id="uploadImageObjectVI">
+                    <Form.Label>Upload Attachments</Form.Label>
+                    <br/>
+                    <input type="file" id="img01" multiple/>
+                    <div className="d-md-block text-start">
+                        {/*<div className="fw-normal text-dark mb-1">Choose Image</div>*/}
+                        <div className="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
+                    </div>
+                </Form.Group>
             </Col>
-            <Col md={6} className="mb-3">
-            <Form.Group id="notesVI">
+              <Col md={6} className="mb-3">
+                  <Form.Group id="notesVI">
 
-                <Form.Label>Notes</Form.Label>
-                <Form.Control
-                  required
-                  name = "notes"
-                  as="textarea"
-                  rows={5}
+                      <Form.Label>Notes</Form.Label>
+                      <Form.Control
+                          required
+                          name="notes"
+                          as="textarea"
+                          rows={5}
                 />
             </Form.Group>
             </Col>
@@ -906,24 +908,19 @@ export const Project_Form = () => {
     projectStatus: 'Active'
   });
   const [projectName, setProjectName] = useState('');
+  const [projectStatus, setProjectStatus] = useState('Active');
   const history = useHistory();
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('projectName', projectName);
+    const formData = {
+        projectName,
+      projectStatus
+    }
     try {
-      const response = await axios.post(createProjects, formData);
+      const response = await axios.post(createProject, formData);
       history.push(`/${Contracts}/${projectName}`);
-      console.log('Response:', response.data);
-      setFormData({
-        projectName: '',
-        projectStatus: 'Active'
-      });
+      console.log('Response:', response);
     } catch (error) {
       console.error('Error inserting data:', error);
     }
@@ -954,8 +951,8 @@ export const Project_Form = () => {
                         <Form.Label>Project Status</Form.Label>
                         <Form.Select
                           name="projectStatus"
-                          value={formData.projectStatus}
-                          onChange={handleChange}
+                          value={projectStatus}
+                          onChange={(e)=>setProjectStatus(e.target.value)}
                         >
                           <option value="Active">Active</option>
                           <option value="Hold">Hold</option>
