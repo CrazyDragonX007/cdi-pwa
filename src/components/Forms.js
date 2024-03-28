@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
 import Datetime from "react-datetime";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ChoosePhotoWidget } from "./Widgets";
-import { faCalendarAlt, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import {
   Col,
   Row,

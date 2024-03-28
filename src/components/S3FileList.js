@@ -62,19 +62,19 @@ const S3FileList = ( props ) => {
     return parts.pop() + '/' + formId;
   };
 
-  const getObject = async (bucketName,key) => {
-    const params = {
-      Bucket:bucketName,
-      Key:key
-    }
-    return s3.getObject(params, function (err, data) {
-      if (err) {
-        console.log(err, err.stack);
-      } else {
-        return data;
-      }
-    });
-  }
+  // const getObject = async (bucketName,key) => {
+  //   const params = {
+  //     Bucket:bucketName,
+  //     Key:key
+  //   }
+  //   return s3.getObject(params, function (err, data) {
+  //     if (err) {
+  //       console.log(err, err.stack);
+  //     } else {
+  //       return data;
+  //     }
+  //   });
+  // }
 
   return (
     <div>
