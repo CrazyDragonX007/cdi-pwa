@@ -56,6 +56,7 @@ import Tables from "./components/Tables";
 import Tabs from "./components/Tabs";
 import Tooltips from "./components/Tooltips";
 import Toasts from "./components/Toasts";
+import S3FileList from "../components/S3FileList";
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -158,6 +159,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DocsBuild.path} component={DocsBuild} />
     <RouteWithSidebar exact path={Routes.DocsChangelog.path} component={DocsChangelog} />
 
+      <RouteWithSidebar exact path={Routes.S3.path} component={() => <S3FileList folderUrl="https://cdi-build.s3.us-east-1.amazonaws.com/VI-forms/form59" />} />
     <Redirect to={Routes.NotFound.path} />
   </Switch>
 );

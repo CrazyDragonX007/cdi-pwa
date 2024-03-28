@@ -354,6 +354,7 @@ export default (props = {}) => {
                 <NavItem title="Toasts" link={Routes.Toasts.path} />
                 <NavItem title="Tooltips" link={Routes.Tooltips.path} />
               </CollapsableNavItem>
+              <NavItem title="S3" link={Routes.S3.path} />
               {/* <NavItem
                 external
                 title="Themesberg"
