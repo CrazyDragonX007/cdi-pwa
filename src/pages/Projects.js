@@ -1,30 +1,62 @@
-import React from "react";
+import React, {useState} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faCog, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { Col, Row, Form, Button, ButtonGroup, Breadcrumb, InputGroup, Dropdown } from '@themesberg/react-bootstrap';
+import { faCheck, faCog, faHome, faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Col, Row, Form, Button, Modal, ButtonGroup, Breadcrumb, InputGroup, Dropdown } from '@themesberg/react-bootstrap';
 
-import { TransactionsTable } from "../components/Tables";
+import { TransactionsTable, CommandsTable, ProjectsTable } from "../components/Tables";
+import { Project_Form } from "../components/Forms";
+
+
 
 export default () => {
+
+  const [showDefault, setShowDefault] = useState(false);
+  const handleClose = () => setShowDefault(false);
+  const handleSubmit = (formData) => {
+    
+    handleClose();
+  };
+
   return (
     <>
+    
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
         <div className="d-block mb-4 mb-md-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
             <Breadcrumb.Item><FontAwesomeIcon icon={faHome} /></Breadcrumb.Item>
             <Breadcrumb.Item>CDI</Breadcrumb.Item>
-            <Breadcrumb.Item active>Contracts</Breadcrumb.Item>
+            <Breadcrumb.Item active>Projects</Breadcrumb.Item>
           </Breadcrumb>
-          <h4>Contracts</h4>
+          <h4>Projects</h4>
           {/* <p className="mb-0">Your web analytics dashboard template.</p> */}
         </div>
-        <div className="btn-toolbar mb-2 mb-md-0">
-          <ButtonGroup>
-            {/* <Button variant="outline-primary" size="sm">Share</Button> */}
-            <Button variant="outline-primary" size="sm">Export to CSV</Button>
-          </ButtonGroup>
-        </div>
+        
       </div>
+
+      <div>
+      
+        <Button variant="secondary" className="my-3" onClick={() => setShowDefault(true)}><FontAwesomeIcon icon={faPlus} className="me-2" />New</Button>
+
+        <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose}>
+          <Modal.Header>
+            <Modal.Title className="h6">Create a New Project</Modal.Title>
+            <Button variant="close" aria-label="Close" onClick={handleClose} />
+          </Modal.Header>
+          <Modal.Body>
+            <Project_Form onSubmit={handleSubmit}/>
+            </Modal.Body>
+          <Modal.Footer>
+            {/* <Button variant="secondary" onClick={handleClose}>
+              I Got It
+          </Button> */}
+            <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+              Close
+          </Button>
+          </Modal.Footer>
+        </Modal>
+      
+      </div>
+      <ProjectsTable/>
 
       {/* <div className="table-settings mb-4">
         <Row className="justify-content-between align-items-center">
@@ -56,7 +88,7 @@ export default () => {
         </Row>
       </div> */}
 
-      {/* <TransactionsTable /> */}
+      
     </>
   );
 };

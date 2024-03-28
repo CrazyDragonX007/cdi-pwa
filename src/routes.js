@@ -1,13 +1,13 @@
 
 export const Routes = {
     // pages
-    Presentation: { path: "/" },
-    DashboardOverview: { path: "/dashboard/overview" },
+    // Presentation: { path: "/" },
+    DashboardOverview: { path: "/" },
     VehicleMovingForm: {path: "/vehiclemoving"},
     DailyReports: {path: "/dailyreports"},
     VehicleInspectionForms: { path: "/vehicleinspection" },
-    Contracts: {path: "/contracts"},
-    Drawings: { path: "/drawings" },
+    ProjectDetails: {path: "/projectdetails"},
+    Projects: { path: "/projects" },
     VIForm: { path: "/viform" },
     VMForm: { path: "/vmform" },
     DRForm: { path: "/drform" },

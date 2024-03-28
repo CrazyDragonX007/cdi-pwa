@@ -3,14 +3,14 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { Routes } from "../routes";
 
 // pages
-import Presentation from "./Presentation";
+// import Presentation from "./Presentation";
 import Upgrade from "./Upgrade";
 import DashboardOverview from "./dashboard/DashboardOverview";
 import VehicleInspectionForms from "./VehicleInspectionForms";
 import VehicleMovingForm from './VehicleMovingForm';
 import DailyReports from './DailyReports';
-import Drawings from './Drawings';
-import Contracts from './Contracts';
+import Projects from './Projects';
+import ProjectDetails from './ProjectDetails';
 
 import VIForm from "./VIForm";
 import VMForm from './VMForm';
@@ -108,7 +108,7 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
 
 export default () => (
   <Switch>
-    <RouteWithLoader exact path={Routes.Presentation.path} component={Presentation} />
+    {/* <RouteWithLoader exact path={Routes.Presentation.path} component={Presentation} /> */}
     <RouteWithLoader exact path={Routes.Signin.path} component={Signin} />
     <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
     <RouteWithLoader exact path={Routes.ForgotPassword.path} component={ForgotPassword} />
@@ -116,6 +116,7 @@ export default () => (
     <RouteWithLoader exact path={Routes.Lock.path} component={Lock} />
     <RouteWithLoader exact path={Routes.NotFound.path} component={NotFoundPage} />
     <RouteWithLoader exact path={Routes.ServerError.path} component={ServerError} />
+    {/* <Route exact path="/{Routes.Contracts.path}/:projectName" component={Contracts} /> */}
 
     {/* pages */}
     <RouteWithSidebar exact path={Routes.DashboardOverview.path} component={DashboardOverview} />
@@ -123,8 +124,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.VehicleInspectionForms.path} component={VehicleInspectionForms} />
     <RouteWithSidebar exact path={Routes.VehicleMovingForm.path} component={VehicleMovingForm} />
     <RouteWithSidebar exact path={Routes.DailyReports.path} component={DailyReports} />
-    <RouteWithSidebar exact path={Routes.Drawings.path} component={Drawings} />
-    <RouteWithSidebar exact path={Routes.Contracts.path} component={Contracts} />
+    <RouteWithSidebar exact path={Routes.Projects.path} component={Projects} />
+    <RouteWithSidebar exact path={Routes.ProjectDetails.path} component={ProjectDetails} />
     <RouteWithSidebar exact path={Routes.VIForm.path} component={VIForm} />
     <RouteWithSidebar exact path={Routes.VMForm.path} component={VMForm} />
     <RouteWithSidebar exact path={Routes.DRForm.path} component={DRForm} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useHistory } from "react";
 import moment from "moment-timezone";
 import Datetime from "react-datetime";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +14,7 @@ import {
 } from "@themesberg/react-bootstrap";
 
 import axios from "axios";
+import Contracts from "../pages/ProjectDetails";
 
 class WeatherData extends React.Component {
   constructor(props) {
@@ -50,6 +51,7 @@ class WeatherData extends React.Component {
   const createVehicleInspectionForm = `${apiURL}/crud/createVehicleInspectionForm`
   const createVehicleMovingForm = `${apiURL}/crud/createVehicleMovingForm`
   const createDailyReports = `${apiURL}/crud/createDailyReports`
+  const createProjects = `${apiURL}/crud/createProject`
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
@@ -898,3 +900,144 @@ export const DR_Form = () => {
 };
 
 
+export const Project_Form = () => {
+  const [formData, setFormData] = useState({
+    projectName: '',
+    projectStatus: 'Active'
+  });
+  const [projectName, setProjectName] = useState('');
+  const history = useHistory();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('projectName', projectName);
+    try {
+      const response = await axios.post(createProjects, formData);
+      history.push(`/${Contracts}/${projectName}`);
+      console.log('Response:', response.data);
+      setFormData({
+        projectName: '',
+        projectStatus: 'Active'
+      });
+    } catch (error) {
+      console.error('Error inserting data:', error);
+    }
+  };
+
+
+  return (
+    <Card border="light" className="mb-4 bg-white shadow-sm">
+      <Card.Body>
+        {/* <h5 className="mb-4">Vehicle Moving Form</h5> */}
+        <Form onSubmit={handleSubmit}>
+                  <Row>
+                    <Col md={6} className="mb-3">
+                      <Form.Group id="projectName">
+                        <Form.Label>Project Name</Form.Label>
+                        <Form.Control
+                          required
+                          name="projectName"
+                          type="text"
+                          placeholder="Enter the Project name"
+                          value={projectName}
+                          onChange={(e) => setProjectName(e.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6} className="mb-3">
+                      <Form.Group id="projectStatus">
+                        <Form.Label>Project Status</Form.Label>
+                        <Form.Select
+                          name="projectStatus"
+                          value={formData.projectStatus}
+                          onChange={handleChange}
+                        >
+                          <option value="Active">Active</option>
+                          <option value="Hold">Hold</option>
+                          <option value="Completed">Completed</option>
+                        </Form.Select>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  <div className="mt-3">
+                    <Button variant="primary" type="submit">
+                      Create Project
+                    </Button> 
+          </div>
+        </Form>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export const Contract_Drawing_Form = () => {
+  const [formData, setFormData] = useState({
+    projectName: '',
+    projectStatus: 'Active'
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('/api/createProject', formData);
+      console.log('Response:', response.data);
+      // Optionally, reset form fields after successful submission
+      setFormData({
+        projectName: '',
+        projectStatus: 'Active'
+      });
+    } catch (error) {
+      console.error('Error inserting data:', error);
+    }
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Row>
+        <Col md={6} className="mb-3">
+          <Form.Group id="projectName">
+            <Form.Label>Contract/Drawing Name</Form.Label>
+            <Form.Control
+              required
+              name="projectName"
+              type="text"
+              placeholder="Enter the Contract/Drawing name"
+              value={formData.projectName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+          <Form.Group id="projectStatus">
+            <Form.Label>Type</Form.Label>
+            <Form.Select
+              name="projectStatus"
+              value={formData.projectStatus}
+              onChange={handleChange}
+            >
+              <option value="Active">Contract</option>
+              <option value="Hold">Drawing</option>
+              
+            </Form.Select>
+          </Form.Group>
+        </Col>
+        
+      </Row>
+      <div className="mt-3">
+        <Button variant="primary" type="submit">
+          Upload
+        </Button>
+      </div>
+    </Form>
+  );
+};

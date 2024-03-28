@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faEye, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -31,6 +31,9 @@ const apiURL = 'http://localhost:8000';
 const getVehicleMovingFormUrl = `${apiURL}/crud/getVehicleMovingForm`;
 const getVehicleInspectionFormUrl = `${apiURL}/crud/getVehicleInspectionForm`;
 const getDailyReports = `${apiURL}/crud/getDailyReports`
+const getProjects = `${apiURL}/crud/getProjects`
+const getContracts = `${apiURL}/crud/getContracts`
+const getDrawings = `${apiURL}/crud/getDrawings`
 
 export const PageVisitsTable = () => {
   const TableRow = (props) => {
@@ -510,13 +513,209 @@ export const CommandsTable = () => {
               <th className="border-0" style={{ width: '5%' }}>Name</th>
               <th className="border-0" style={{ width: '5%' }}>Usage</th>
               <th className="border-0" style={{ width: '50%' }}>Description</th>
-              <th className="border-0" style={{ width: '40%' }}>Extra</th>
+              <th className="border-0" style={{ width: '40%' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {commands.map(c => <TableRow key={`command-${c.id}`} {...c} />)}
           </tbody>
         </Table>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export const ProjectsTable = () => {
+  const [projects, setProjects] = useState([]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getProjects);
+        setProjects(response.data);
+        console.log(response.data)
+  
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <Card border="light" className="table-wrapper table-responsive shadow-sm">
+      <Card.Body className="pt-0">
+        <h5 style={{ padding: '10px', marginTop: '10px' }}>Projects</h5>
+        <Table hover className="user-table align-items-center">
+          <thead>
+            <tr>
+              <th className="border-bottom">#</th>
+              <th className="border-bottom">Project Name</th>
+              <th className="border-bottom">Project Status</th>
+              <th className="border-bottom">Action</th>
+              
+              
+            </tr>
+          </thead>
+          <tbody>
+            {projects.map((project, index) => (
+              <tr key={index}>
+                <td>{project.projectID}</td>
+                <td>{project.projectName}</td>
+                <td>{project.projectStatus}</td>
+                <td><FontAwesomeIcon icon={faEye} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+          <Nav>
+            <Pagination className="mb-2 mb-lg-0">
+              <Pagination.Prev>Previous</Pagination.Prev>
+              <Pagination.Item active>1</Pagination.Item>
+              <Pagination.Item>2</Pagination.Item>
+              <Pagination.Item>3</Pagination.Item>
+              <Pagination.Item>4</Pagination.Item>
+              <Pagination.Item>5</Pagination.Item>
+              <Pagination.Next>Next</Pagination.Next>
+            </Pagination>
+          </Nav>
+          <small className="fw-bold">
+            Showing <b>{projects.length}</b> out of <b>25</b> entries
+          </small>
+        </Card.Footer>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export const ContractsTable = () => {
+  const [contracts, setContracts] = useState([]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getContracts);
+        setContracts(response.data);
+        console.log(response.data)
+  
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <Card border="light" className="table-wrapper table-responsive shadow-sm">
+      <Card.Body className="pt-0">
+        <h5 style={{ padding: '10px', marginTop: '10px' }}>Contracts</h5>
+        <Table hover className="user-table align-items-center">
+          <thead>
+            <tr>
+              <th className="border-bottom">#</th>
+              <th className="border-bottom">Contract Name</th>
+              <th className="border-bottom">File</th>
+              
+              
+            </tr>
+          </thead>
+          <tbody>
+            {contracts.map((contract, index) => (
+              <tr key={index}>
+                <td>{contract.contractID}</td>
+                <td>{contract.contractName}</td>
+                <td>{contract.fileUrl}</td>
+               
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+          <Nav>
+            <Pagination className="mb-2 mb-lg-0">
+              <Pagination.Prev>Previous</Pagination.Prev>
+              <Pagination.Item active>1</Pagination.Item>
+              <Pagination.Item>2</Pagination.Item>
+              <Pagination.Item>3</Pagination.Item>
+              <Pagination.Item>4</Pagination.Item>
+              <Pagination.Item>5</Pagination.Item>
+              <Pagination.Next>Next</Pagination.Next>
+            </Pagination>
+          </Nav>
+          <small className="fw-bold">
+            Showing <b>{contracts.length}</b> out of <b>25</b> entries
+          </small>
+        </Card.Footer>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export const DrawingsTable = () => {
+  const [drawings, setDrawings] = useState([]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getDrawings);
+        setDrawings(response.data);
+        console.log(response.data)
+  
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <Card border="light" className="table-wrapper table-responsive shadow-sm">
+      <Card.Body className="pt-0">
+        <h5 style={{ padding: '10px', marginTop: '10px' }}>Contracts</h5>
+        <Table hover className="user-table align-items-center">
+          <thead>
+            <tr>
+              <th className="border-bottom">#</th>
+              <th className="border-bottom">Drawing Name</th>
+              <th className="border-bottom">File</th>
+              
+              
+            </tr>
+          </thead>
+          <tbody>
+            {drawings.map((drawing, index) => (
+              <tr key={index}>
+                <td>{drawing.drawingID}</td>
+                <td>{drawing.drawingName}</td>
+                <td>{drawing.fileUrl}</td>
+               
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+          <Nav>
+            <Pagination className="mb-2 mb-lg-0">
+              <Pagination.Prev>Previous</Pagination.Prev>
+              <Pagination.Item active>1</Pagination.Item>
+              <Pagination.Item>2</Pagination.Item>
+              <Pagination.Item>3</Pagination.Item>
+              <Pagination.Item>4</Pagination.Item>
+              <Pagination.Item>5</Pagination.Item>
+              <Pagination.Next>Next</Pagination.Next>
+            </Pagination>
+          </Nav>
+          <small className="fw-bold">
+            Showing <b>{drawings.length}</b> out of <b>25</b> entries
+          </small>
+        </Card.Footer>
       </Card.Body>
     </Card>
   );

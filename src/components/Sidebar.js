@@ -182,7 +182,7 @@ export default (props = {}) => {
               </Nav.Link>
             </div>
             <Nav className="flex-column pt-md-0 pt-3 ">
-              <NavItem link={Routes.Presentation.path} image={logoImg}/>
+              <NavItem link={Routes.DashboardOverview.path} image={logoImg}/>
 
               <NavItem
                 title="Overview"
@@ -235,14 +235,14 @@ export default (props = {}) => {
               /></CollapsableNavItem>
 
               <NavItem
-                title="Contracts"
+                title="Project Details"
                 icon={faHandHoldingUsd}
-                link={Routes.Contracts.path}
+                link={Routes.ProjectDetails.path}
               />
               <NavItem
-                title="Drawings"
+                title="Projects"
                 icon={faHandHoldingUsd}
-                link={Routes.Drawings.path}
+                link={Routes.Projects.path}
               />
               {/* <NavItem
                 external
