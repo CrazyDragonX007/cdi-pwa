@@ -44,7 +44,7 @@ const SignUpForm = () => {
           const data = formData;
           data.google_uid = user.uid;
           axios.post(createUser, data).then((response) => {
-            setUser(response.data[0]);
+            setUser(formData);
             history.push('/');
           }).catch((error) => {
             console.log(error);
