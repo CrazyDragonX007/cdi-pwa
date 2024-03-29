@@ -8,7 +8,8 @@ import { Link, useHistory } from 'react-router-dom';
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import axios from "axios";
-import firebase from "../../firebase";
+import firebase from "../../helpers/firebase";
+import {setUser} from "../../helpers/User";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +18,8 @@ const SignUpForm = () => {
     email: '',
     mobileNo: '',
     password: '',
-    accessRole: ''
+    accessRole: '',
+    google_uid:''
   });
 
   const history = useHistory();
@@ -30,26 +32,28 @@ const SignUpForm = () => {
     }));
   };
 
-  // const apiURL = 'http://localhost:8000';
-  // const createUser = `${apiURL}/crud/createUser`;
+  const apiURL = 'http://localhost:8000';
+  const createUser = `${apiURL}/crud/createUser`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     firebase.auth().createUserWithEmailAndPassword(formData.email, formData.password).then((userCredential) => {
-          console.log(userCredential);
           const user = userCredential.user;
           const displayName = `${formData.firstName} ${formData.lastName}`;
           user.updateProfile({displayName: displayName});
+          const data = formData;
+          data.google_uid = user.uid;
+          axios.post(createUser, data).then((response) => {
+            setUser(response.data[0]);
+            history.push('/');
+          }).catch((error) => {
+            console.log(error);
+            user.delete().then((response) => {console.log(response);}).catch((error) => {console.log(error)});
+          });
+
     }).catch((error) => {
           console.log(error);
         });
-    // try {
-    //   await axios.post(createUser, formData);
-    //   alert('User created successfully!');
-    // } catch (error) {
-    //   console.error('Error creating user:', error);
-    //   alert('Error creating user. Please try again.');
-    // }
   };
 
   return (
@@ -114,23 +118,23 @@ const SignUpForm = () => {
                       />
                     </InputGroup>
                   </Form.Group>
-                  {/*<Form.Group id="mobileNo" className="mb-4">*/}
-                  {/*  <Form.Label>Your Mobile No.</Form.Label>*/}
-                  {/*  <InputGroup>*/}
-                  {/*    <InputGroup.Text>*/}
-                  {/*      <FontAwesomeIcon icon={faMobile} />*/}
-                  {/*    </InputGroup.Text>*/}
-                  {/*    <Form.Control*/}
-                  {/*      autoFocus*/}
-                  {/*      required*/}
-                  {/*      type="number"*/}
-                  {/*      placeholder="Mobile Number"*/}
-                  {/*      name="mobileNo"*/}
-                  {/*      value={formData.mobileNo}*/}
-                  {/*      onChange={handleChange}*/}
-                  {/*    />*/}
-                  {/*  </InputGroup>*/}
-                  {/*</Form.Group>*/}
+                  <Form.Group id="mobileNo" className="mb-4">
+                    <Form.Label>Your Mobile No.</Form.Label>
+                    <InputGroup>
+                      <InputGroup.Text>
+                        <FontAwesomeIcon icon={faMobile} />
+                      </InputGroup.Text>
+                      <Form.Control
+                        autoFocus
+                        required
+                        type="number"
+                        placeholder="Mobile Number"
+                        name="mobileNo"
+                        value={formData.mobileNo}
+                        onChange={handleChange}
+                      />
+                    </InputGroup>
+                  </Form.Group>
                   <Form.Group id="password" className="mb-4">
                     <Form.Label>Your Password</Form.Label>
                     <InputGroup>
