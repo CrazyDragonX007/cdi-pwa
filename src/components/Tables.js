@@ -206,7 +206,9 @@ export const VIFTable = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(getVehicleInspectionFormUrl);
-        setForms(response.data);
+        let d = response.data
+        d = d.reverse()
+        setForms(d);
         setTotalForms(response.data.length);
       } catch (error) {
         console.error('Error fetching data:', error);
