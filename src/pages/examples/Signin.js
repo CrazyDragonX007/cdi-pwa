@@ -3,16 +3,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Form, Card, Button, FormCheck, Container, InputGroup } from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom';
-import firebase from "../../firebase";
+import firebase from "../../helpers/firebase";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
+import axios from "axios";
+import {setUser} from "../../helpers/User";
 export default () => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const history = useHistory();
   const login = () => {
     firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
-      history.push('/');
+      const url = 'http://localhost:8000/crud/login';
+      const params = {google_uid: userCredential.user.uid};
+      axios.get(url,{params}).then((response) => {
+        setUser(response.data[0]);
+        history.push('/');
+      });
     }).catch((error) => {
       console.log(error);
     });
