@@ -901,6 +901,313 @@ export const DR_Form = () => {
   );
 };
 
+export const IR_Form = () => {
+  const [dateTime, setDateTime] = useState('');
+  // console.log(dateTime)
+  
+  const [formData, setFormData] = useState({
+    userID: 1, // Assuming this is the user ID
+    firstName: '',
+    lastName: '',
+    vehicleName: '',
+    vehicleNo: '',
+    pickupJobsite: '',
+    dropoffLocation: '',
+    notes: ''
+  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleDateTimeChange = (date) => {
+    setDateTime(date);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(createVehicleMovingForm, {
+        userID: 1, // Assuming you have a specific user ID
+        dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
+        ...formData
+      });
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error inserting data:', error);
+    }
+  };
+
+  return (
+    <Card border="light" className="mb-4 bg-white shadow-sm">
+      <Card.Body>
+        <h5 className="mb-4">Incident Report Form</h5>
+        <Form onSubmit={handleSubmit}>
+          <Row>
+            <Col md = {6} className="mb-3">
+            <Form.Group id="gender">
+              <Form.Label>Documenting an:</Form.Label>
+                <Form.Select
+                  name="vehicleName"
+                  value={formData.vehicleName}
+                  onChange={handleChange}
+                >
+                  <option value="Lost Time/Injury">Lost Time/Injury</option>
+                  <option value="First Aid">First Aid</option>
+                  <option value="Incident">Incident</option>
+                  <option value="Close Call">Close Call</option>
+                  <option value="Observation">Observation</option>
+                  <option value="Other">Other</option>
+                </Form.Select>
+            </Form.Group>
+            </Col>
+            <Col md={6} className="mb-3">
+              <Form.Group id="firstName">
+                <Form.Label>Event Location</Form.Label>
+                <Form.Control
+                  required
+                  name="firstName"
+                  type="text"
+                  placeholder="Enter the location"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+        </Col>
+          </Row>
+      <Row>
+        <Col md={6} className="mb-3">
+          <Form.Group id="firstName">
+            <Form.Label>Person Completing Report</Form.Label>
+            <Form.Control
+              required
+              name="firstName"
+              type="text"
+              placeholder="Enter your Name"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+          <Form.Group id="lastName">
+            <Form.Label>People Involved</Form.Label>
+            <Form.Control
+              required
+              name="lastName"
+              type="text"
+              placeholder="List all the people"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row className="align-items-center">
+        <Col md={4} className="mb-4">
+        <Form.Group id="datetimeVM">
+            <Form.Label>Date & Time</Form.Label>
+            <Datetime
+              onChange={handleDateTimeChange}
+              value={dateTime}
+              renderInput={(props, openCalendar) => (
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faCalendarAlt} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    required
+                    name="dateTime"
+                    type="text"
+                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                    placeholder="Enter Date & Time"
+                    onFocus={openCalendar}
+                    onChange={() => {}}
+                  />
+                </InputGroup>
+              )}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={4} className="mb-4">
+          <Form.Group id="gender">
+            <Form.Label>Vehicle</Form.Label>
+            <Form.Select
+              name="vehicleName"
+              value={formData.vehicleName}
+              onChange={handleChange}
+            >
+              <option value="">Vehicle</option>
+              <option value="Boom Lift">Boom Lift</option>
+              <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
+              <option value="Telehandler">Telehandler</option>
+              <option value="Electric Scissor Lift">Electric Scissor Lift</option>
+            </Form.Select>
+          </Form.Group>
+        </Col>
+        <Col md={4} className="mb-4">
+          <Form.Group id="vehicleNo">
+            <Form.Label>Vehicle No.</Form.Label>
+            <Form.Control
+              required
+              name="vehicleNo"
+              type="text"
+              placeholder="Vehicle Number"
+              value={formData.vehicleNo}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={6} className="mb-3">
+          <Form.Group id="pickupJobsite">
+            <Form.Label>Pickup Location</Form.Label>
+            <Form.Control
+              required
+              name="pickupJobsite"
+              type="text"
+              placeholder="Enter your home address"
+              value={formData.pickupJobsite}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+          <Form.Group id="dropoffLocation">
+            <Form.Label>Dropoff Location</Form.Label>
+            <Form.Control
+              required
+              name="dropoffLocation"
+              type="text"
+              placeholder="Enter your home address"
+              value={formData.dropoffLocation}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+      <Col md={6} className="mb-3">
+          <Form.Group id="notesVM">
+            <Form.Label>Was this event caused by an unsafe act (activity or movement) or an unsafe condition (machinery or weather) ?</Form.Label>
+            <Form.Control
+              required
+              name="notes"
+              as="textarea"
+              rows={3}
+              value={formData.notes}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+          <Form.Group id="notesVM">
+            <Form.Label>Description of Event (Describe sequence of events and tasks being performed)</Form.Label>
+            <Form.Control
+              required
+              name="notes"
+              as="textarea"
+              rows={3}
+              value={formData.notes}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        
+      </Row>
+      <Row>
+      <Col md={6} className="mb-3">
+          <Form.Group id="empSign">
+            <Form.Label>Employee Signature</Form.Label>
+            <Form.Control
+              required
+              name="empSign"
+              type="text"
+              placeholder="Enter your Full Name"
+              value={formData.dropoffLocation}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+        <Form.Group id="datetimeVM">
+            <Form.Label>Date & Time</Form.Label>
+            <Datetime
+              onChange={handleDateTimeChange}
+              value={dateTime}
+              renderInput={(props, openCalendar) => (
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faCalendarAlt} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    required
+                    name="dateTime"
+                    type="text"
+                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                    placeholder="Enter Date & Time"
+                    onFocus={openCalendar}
+                    onChange={() => {}}
+                  />
+                </InputGroup>
+              )}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+      
+        <Col md={6} className="mb-3">
+          <Form.Group id="supSign">
+            <Form.Label>Supervisor Signature</Form.Label>
+            <Form.Control
+              required
+              name="supSign"
+              type="text"
+              placeholder="Enter your Full Name"
+              value={formData.dropoffLocation}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} className="mb-3">
+        <Form.Group id="datetimeVM">
+            <Form.Label>Date & Time</Form.Label>
+            <Datetime
+              onChange={handleDateTimeChange}
+              value={dateTime}
+              renderInput={(props, openCalendar) => (
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faCalendarAlt} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    required
+                    name="dateTime"
+                    type="text"
+                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                    placeholder="Enter Date & Time"
+                    onFocus={openCalendar}
+                    onChange={() => {}}
+                  />
+                </InputGroup>
+              )}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <div className="mt-3">
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+        
+      </div>
+    </Form>
+      </Card.Body>
+    </Card>
+  );
+};
 
 export const Project_Form = () => {
   const [formData, setFormData] = useState({
@@ -1029,6 +1336,19 @@ export const Contract_Drawing_Form = () => {
           </Form.Group>
         </Col>
         
+      </Row>
+      <Row>
+        <Col md = {6} className="mb-3">
+        <Form.Group id="uploadImageObjectVI">
+                    <Form.Label>Upload Attachments</Form.Label>
+                    <br/>
+                    <input type="file" id="img01" multiple/>
+                    <div className="d-md-block text-start">
+                        {/*<div className="fw-normal text-dark mb-1">Choose Image</div>*/}
+                        <div className="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
+                    </div>
+                    </Form.Group>
+        </Col>
       </Row>
       <div className="mt-3">
         <Button variant="primary" type="submit">

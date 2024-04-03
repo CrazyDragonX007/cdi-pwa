@@ -15,6 +15,7 @@ import ProjectDetails from './ProjectDetails';
 import VIForm from "./VIForm";
 import VMForm from './VMForm';
 import DRForm from './DRForm';
+import IRForm from './IRForm';
 
 import BootstrapTables from "./tables/BootstrapTables";
 import Signin from "./examples/Signin";
@@ -130,6 +131,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.VIForm.path} component={VIForm} />
     <RouteWithSidebar exact path={Routes.VMForm.path} component={VMForm} />
     <RouteWithSidebar exact path={Routes.DRForm.path} component={DRForm} />
+    <RouteWithSidebar exact path={Routes.IRForm.path} component={IRForm} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
 
     {/* components */}

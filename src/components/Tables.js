@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
-import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup } from '@themesberg/react-bootstrap';
+import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup, Modal } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { Routes } from "../routes";
 import { pageVisits, pageTraffic, pageRanking } from "../data/tables";
 import transactions from "../data/transactions";
 import commands from "../data/commands";
-
+import S3FileList from "./S3FileList";
 import axios from 'axios'; 
 import moment from 'moment';
 
@@ -198,6 +198,8 @@ export const RankingTable = () => {
   );
 };
 
+
+
 export const VIFTable = () => {
   const [forms, setForms] = useState([]);
   const [totalForms, setTotalForms] = useState(0);
@@ -210,6 +212,7 @@ export const VIFTable = () => {
         d = d.reverse()
         setForms(d);
         setTotalForms(response.data.length);
+        
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -221,6 +224,12 @@ export const VIFTable = () => {
   const formatDateTime = (dateTime) => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
   };
+  const [showDefault, setShowDefault] = useState(false);
+  const handleClose = () => setShowDefault(false);
+  const handleSubmit = (formData) => {
+    handleClose();
+  };
+
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
@@ -250,6 +259,26 @@ export const VIFTable = () => {
               {/* <th className="border-bottom">Last Name</th> */}
             </tr>
           </thead>
+
+          
+
+              <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose}>
+                <Modal.Header>
+                  <Modal.Title className="h6">Create a New Project</Modal.Title>
+                  <Button variant="close" aria-label="Close" onClick={handleClose} />
+                </Modal.Header>
+                <Modal.Body>
+                  <S3FileList/>
+                  </Modal.Body>
+                <Modal.Footer>
+                  {/* <Button variant="secondary" onClick={handleClose}>
+                    I Got It
+                </Button> */}
+                  <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+                    Close
+                </Button>
+                </Modal.Footer>
+              </Modal>
           <tbody>
             {forms.map((form, index) => (
               <tr key={index}>
@@ -270,7 +299,15 @@ export const VIFTable = () => {
                 <td>{form.oilCapacity}</td>
                 <td>{form.safetyWarningDecalsCondition}</td>
                 <td>{form.parkBrakeCondition}</td>
-                <td>{form.imageObject}</td>
+                {/* <td>{form.folderUrl}</td> */}
+                <td>
+                  {Array.isArray(form.folderUrl) && form.folderUrl.length > 1 ? (
+                    <Button variant="light" className="my-3" onClick={() => setShowDefault(true)}>Open</Button>
+                  ) : (
+                    form.folderUrl
+                  )}
+                </td>
+                {/* <td><Button variant="light" className="my-3" onClick={() => setShowDefault(true)}>Open</Button></td> */}
                 <td>{form.notes}</td>
                 {/* <td>{form.lastName}</td> */}
               </tr>

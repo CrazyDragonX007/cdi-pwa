@@ -11,6 +11,7 @@ export const Routes = {
     VIForm: { path: "/viform" },
     VMForm: { path: "/vmform" },
     DRForm: { path: "/drform" },
+    IRForm: { path: "/irform" },
     Upgrade: { path: "/upgrade" },
     BootstrapTables: { path: "/tables/bootstrap-tables" },
     Billing: { path: "/examples/billing" },
