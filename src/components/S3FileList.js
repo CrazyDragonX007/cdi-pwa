@@ -16,13 +16,14 @@ const S3FileList = ( props ) => {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
+    console.log(props.folderUrl)
     const listFiles = async () => {
       try {
         const bucketUrl = getBucketUrlFormUrl(props.folderUrl);
         const bucketName = getBucketNameFromUrl(props.folderUrl);
         const folderName = getFolderNameFromUrl(props.folderUrl);
         const data = await s3.listObjectsV2({ Bucket: bucketName}).promise();
-        if (data && data.Contents) {
+        if (data && data.Contents && bucketName && bucketUrl && folderName) {
           let newContents = [];
           for(let i=0;i<data.Contents.length; i++){
             if(data.Contents[i].Key.includes(folderName)){
@@ -43,11 +44,17 @@ const S3FileList = ( props ) => {
   }, [props.folderUrl]);
 
   const getBucketUrlFormUrl = (url) => {
+    if(!url){
+      return null
+    }
    const parts = url.split('/');
    return parts[0] + '//' + parts[2];
   }
 
   const getBucketNameFromUrl = (url) => {
+    if(!url){
+      return null
+    }
     // Extract the bucket name from the URL
     // Assuming the URL format is https://bucketName.s3.region.amazonaws.com/objectKey
     const parts = url.split('.');
@@ -55,6 +62,9 @@ const S3FileList = ( props ) => {
   };
 
   const getFolderNameFromUrl = (url) => {
+    if(!url){
+      return null
+    }
     // Extract the object prefix (directory) from the URL
     // Assuming the URL format is https://bucketName.s3.region.amazonaws.com/objectKey
     const parts = url.split('/');

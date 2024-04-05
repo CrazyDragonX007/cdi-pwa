@@ -7,8 +7,10 @@ import { TransactionsTable, ContractsTable, DrawingsTable } from "../components/
 import Documentation from "../components/Documentation";
 import { faDochub } from "@fortawesome/free-brands-svg-icons";
 import { Contract_Drawing_Form } from "../components/Forms";
-export default () => {
 
+
+export default (props) => {
+  console.log(props);
   const [showDefault, setShowDefault] = useState(false);
   const handleClose = () => setShowDefault(false);
 

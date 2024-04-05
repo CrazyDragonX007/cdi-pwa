@@ -203,6 +203,7 @@ export const RankingTable = () => {
 export const VIFTable = () => {
   const [forms, setForms] = useState([]);
   const [totalForms, setTotalForms] = useState(0);
+  const [folderUrl, setFolderUrl] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -268,7 +269,7 @@ export const VIFTable = () => {
                   <Button variant="close" aria-label="Close" onClick={handleClose} />
                 </Modal.Header>
                 <Modal.Body>
-                  <S3FileList/>
+                  <S3FileList folderUrl = {folderUrl}/>
                   </Modal.Body>
                 <Modal.Footer>
                   {/* <Button variant="secondary" onClick={handleClose}>
@@ -300,14 +301,18 @@ export const VIFTable = () => {
                 <td>{form.safetyWarningDecalsCondition}</td>
                 <td>{form.parkBrakeCondition}</td>
                 {/* <td>{form.folderUrl}</td> */}
-                <td>
+                {/* <td>
                   {Array.isArray(form.folderUrl) && form.folderUrl.length > 1 ? (
                     <Button variant="light" className="my-3" onClick={() => setShowDefault(true)}>Open</Button>
                   ) : (
                     form.folderUrl
                   )}
-                </td>
-                {/* <td><Button variant="light" className="my-3" onClick={() => setShowDefault(true)}>Open</Button></td> */}
+                </td> */}
+                <td><Button variant="light" className="my-3" onClick={() => {
+                    setFolderUrl(form.folderUrl)
+                    setShowDefault(true)
+                    
+                }}>Open</Button></td>
                 <td>{form.notes}</td>
                 {/* <td>{form.lastName}</td> */}
               </tr>

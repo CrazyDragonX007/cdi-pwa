@@ -14,7 +14,7 @@ import {
 
 import axios from "axios";
 import Contracts from "../pages/ProjectDetails";
-import {useHistory} from "react-router-dom";
+import {useHistory, Redirect} from "react-router-dom";
 
 class WeatherData extends React.Component {
   constructor(props) {
@@ -1217,6 +1217,7 @@ export const Project_Form = () => {
   const [projectName, setProjectName] = useState('');
   const [projectStatus, setProjectStatus] = useState('Active');
   const history = useHistory();
+  const [redirect, setRedirect] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1226,14 +1227,20 @@ export const Project_Form = () => {
     }
     try {
       const response = await axios.post(createProject, formData);
-      history.push(`/${Contracts}/${projectName}`);
+      setRedirect(true);
       console.log('Response:', response);
     } catch (error) {
       console.error('Error inserting data:', error);
     }
   };
 
-
+if (redirect){
+  return  <Redirect to={{
+    pathname: '/projectdetails',
+    state: { projectName: projectName }
+}}
+/>; 
+}
   return (
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
