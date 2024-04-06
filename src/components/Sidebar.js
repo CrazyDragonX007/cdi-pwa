@@ -28,7 +28,6 @@ import {
   Navbar,
 } from "@themesberg/react-bootstrap";
 import { Link } from "react-router-dom";
-import {getUser} from "./../helpers/User" 
 import { Routes } from "../routes";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
@@ -38,6 +37,8 @@ import logoImg from "../assets/img/cdi-logo.jpg";
 // const logoImg = "../assets/img/cdi-logo.jpg";
 
 export default (props = {}) => {
+  const [accessRole, setAccessRole] = useState(localStorage.getItem('accessRole'));
+  //TODO: Set role based access here
   const location = useLocation();
   const { pathname } = location;
   const [show, setShow] = useState(false);
@@ -88,14 +89,7 @@ export default (props = {}) => {
       : "";
     const navItemClassName = link === pathname ? "active" : "";
     const linkProps = external ? { href: link } : { as: Link, to: link };
-    const user = getUser();
-    console.log(user);
-    // if (user.accessRole = 0) {
 
-    // }
-    // else {
-
-    // }
     return (
       <Nav.Item className={navItemClassName} onClick={() => setShow(false)}>
         <Nav.Link {...linkProps} target={target} className={classNames}>

@@ -9,7 +9,6 @@ import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import axios from "axios";
 import firebase from "../../helpers/firebase";
-import {setUser} from "../../helpers/User";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -44,8 +43,7 @@ const SignUpForm = () => {
           const data = formData;
           data.google_uid = user.uid;
           axios.post(createUser, data).then((response) => {
-            setUser(formData);
-            history.push('/');
+            history.push('/auth/sign-in');
           }).catch((error) => {
             console.log(error);
             user.delete().then((response) => {console.log(response);}).catch((error) => {console.log(error)});

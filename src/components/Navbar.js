@@ -7,9 +7,11 @@ import { Row, Col, Nav, Form, Image, Navbar, Dropdown, Container, ListGroup, Inp
 
 import NOTIFICATIONS_DATA from "../data/notifications";
 import Profile3 from "../assets/img/team/profile-picture-3.jpg";
+import {useHistory} from "react-router-dom";
 
 
 export default (props) => {
+  const history = useHistory();
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
   const areNotificationsRead = notifications.reduce((acc, notif) => acc && notif.read, true);
 
@@ -109,7 +111,10 @@ export default (props) => {
                 {/* <Dropdown.Divider /> */}
 
                 <Dropdown.Item className="fw-bold">
-                  <FontAwesomeIcon icon={faSignOutAlt} className="text-danger me-2" /> Logout
+                  <FontAwesomeIcon icon={faSignOutAlt} className="text-danger me-2" /> <button onClick={()=>{
+                    localStorage.removeItem('accessRole');
+                    history.push('/auth/sign-in');
+                  }}>Logout</button>
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

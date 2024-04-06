@@ -7,7 +7,6 @@ import firebase from "../../helpers/firebase";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import axios from "axios";
-import {setUser} from "../../helpers/User";
 export default () => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
@@ -17,7 +16,7 @@ export default () => {
       const url = 'http://localhost:8000/crud/login';
       const params = {google_uid: userCredential.user.uid};
       axios.get(url,{params}).then((response) => {
-        setUser(response.data[0]);
+        localStorage.setItem('accessRole', response.data[0].accessRole);
         history.push('/');
       });
     }).catch((error) => {
