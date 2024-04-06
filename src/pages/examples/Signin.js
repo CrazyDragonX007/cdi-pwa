@@ -15,7 +15,7 @@ export default () => {
     firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
       const url = 'http://localhost:8000/crud/login';
       const params = {google_uid: userCredential.user.uid};
-      axios.get(url,{params}).then((response) => {
+      axios.post(url,params).then((response) => {
         localStorage.setItem('accessRole', response.data[0].accessRole);
         history.push('/');
       });
