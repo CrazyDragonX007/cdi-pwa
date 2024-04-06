@@ -16,6 +16,7 @@ export default () => {
       const url = 'http://localhost:8000/crud/login';
       const params = {google_uid: userCredential.user.uid};
       axios.post(url,params).then((response) => {
+        localStorage.setItem('user', JSON.stringify(response.data[0]));
         localStorage.setItem('accessRole', response.data[0].accessRole);
         history.push('/');
       });
@@ -39,7 +40,7 @@ export default () => {
                 <div className="text-center text-md-center mb-4 mt-md-0">
                   <h3 className="mb-0">Sign In</h3>
                 </div>
-                <Form className="mt-4">
+                <Form className="mt-4" onSubmit={login}>
                   <Form.Group id="email" className="mb-4">
                     <Form.Label>Your Email</Form.Label>
                     <InputGroup>
@@ -82,7 +83,7 @@ export default () => {
                       <Card.Link className="small text-end" as={Link} to={Routes.ForgotPassword.path}>Lost password?</Card.Link>
                     </div>
                   </Form.Group>
-                  <Button variant="primary" onClick={login} type="submit" className="w-100">
+                  <Button variant="primary" type="submit" className="w-100">
                     Sign in
                   </Button>
                 </Form>

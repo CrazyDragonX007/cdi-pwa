@@ -113,6 +113,7 @@ export default (props) => {
                 <Dropdown.Item className="fw-bold">
                   <FontAwesomeIcon icon={faSignOutAlt} className="text-danger me-2" /> <button onClick={()=>{
                     localStorage.removeItem('accessRole');
+                    localStorage.removeItem('user');
                     history.push('/auth/sign-in');
                   }}>Logout</button>
                 </Dropdown.Item>

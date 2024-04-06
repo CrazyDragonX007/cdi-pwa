@@ -43,6 +43,7 @@ const SignUpForm = () => {
           const data = formData;
           data.google_uid = user.uid;
           axios.post(createUser, data).then((response) => {
+            //TODO: Set user data in local storage
             history.push('/auth/sign-in');
           }).catch((error) => {
             console.log(error);
