@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup, Modal } from '@themesberg/react-bootstrap';
-import { Link } from 'react-router-dom';
+import {Link, Redirect, useHistory, useLocation} from 'react-router-dom';
 
 import { Routes } from "../routes";
 import { pageVisits, pageTraffic, pageRanking } from "../data/tables";
@@ -571,7 +571,7 @@ export const CommandsTable = () => {
 
 export const ProjectsTable = () => {
   const [projects, setProjects] = useState([]);
-
+  const history = useHistory();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -587,6 +587,10 @@ export const ProjectsTable = () => {
 
     fetchData();
   }, []);
+
+  const goToProjectDetails = (project) => {
+    history.push({pathname:'/projectdetails',state:{ project:project }});
+  }
 
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -609,7 +613,7 @@ export const ProjectsTable = () => {
                 <td>{project.projectID}</td>
                 <td>{project.projectName}</td>
                 <td>{project.projectStatus}</td>
-                <td><FontAwesomeIcon icon={faEye} /></td>
+                <td><FontAwesomeIcon icon={faEye} /><button onClick={()=>goToProjectDetails(project)}>Project Details</button></td>
               </tr>
             ))}
           </tbody>

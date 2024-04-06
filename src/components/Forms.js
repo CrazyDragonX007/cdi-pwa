@@ -1210,13 +1210,9 @@ export const IR_Form = () => {
 };
 
 export const Project_Form = () => {
-  const [formData, setFormData] = useState({
-    projectName: '',
-    projectStatus: 'Active'
-  });
+    const [projectId,setProjectId] = useState();
   const [projectName, setProjectName] = useState('');
   const [projectStatus, setProjectStatus] = useState('Active');
-  const history = useHistory();
   const [redirect, setRedirect] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -1227,6 +1223,7 @@ export const Project_Form = () => {
     }
     try {
       const response = await axios.post(createProject, formData);
+      setProjectId(response.data.projectID);
       setRedirect(true);
       console.log('Response:', response);
     } catch (error) {
@@ -1235,9 +1232,14 @@ export const Project_Form = () => {
   };
 
 if (redirect){
+    const project = {
+        projectId: projectId,
+        projectName: projectName,
+        projectStatus: projectStatus
+    }
   return  <Redirect to={{
     pathname: '/projectdetails',
-    state: { projectName: projectName }
+    state: { project: project }
 }}
 />; 
 }
