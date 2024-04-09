@@ -31,10 +31,10 @@ export default (props) => {
   };
 
   const [userRole,setUserRole] = useState(localStorage.getItem('accessRole'));
-  console.log(userRole);
+  // console.log(userRole);
   const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('user')));
   // let userD = JSON.stringify(userData)
-  console.log(userData.firstName)
+  // console.log(userData.firstName)
 
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;
@@ -103,7 +103,7 @@ export default (props) => {
               <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0">
                 <div className="media d-flex align-items-center">
                   {/*<Image src={Profile3} className="user-avatar md-avatar rounded-circle" />*/}
-                  <FontAwesomeIcon className="user-avatar md-avatar rounded-circle" icon={faUserCircle} style={{ color: 'gray' }}/>
+                  <FontAwesomeIcon className="user-avatar md-avatar rounded-circle" icon={faUserCircle} style={{ color: '#818890' }}/>
                   <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
                     <span className="mb-0 font-small fw-bold">{userData.firstName} {userData.lastName}</span>
                   </div>

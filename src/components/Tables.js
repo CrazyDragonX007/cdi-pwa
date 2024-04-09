@@ -12,6 +12,7 @@ import commands from "../data/commands";
 import S3FileList from "./S3FileList";
 import axios from 'axios'; 
 import moment from 'moment';
+import ExportCSV from "./ExportToCSV";
 
 const ValueChange = ({ value, suffix }) => {
   const valueIcon = value < 0 ? faAngleDown : faAngleUp;
@@ -205,6 +206,10 @@ export const VIFTable = () => {
   const [totalForms, setTotalForms] = useState(0);
   const [folderUrl, setFolderUrl] = useState('');
 
+  const headers = Object.keys(forms);
+  const data = forms.map((item) => Object.values(item));
+  console.log(Object(forms[0]));
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -235,6 +240,9 @@ export const VIFTable = () => {
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
         <h5 style={{ padding: '10px', marginTop: '10px' }}>Vehicle Inspection Submissions</h5>
+        <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+          Export to CSV
+        </ExportCSV>
         <Table hover className="user-table align-items-center">
           <thead>
             <tr>
@@ -349,7 +357,7 @@ export const VMFTable = () => {
       try {
         const response = await axios.get(getVehicleMovingFormUrl);
         setForms(response.data);
-        console.log(response.data)
+        // console.log(response.data)
         setTotalForms(response.data.length);
       } catch (error) {
         console.error('Error fetching data:', error);
