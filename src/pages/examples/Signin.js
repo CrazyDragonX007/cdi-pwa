@@ -7,7 +7,6 @@ import firebase from "../../helpers/firebase";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import axios from "axios";
-import {setUser} from "../../helpers/User";
 export default () => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
@@ -16,8 +15,9 @@ export default () => {
     firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
       const url = 'http://localhost:8000/crud/login';
       const params = {google_uid: userCredential.user.uid};
-      axios.get(url,{params}).then((response) => {
-        setUser(response.data[0]);
+      axios.post(url,params).then((response) => {
+        localStorage.setItem('user', JSON.stringify(response.data[0]));
+        localStorage.setItem('accessRole', response.data[0].accessRole);
         history.push('/');
       });
     }).catch((error) => {
@@ -40,7 +40,7 @@ export default () => {
                 <div className="text-center text-md-center mb-4 mt-md-0">
                   <h3 className="mb-0">Sign In</h3>
                 </div>
-                <Form className="mt-4">
+                <Form className="mt-4" onSubmit={login}>
                   <Form.Group id="email" className="mb-4">
                     <Form.Label>Your Email</Form.Label>
                     <InputGroup>
@@ -83,7 +83,7 @@ export default () => {
                       <Card.Link className="small text-end" as={Link} to={Routes.ForgotPassword.path}>Lost password?</Card.Link>
                     </div>
                   </Form.Group>
-                  <Button variant="primary" onClick={login} type="submit" className="w-100">
+                  <Button variant="primary" type="submit" className="w-100">
                     Sign in
                   </Button>
                 </Form>

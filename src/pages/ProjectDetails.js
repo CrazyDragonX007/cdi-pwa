@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCog, faHome, faSearch, faPalette, faLaptopCode, faUser, faBookReader, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Form, Button, ButtonGroup, Breadcrumb, InputGroup, Dropdown } from '@themesberg/react-bootstrap';
@@ -7,12 +7,29 @@ import { TransactionsTable, ContractsTable, DrawingsTable } from "../components/
 import Documentation from "../components/Documentation";
 import { faDochub } from "@fortawesome/free-brands-svg-icons";
 import { Contract_Drawing_Form } from "../components/Forms";
+import axios from "axios";
 
 
 export default (props) => {
   console.log(props);
+  const [projectDetails,setProjectDetails] = useState(props?.location?.state?.project);
+  const [contracts,setContracts] = useState([]);
+  const [drawings,setDrawings] = useState([]);
   const [showDefault, setShowDefault] = useState(false);
   const handleClose = () => setShowDefault(false);
+
+  useEffect(() => {
+    const url1 = 'http://localhost:8000/crud/getcontracts';
+    const url2 = 'http://localhost:8000/crud/getdrawings';
+    axios.get(url1,{params:{projectID:projectDetails.projectId}}).then((response) => {
+      setContracts(response.data);
+      console.log(response);
+    }).catch(err=>console.log(err));
+    axios.get(url2,{params:{projectID:projectDetails.projectId}}).then((response) => {
+      setDrawings(response.data);
+      console.log(response);
+    }).catch(err=>console.log(err));
+  }, []);
 
   return (
     <>
@@ -23,7 +40,7 @@ export default (props) => {
             <Breadcrumb.Item>CDI</Breadcrumb.Item>
             <Breadcrumb.Item active>Project Details</Breadcrumb.Item>
           </Breadcrumb>
-          <h4>Project Details: Project Name</h4>
+          <h4>Project Details: {projectDetails?.projectName}</h4>
           {/* <p className="mb-0">Your web analytics dashboard template.</p> */}
         </div>
         <div className="btn-toolbar mb-2 mb-md-0">
@@ -73,10 +90,12 @@ export default (props) => {
             <Tab.Content>
               
               <Tab.Pane eventKey="code_friendly" className="py-4">
-                <ContractsTable />
+                {/*<ContractsTable />*/}
+                //TODO: Add project's contracts here
               </Tab.Pane>
               <Tab.Pane eventKey="user_experience" className="py-4">
-                <DrawingsTable />
+                {/*<DrawingsTable />*/}
+                //TODO: Add project's drawings here
               </Tab.Pane>
             </Tab.Content>
           </Col>

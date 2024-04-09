@@ -73,7 +73,8 @@ const RouteWithLoader = ({ component: Component, ...rest }) => {
 };
 
 const RouteWithSidebar = ({ component: Component, ...rest }) => {
-  const [loaded, setLoaded] = useState(false);
+    const [userRole,setUserRole] = useState(localStorage.getItem('accessRole'));
+    const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 1000);
@@ -90,7 +91,9 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
     setShowSettings(!showSettings);
     localStorage.setItem('settingsVisible', !showSettings);
   }
-
+if(userRole===null){
+    return <Redirect to={Routes.Signin.path} />
+}
   return (
     <Route {...rest} render={props => (
       <>
@@ -108,60 +111,62 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
   );
 };
 
-export default () => (
-  <Switch>
-    {/* <RouteWithLoader exact path={Routes.Presentation.path} component={Presentation} /> */}
-    <RouteWithLoader exact path={Routes.Signin.path} component={Signin} />
-    <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
-    <RouteWithLoader exact path={Routes.ForgotPassword.path} component={ForgotPassword} />
-    <RouteWithLoader exact path={Routes.ResetPassword.path} component={ResetPassword} />
-    <RouteWithLoader exact path={Routes.Lock.path} component={Lock} />
-    <RouteWithLoader exact path={Routes.NotFound.path} component={NotFoundPage} />
-    <RouteWithLoader exact path={Routes.ServerError.path} component={ServerError} />
-    {/* <Route exact path="/{Routes.Contracts.path}/:projectName" component={Contracts} /> */}
+export default () => {
+    return (
+        <Switch>
+            {/* <RouteWithLoader exact path={Routes.Presentation.path} component={Presentation} /> */}
+            <RouteWithLoader exact path={Routes.Signin.path} component={Signin} />
+            <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
+            <RouteWithLoader exact path={Routes.ForgotPassword.path} component={ForgotPassword} />
+            <RouteWithLoader exact path={Routes.ResetPassword.path} component={ResetPassword} />
+            <RouteWithLoader exact path={Routes.Lock.path} component={Lock} />
+            <RouteWithLoader exact path={Routes.NotFound.path} component={NotFoundPage} />
+            <RouteWithLoader exact path={Routes.ServerError.path} component={ServerError} />
+            {/* <Route exact path="/{Routes.Contracts.path}/:projectName" component={Contracts} /> */}
 
-    {/* pages */}
-    <RouteWithSidebar exact path={Routes.DashboardOverview.path} component={DashboardOverview} />
-    <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} />
-    <RouteWithSidebar exact path={Routes.VehicleInspectionForms.path} component={VehicleInspectionForms} />
-    <RouteWithSidebar exact path={Routes.VehicleMovingForm.path} component={VehicleMovingForm} />
-    <RouteWithSidebar exact path={Routes.DailyReports.path} component={DailyReports} />
-    <RouteWithSidebar exact path={Routes.Projects.path} component={Projects} />
-    <RouteWithSidebar exact path={Routes.ProjectDetails.path} component={ProjectDetails} />
-    <RouteWithSidebar exact path={Routes.VIForm.path} component={VIForm} />
-    <RouteWithSidebar exact path={Routes.VMForm.path} component={VMForm} />
-    <RouteWithSidebar exact path={Routes.DRForm.path} component={DRForm} />
-    <RouteWithSidebar exact path={Routes.IRForm.path} component={IRForm} />
-    <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
+            {/* pages */}
+            <RouteWithSidebar exact path={Routes.DashboardOverview.path} component={DashboardOverview} />
+            <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} />
+            <RouteWithSidebar exact path={Routes.VehicleInspectionForms.path} component={VehicleInspectionForms} />
+            <RouteWithSidebar exact path={Routes.VehicleMovingForm.path} component={VehicleMovingForm} />
+            <RouteWithSidebar exact path={Routes.DailyReports.path} component={DailyReports} />
+            <RouteWithSidebar exact path={Routes.Projects.path} component={Projects} />
+            <RouteWithSidebar exact path={Routes.ProjectDetails.path} component={ProjectDetails} />
+            <RouteWithSidebar exact path={Routes.VIForm.path} component={VIForm} />
+            <RouteWithSidebar exact path={Routes.VMForm.path} component={VMForm} />
+            <RouteWithSidebar exact path={Routes.DRForm.path} component={DRForm} />
+            <RouteWithSidebar exact path={Routes.IRForm.path} component={IRForm} />
+            <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
 
-    {/* components */}
-    <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} />
-    <RouteWithSidebar exact path={Routes.Alerts.path} component={Alerts} />
-    <RouteWithSidebar exact path={Routes.Badges.path} component={Badges} />
-    <RouteWithSidebar exact path={Routes.Breadcrumbs.path} component={Breadcrumbs} />
-    <RouteWithSidebar exact path={Routes.Buttons.path} component={Buttons} />
-    <RouteWithSidebar exact path={Routes.Forms.path} component={Forms} />
-    <RouteWithSidebar exact path={Routes.Modals.path} component={Modals} />
-    <RouteWithSidebar exact path={Routes.Navs.path} component={Navs} />
-    <RouteWithSidebar exact path={Routes.Navbars.path} component={Navbars} />
-    <RouteWithSidebar exact path={Routes.Pagination.path} component={Pagination} />
-    <RouteWithSidebar exact path={Routes.Popovers.path} component={Popovers} />
-    <RouteWithSidebar exact path={Routes.Progress.path} component={Progress} />
-    <RouteWithSidebar exact path={Routes.Tables.path} component={Tables} />
-    <RouteWithSidebar exact path={Routes.Tabs.path} component={Tabs} />
-    <RouteWithSidebar exact path={Routes.Tooltips.path} component={Tooltips} />
-    <RouteWithSidebar exact path={Routes.Toasts.path} component={Toasts} />
+            {/* components */}
+            <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} />
+            <RouteWithSidebar exact path={Routes.Alerts.path} component={Alerts} />
+            <RouteWithSidebar exact path={Routes.Badges.path} component={Badges} />
+            <RouteWithSidebar exact path={Routes.Breadcrumbs.path} component={Breadcrumbs} />
+            <RouteWithSidebar exact path={Routes.Buttons.path} component={Buttons} />
+            <RouteWithSidebar exact path={Routes.Forms.path} component={Forms} />
+            <RouteWithSidebar exact path={Routes.Modals.path} component={Modals} />
+            <RouteWithSidebar exact path={Routes.Navs.path} component={Navs} />
+            <RouteWithSidebar exact path={Routes.Navbars.path} component={Navbars} />
+            <RouteWithSidebar exact path={Routes.Pagination.path} component={Pagination} />
+            <RouteWithSidebar exact path={Routes.Popovers.path} component={Popovers} />
+            <RouteWithSidebar exact path={Routes.Progress.path} component={Progress} />
+            <RouteWithSidebar exact path={Routes.Tables.path} component={Tables} />
+            <RouteWithSidebar exact path={Routes.Tabs.path} component={Tabs} />
+            <RouteWithSidebar exact path={Routes.Tooltips.path} component={Tooltips} />
+            <RouteWithSidebar exact path={Routes.Toasts.path} component={Toasts} />
 
-    {/* documentation */}
-    <RouteWithSidebar exact path={Routes.DocsOverview.path} component={DocsOverview} />
-    <RouteWithSidebar exact path={Routes.DocsDownload.path} component={DocsDownload} />
-    <RouteWithSidebar exact path={Routes.DocsQuickStart.path} component={DocsQuickStart} />
-    <RouteWithSidebar exact path={Routes.DocsLicense.path} component={DocsLicense} />
-    <RouteWithSidebar exact path={Routes.DocsFolderStructure.path} component={DocsFolderStructure} />
-    <RouteWithSidebar exact path={Routes.DocsBuild.path} component={DocsBuild} />
-    <RouteWithSidebar exact path={Routes.DocsChangelog.path} component={DocsChangelog} />
+            {/* documentation */}
+            <RouteWithSidebar exact path={Routes.DocsOverview.path} component={DocsOverview} />
+            <RouteWithSidebar exact path={Routes.DocsDownload.path} component={DocsDownload} />
+            <RouteWithSidebar exact path={Routes.DocsQuickStart.path} component={DocsQuickStart} />
+            <RouteWithSidebar exact path={Routes.DocsLicense.path} component={DocsLicense} />
+            <RouteWithSidebar exact path={Routes.DocsFolderStructure.path} component={DocsFolderStructure} />
+            <RouteWithSidebar exact path={Routes.DocsBuild.path} component={DocsBuild} />
+            <RouteWithSidebar exact path={Routes.DocsChangelog.path} component={DocsChangelog} />
 
-      <RouteWithSidebar exact path={Routes.S3.path} component={() => <S3FileList folderUrl="https://cdi-build.s3.us-east-1.amazonaws.com/VI-forms/form59" />} />
-    <Redirect to={Routes.NotFound.path} />
-  </Switch>
-);
+            <RouteWithSidebar exact path={Routes.S3.path} component={() => <S3FileList folderUrl="https://cdi-build.s3.us-east-1.amazonaws.com/VI-forms/form59" />} />
+            <Redirect to={Routes.NotFound.path} />
+        </Switch>
+    );
+}
