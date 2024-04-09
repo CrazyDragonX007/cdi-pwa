@@ -1,9 +1,18 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faCog, faEnvelopeOpen, faSearch, faSignOutAlt, faUserShield } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBell,
+  faCog,
+  faEnvelopeOpen,
+  faSearch,
+  faSignOutAlt,
+  faUserShield,
+  faUser,
+  faEye
+} from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
-import { Row, Col, Nav, Form, Image, Navbar, Dropdown, Container, ListGroup, InputGroup } from '@themesberg/react-bootstrap';
+import { Row, Col, Nav, Form, Image, Navbar, Dropdown, Container, ListGroup, InputGroup, Button } from '@themesberg/react-bootstrap';
 
 import NOTIFICATIONS_DATA from "../data/notifications";
 import Profile3 from "../assets/img/team/profile-picture-3.jpg";
@@ -21,6 +30,11 @@ export default (props) => {
     }, 300);
   };
 
+  const [userRole,setUserRole] = useState(localStorage.getItem('accessRole'));
+  console.log(userRole);
+  const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('user')));
+  // let userD = JSON.stringify(userData)
+  console.log(userData.firstName)
 
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;
@@ -88,9 +102,10 @@ export default (props) => {
             <Dropdown as={Nav.Item}>
               <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0">
                 <div className="media d-flex align-items-center">
-                  <Image src={Profile3} className="user-avatar md-avatar rounded-circle" />
+                  {/*<Image src={Profile3} className="user-avatar md-avatar rounded-circle" />*/}
+                  <FontAwesomeIcon className="user-avatar md-avatar rounded-circle" icon={faUserCircle} style={{ color: 'gray' }}/>
                   <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                    <span className="mb-0 font-small fw-bold">Yash Pradhan</span>
+                    <span className="mb-0 font-small fw-bold">{userData.firstName} {userData.lastName}</span>
                   </div>
                 </div>
               </Dropdown.Toggle>
@@ -111,11 +126,11 @@ export default (props) => {
                 {/* <Dropdown.Divider /> */}
 
                 <Dropdown.Item className="fw-bold">
-                  <FontAwesomeIcon icon={faSignOutAlt} className="text-danger me-2" /> <button onClick={()=>{
+                  <FontAwesomeIcon icon={faSignOutAlt} className="text-danger me-2" /> <Button variant='link' onClick={()=>{
                     localStorage.removeItem('accessRole');
                     localStorage.removeItem('user');
                     history.push('/auth/sign-in');
-                  }}>Logout</button>
+                  }}>Logout</Button>
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

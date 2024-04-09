@@ -263,9 +263,9 @@ export const VIFTable = () => {
 
           
 
-              <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose}>
+              <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose} size='xl'>
                 <Modal.Header>
-                  <Modal.Title className="h6">Create a New Project</Modal.Title>
+                  <Modal.Title className="h6">Attachments</Modal.Title>
                   <Button variant="close" aria-label="Close" onClick={handleClose} />
                 </Modal.Header>
                 <Modal.Body>
@@ -613,7 +613,7 @@ export const ProjectsTable = () => {
                 <td>{project.projectID}</td>
                 <td>{project.projectName}</td>
                 <td>{project.projectStatus}</td>
-                <td><FontAwesomeIcon icon={faEye} /><button onClick={()=>goToProjectDetails(project)}>Project Details</button></td>
+                <td><Button variant="link" className="text-gray ms-auto" onClick={()=>goToProjectDetails(project)}><FontAwesomeIcon icon={faEye} /></Button></td>
               </tr>
             ))}
           </tbody>

@@ -88,12 +88,12 @@ const S3FileList = ( props ) => {
 
   return (
     <div>
-      <h1>Attachments</h1>
+      {/*<h1>Attachments</h1>*/}
       <ul>
         {files.map((file, index) => (
             <li key={index}>
-          <h3>{file.fileName}</h3>
-              <a href={file.fileUrl} target="_blank" rel="noopener noreferrer">Download</a>
+
+              <a href={file.fileUrl} target="_blank" rel="noopener noreferrer">{file.fileName}</a>
             </li>
         ))}
       </ul>
