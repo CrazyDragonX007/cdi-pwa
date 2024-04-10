@@ -16,35 +16,35 @@ import axios from "axios";
 import Contracts from "../pages/ProjectDetails";
 import {useHistory, Redirect} from "react-router-dom";
 
-class WeatherData extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      weatherData: null,
-    };
-  }
-
-  componentDidMount() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=7036f0b118db1fe7096dddf444b4a0bb`)
-          .then(response => response.json())
-          .then(data => {
-            console.log("API Response:", data);
-            this.setState({ weatherData: data });
-          })
-          
-          .catch(error => {
-            console.error('Error fetching weather data:', error);
-          });
-      }, (error) => {
-        console.error('Error getting geolocation:', error);
-      });
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
-  } }
+// class WeatherData extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       weatherData: null,
+//     };
+//   }
+//
+//   componentDidMount() {
+//     if (navigator.geolocation) {
+//       navigator.geolocation.getCurrentPosition((position) => {
+//         const { latitude, longitude } = position.coords;
+//         fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=7036f0b118db1fe7096dddf444b4a0bb`)
+//           .then(response => response.json())
+//           .then(data => {
+//             console.log("API Response:", data);
+//             this.setState({ weatherData: data });
+//           })
+//
+//           .catch(error => {
+//             console.error('Error fetching weather data:', error);
+//           });
+//       }, (error) => {
+//         console.error('Error getting geolocation:', error);
+//       });
+//     } else {
+//       console.error('Geolocation is not supported by this browser.');
+//     }
+//   } }
 
   const apiURL = 'http://localhost:8000';
   const getUsers = `${apiURL}/crud/getUsers`;
@@ -52,6 +52,7 @@ class WeatherData extends React.Component {
   const createVehicleMovingForm = `${apiURL}/crud/createVehicleMovingForm`
   const createDailyReports = `${apiURL}/crud/createDailyReports`
   const createProject = `${apiURL}/crud/createProject`
+  const weatherAPI = `${apiURL}/crud/weather`
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
@@ -709,6 +710,43 @@ export const VM_Form = () => {
 
 
 export const DR_Form = () => {
+    const [weatherData, setWeatherData] = useState(null);
+    const [userLocation, setUserLocation] = useState(null);
+    const [weatherDetails, setWeatherDetails] = useState('');
+    const [isFetching, setIsFetching] = useState(false);
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setUserLocation({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                });
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
+    }, []);
+    let userLat = userLocation ? userLocation.latitude : null;
+    let userLong = userLocation ? userLocation.longitude : null;
+    // console.log(userLat, userLong);
+
+    const handleFetchWeather = async () => {
+        if (isFetching) return;
+        setIsFetching(true);
+        try {
+            const response = await axios.get(`${weatherAPI}?lat=${userLat}&lon=${userLong}`);
+            setWeatherData(response.data);
+            setWeatherDetails(response.data.weather[0].description);
+            console.log(weatherDetails);
+        } catch (error) {
+            console.error('Error fetching weather data:', error);
+        }
+        finally {
+            setIsFetching(false);
+
+    }};
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -716,7 +754,6 @@ export const DR_Form = () => {
     projectLocation: '',
     scopeOfWork: '',
     workPerformed: '',
-    weatherDetails: '',
     notes: ''
   });
   const [dateTime, setDateTime] = useState('');
@@ -736,13 +773,15 @@ export const DR_Form = () => {
       const response = await axios.post(createDailyReports, {
         userID: 1, // Assuming you have a specific user ID
         dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
-        ...formData
+        ...formData, weatherDetails
       });
       console.log('Response:', response.data);
     } catch (error) {
       console.error('Error inserting data:', error);
     }
   };
+
+  console.log()
 
   return (
     <Card border="light" className="mb-4 bg-white shadow-sm">
@@ -804,16 +843,44 @@ export const DR_Form = () => {
           </Form.Group>
         </Col>
         <Col md={4} className="mb-4">
-          <Form.Group id="weatherDetails">
-            <Form.Label>Weather Details</Form.Label>
-            <Form.Control
-              required
-              name="weatherDetails"
-              type="text"
-              placeholder=""
-              disabled
-            />
-          </Form.Group>
+          {/*<Form.Group id="weatherDetails">*/}
+          {/*  <Form.Label>Weather Details</Form.Label>*/}
+          {/*  <Form.Control*/}
+          {/*    required*/}
+          {/*    name="weatherDetails"*/}
+          {/*    type="text"*/}
+          {/*    value={weatherDetails}*/}
+          {/*    placeholder=""*/}
+          {/*    disabled*/}
+          {/*  />*/}
+          {/*</Form.Group>*/}
+          {/*  <Button variant='link' onClick={handleFetchWeather} disabled={isFetching}>*/}
+          {/*      {isFetching ? 'Fetching...' : 'Fetch Weather'}*/}
+          {/*  </Button>*/}
+
+            <Form.Group id="weatherDetails" className="position-relative">
+                <Form.Label>Weather Details</Form.Label>
+                <div className="d-flex align-items-center">
+                    <Form.Control
+                        required
+                        name="weatherDetails"
+                        type="text"
+                        onChange={handleChange}
+                        value={weatherDetails}
+                        placeholder=""
+                        disabled
+                    />
+                    <Button
+                        variant="link"
+                        onClick={handleFetchWeather}
+                        disabled={isFetching}
+                        className="position-absolute end-0 "
+                        style={{ right: '10px' }}
+                    >
+                        {isFetching ? 'Fetching...' : 'Fetch Data'}
+                    </Button>
+                </div>
+            </Form.Group>
         </Col>
         <Col md={4} className="mb-4">
           <Form.Group id="scopeOfWork">

@@ -205,10 +205,13 @@ export const VIFTable = () => {
   const [forms, setForms] = useState([]);
   const [totalForms, setTotalForms] = useState(0);
   const [folderUrl, setFolderUrl] = useState('');
+  const [headers, setHeaders] = useState([]);
 
-  const headers = Object.keys(forms);
+  // const headers = Object.keys(forms[0]);
   const data = forms.map((item) => Object.values(item));
-  console.log(Object(forms[0]));
+  // console.log(forms)
+  // const headers = (forms[0] !== null | forms[0] !== undefined)  ? Object.keys(forms[0]) : null;
+  // console.log(header);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -217,6 +220,8 @@ export const VIFTable = () => {
         let d = response.data
         d = d.reverse()
         setForms(d);
+        setHeaders(Object.keys(d[0]))
+
         setTotalForms(response.data.length);
         
       } catch (error) {
@@ -239,57 +244,61 @@ export const VIFTable = () => {
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
-        <h5 style={{ padding: '10px', marginTop: '10px' }}>Vehicle Inspection Submissions</h5>
-        <ExportCSV data={[headers, ...data]} filename="table-data.csv">
-          Export to CSV
-        </ExportCSV>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
+          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Vehicle Inspection Submissions</h5>
+          <Button variant='light'>
+            <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+              Export to CSV
+            </ExportCSV>
+          </Button>
+
+        </div>
         <Table hover className="user-table align-items-center">
           <thead>
-            <tr>
-              <th className="border-bottom">#</th>
-              {/* <th className="border-bottom">User ID</th> */}
-              <th className="border-bottom">Date Time</th>
-              {/* <th className="border-bottom">First Name</th> */}
-              <th className="border-bottom">Vehicle Name</th>
-              <th className="border-bottom">Vehicle No</th>
-              <th className="border-bottom">Pickup Jobsite</th>
-              <th className="border-bottom">Dropoff Location</th>
-              <th className="border-bottom">Inspected By</th>
-              <th className="border-bottom">Physical Damage</th>
-              <th className="border-bottom">Leak Status</th>
-              <th className="border-bottom">LHA Condition</th>
-              <th className="border-bottom">Safety Devices Condition</th>
-              <th className="border-bottom">Up Low Emergency Controls</th>
-              <th className="border-bottom">Oil Capacity</th>
-              <th className="border-bottom">Safety Warning Decals Condition</th>
-              <th className="border-bottom">Park Brake Condition</th>
-              <th className="border-bottom">Image Object</th>
-              <th className="border-bottom">Notes</th>
-              {/* <th className="border-bottom">Last Name</th> */}
-            </tr>
+          <tr>
+            <th className="border-bottom">#</th>
+            {/* <th className="border-bottom">User ID</th> */}
+            <th className="border-bottom">Date Time</th>
+            {/* <th className="border-bottom">First Name</th> */}
+            <th className="border-bottom">Vehicle Name</th>
+            <th className="border-bottom">Vehicle No</th>
+            <th className="border-bottom">Pickup Jobsite</th>
+            <th className="border-bottom">Dropoff Location</th>
+            <th className="border-bottom">Inspected By</th>
+            <th className="border-bottom">Physical Damage</th>
+            <th className="border-bottom">Leak Status</th>
+            <th className="border-bottom">LHA Condition</th>
+            <th className="border-bottom">Safety Devices Condition</th>
+            <th className="border-bottom">Up Low Emergency Controls</th>
+            <th className="border-bottom">Oil Capacity</th>
+            <th className="border-bottom">Safety Warning Decals Condition</th>
+            <th className="border-bottom">Park Brake Condition</th>
+            <th className="border-bottom">Image Object</th>
+            <th className="border-bottom">Notes</th>
+            {/* <th className="border-bottom">Last Name</th> */}
+          </tr>
           </thead>
 
-          
 
-              <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose} size='xl'>
-                <Modal.Header>
-                  <Modal.Title className="h6">Attachments</Modal.Title>
-                  <Button variant="close" aria-label="Close" onClick={handleClose} />
-                </Modal.Header>
-                <Modal.Body>
-                  <S3FileList folderUrl = {folderUrl}/>
-                  </Modal.Body>
-                <Modal.Footer>
-                  {/* <Button variant="secondary" onClick={handleClose}>
+          <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose} size='xl'>
+            <Modal.Header>
+              <Modal.Title className="h6">Attachments</Modal.Title>
+              <Button variant="close" aria-label="Close" onClick={handleClose}/>
+            </Modal.Header>
+            <Modal.Body>
+              <S3FileList folderUrl={folderUrl}/>
+            </Modal.Body>
+            <Modal.Footer>
+              {/* <Button variant="secondary" onClick={handleClose}>
                     I Got It
                 </Button> */}
-                  <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
-                    Close
-                </Button>
-                </Modal.Footer>
-              </Modal>
+              <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
           <tbody>
-            {forms.map((form, index) => (
+          {forms.map((form, index) => (
               <tr key={index}>
                 <td>{form.formID}</td>
                 {/* <td>{form.userID}</td> */}
@@ -317,14 +326,14 @@ export const VIFTable = () => {
                   )}
                 </td> */}
                 <td><Button variant="light" className="my-3" onClick={() => {
-                    setFolderUrl(form.folderUrl)
-                    setShowDefault(true)
-                    
+                  setFolderUrl(form.folderUrl)
+                  setShowDefault(true)
+
                 }}>Open</Button></td>
                 <td>{form.notes}</td>
                 {/* <td>{form.lastName}</td> */}
               </tr>
-            ))}
+          ))}
           </tbody>
         </Table>
         <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
@@ -351,12 +360,18 @@ export const VIFTable = () => {
 export const VMFTable = () => {
   const [forms, setForms] = useState([]);
   const [totalForms, setTotalForms] = useState(0);
+  const [headers, setHeaders] = useState([]);
+  const data = forms.map((item) => Object.values(item));
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(getVehicleMovingFormUrl);
-        setForms(response.data);
+        let d = response.data
+        d = d.reverse()
+        setForms(d);
+        setHeaders(Object.keys(d[0]))
+        // setForms(response.data);
         // console.log(response.data)
         setTotalForms(response.data.length);
       } catch (error) {
@@ -373,25 +388,34 @@ export const VMFTable = () => {
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
-        <h5 style={{ padding: '10px', marginTop: '10px' }}>Vehicle Moving Form Submissions</h5>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
+          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Vehicle Moving Form Submissions</h5>
+          <Button variant='light'>
+            <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+              Export to CSV
+            </ExportCSV>
+          </Button>
+
+        </div>
+
         <Table hover className="user-table align-items-center">
           <thead>
-            <tr>
-              <th className="border-bottom">#</th>
-              <th className="border-bottom">User ID</th>
-              <th className="border-bottom">Date Time</th>
-              <th className="border-bottom">First Name</th>
-              <th className="border-bottom">Last Name</th>
-              <th className="border-bottom">Vehicle Name</th>
-              <th className="border-bottom">Vehicle No</th>
-              <th className="border-bottom">Pickup Jobsite</th>
-              <th className="border-bottom">Dropoff Location</th>
-              <th className="border-bottom">Notes</th>
-              
-            </tr>
+          <tr>
+            <th className="border-bottom">#</th>
+            <th className="border-bottom">User ID</th>
+            <th className="border-bottom">Date Time</th>
+            <th className="border-bottom">First Name</th>
+            <th className="border-bottom">Last Name</th>
+            <th className="border-bottom">Vehicle Name</th>
+            <th className="border-bottom">Vehicle No</th>
+            <th className="border-bottom">Pickup Jobsite</th>
+            <th className="border-bottom">Dropoff Location</th>
+            <th className="border-bottom">Notes</th>
+
+          </tr>
           </thead>
           <tbody>
-            {forms.map((form, index) => (
+          {forms.map((form, index) => (
               <tr key={index}>
                 <td>{form.formID}</td>
                 <td>{form.userID}</td>
@@ -403,9 +427,9 @@ export const VMFTable = () => {
                 <td>{form.pickupJobsite}</td>
                 <td>{form.dropoffLocation}</td>
                 <td>{form.notes}</td>
-                
+
               </tr>
-            ))}
+          ))}
           </tbody>
         </Table>
         <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
@@ -437,7 +461,10 @@ export const DRTable = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(getDailyReports);
-        setForms(response.data);
+        // setForms(response.data);
+        let d = response.data
+        d = d.reverse()
+        setForms(d);
         setTotalForms(response.data.length);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -471,12 +498,12 @@ export const DRTable = () => {
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
-        <h5 style={{ padding: '10px', marginTop: '10px' }}>Vehicle Inspection Submissions</h5>
+        <h5 style={{ padding: '10px', marginTop: '10px' }}>Daily Reports</h5>
         <Table hover className="user-table align-items-center">
           <thead>
             <tr>
-              <th className="border-bottom">#</th>
-              <th className="border-bottom">User ID</th>
+              {/*<th className="border-bottom">#</th>*/}
+              {/*<th className="border-bottom">User ID</th>*/}
               <th className="border-bottom">Date Time</th>
               <th className="border-bottom">First Name</th>
               <th className="border-bottom">Last Name</th>
@@ -491,8 +518,8 @@ export const DRTable = () => {
           <tbody>
             {forms.map((form, index) => (
               <tr key={index}>
-                <td></td>
-                <td>{form.userID}</td>
+                {/*<td>{index}</td>*/}
+                {/*<td>{form.userID}</td>*/}
                 <td>{formatDateTime(form.dateTime)}</td>
                 <td>{form.firstName}</td>
                 <td>{form.lastName}</td>

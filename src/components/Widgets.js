@@ -186,9 +186,9 @@ export const TeamMembersWidget = () => {
       case 0:
         return { color: 'success', label: 'Super Admin' };
       case 1:
-        return { color: 'warning', label: 'Admin' };
-      case 2:
-        return { color: 'danger', label: 'User' };
+        return { color: 'warning', label: 'User' };
+      // case 2:
+      //   return { color: 'danger', label: 'User' };
       default:
         return { color: 'danger', label: 'Offline' };
     }
