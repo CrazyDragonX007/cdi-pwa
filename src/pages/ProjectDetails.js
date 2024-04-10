@@ -54,7 +54,7 @@ export default (props) => {
             <Button variant="close" aria-label="Close" onClick={handleClose} />
           </Modal.Header>
           <Modal.Body>
-            <Contract_Drawing_Form />
+            <Contract_Drawing_Form projectID={projectDetails.projectID}/>
             </Modal.Body>
           <Modal.Footer>
             {/* <Button variant="secondary" onClick={handleClose}>

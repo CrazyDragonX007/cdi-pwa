@@ -46,7 +46,7 @@ import {useHistory, Redirect} from "react-router-dom";
 //     }
 //   } }
 
-  const apiURL = 'http://localhost:8000';
+  const apiURL = process.env.REACT_APP_BACKEND_URL;
   const getUsers = `${apiURL}/crud/getUsers`;
   const createVehicleInspectionForm = `${apiURL}/crud/createVehicleInspectionForm`
   const createVehicleMovingForm = `${apiURL}/crud/createVehicleMovingForm`
@@ -1355,10 +1355,10 @@ if (redirect){
   );
 };
 
-export const Contract_Drawing_Form = () => {
+export const Contract_Drawing_Form = (props) => {
   const [formData, setFormData] = useState({
-    projectName: '',
-    projectStatus: 'Active'
+    name: '',
+    isContract: 'true'
   });
 
   const handleChange = (e) => {
@@ -1369,13 +1369,20 @@ export const Contract_Drawing_Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/createProject', formData);
+        let url = process.env.REACT_APP_BACKEND_URL+'/crud';
+        if(formData.isContract ==='true'){
+            url+='/createContract';
+        }else{
+            url+='/createDrawing';
+        }
+        const finalFormData = new FormData();
+        const nameType = formData.isContract==='true'?'contractName':'drawingName';
+        finalFormData.append('projectID',props.projectID);
+        finalFormData.append(nameType, formData.name);
+        finalFormData.append('file', document.getElementById('img01').files[0]);
+      const response = await axios.post(url, finalFormData);
       console.log('Response:', response.data);
-      // Optionally, reset form fields after successful submission
-      setFormData({
-        projectName: '',
-        projectStatus: 'Active'
-      });
+
     } catch (error) {
       console.error('Error inserting data:', error);
     }
@@ -1385,40 +1392,38 @@ export const Contract_Drawing_Form = () => {
     <Form onSubmit={handleSubmit}>
       <Row>
         <Col md={6} className="mb-3">
-          <Form.Group id="projectName">
+          <Form.Group id="name">
             <Form.Label>Contract/Drawing Name</Form.Label>
             <Form.Control
               required
-              name="projectName"
+              name="name"
               type="text"
               placeholder="Enter the Contract/Drawing name"
-              value={formData.projectName}
+              value={formData.name}
               onChange={handleChange}
             />
           </Form.Group>
         </Col>
         <Col md={6} className="mb-3">
-          <Form.Group id="projectStatus">
+          <Form.Group id="isContract">
             <Form.Label>Type</Form.Label>
             <Form.Select
-              name="projectStatus"
-              value={formData.projectStatus}
+              name="isContract"
+              value={formData.isContract}
               onChange={handleChange}
             >
-              <option value="Active">Contract</option>
-              <option value="Hold">Drawing</option>
-              
+              <option value='true'>Contract</option>
+              <option value='false'>Drawing</option>
             </Form.Select>
           </Form.Group>
         </Col>
-        
       </Row>
       <Row>
         <Col md = {6} className="mb-3">
         <Form.Group id="uploadImageObjectVI">
                     <Form.Label>Upload Attachments</Form.Label>
                     <br/>
-                    <input type="file" id="img01" multiple/>
+                    <input type="file" id="img01"/>
                     <div className="d-md-block text-start">
                         {/*<div className="fw-normal text-dark mb-1">Choose Image</div>*/}
                         <div className="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
