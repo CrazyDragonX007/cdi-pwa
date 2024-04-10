@@ -16,6 +16,7 @@ import axios from "axios";
 import Contracts from "../pages/ProjectDetails";
 import {useHistory, Redirect} from "react-router-dom";
 
+require('dotenv').config();
 // class WeatherData extends React.Component {
 //   constructor(props) {
 //     super(props);
@@ -65,6 +66,8 @@ export const VI_Form = () => {
   const [selectedOption06, setSelectedOption06] = useState("0");
   const [selectedOption07, setSelectedOption07] = useState("0");
   const [selectedOption08, setSelectedOption08] = useState("0");
+    const [selectedOption09, setSelectedOption09] = useState("0");
+    const [selectedOption10, setSelectedOption10] = useState("0");
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [users, setUsers] = useState([]);
@@ -111,28 +114,7 @@ export const VI_Form = () => {
       <Card.Body>
         <h5 className="mb-4">Daily Equipment Inspection Report</h5>
         <Form onSubmit={handleSubmit}>
-          {/* <Row>
-            <Col md={6} className="mb-3">
-              <Form.Group id="firstName">
-                <Form.Label>First Name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your first name"
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} className="mb-3">
-              <Form.Group id="lastName">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="Enter your last name"
-                />
-              </Form.Group>
-            </Col>
-          </Row> */}
+
           <Row className="align-items-center">
             <Col md={3} className="mb-3">
               <Form.Group id="dateTime">
@@ -173,12 +155,12 @@ export const VI_Form = () => {
             <Col md={3} className="mb-3">
               <Form.Group id="vehicleName">
                 <Form.Label>Vehicle</Form.Label>
-                <Form.Select defaultValue="0" name="vehicleName">
-                  <option value="0">Vehicle</option>
-                  <option value="1">Boom Lift</option>
-                  <option value="2">Engine Driven Scissor Lift</option>
-                  <option value="3">Telehandler</option>
-                  <option value="4">Electric Scissor Lift</option>
+                <Form.Select defaultValue="Boom Lift" name="vehicleName">
+
+                  <option value="Boom Lift">Boom Lift</option>
+                  <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
+                  <option value="Telehandler">Telehandler</option>
+                  <option value="Electric Scissor Lift">Electric Scissor Lift</option>
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -194,6 +176,31 @@ export const VI_Form = () => {
               </Form.Group>
             </Col>
           </Row>
+            <Row>
+                <Col md={6} className="mb-3">
+                    <Form.Group id="pickupJobsite">
+                        <Form.Label>Pickup Jobsite</Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="pickupJobsite"
+                            placeholder="Location"
+                        />
+                    </Form.Group>
+                </Col>
+                <Col md={6} className="mb-3">
+                    <Form.Group id="dropoffLocation">
+                        <Form.Label>Dropoff Location</Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="dropoffLocation"
+                            placeholder="Location"
+                        />
+                    </Form.Group>
+                </Col>
+
+            </Row>
           <Row>
           <Col md={6} className="mb-3">
           <Form.Group id="physicalDamage">
@@ -380,24 +387,24 @@ export const VI_Form = () => {
                 <Form.Label>What is the fuel level? (if applicable)</Form.Label>
                 <Form.Check
                   type="radio"
-                  name="option08"
-                  id="full"
+                  name="option07"
+
                   label="Full - 3/4"
-                  value="0"
+                  value="Full - 3/4"
                 />
                 <Form.Check
                   type="radio"
-                  name="option08"
-                  id="half"
+                  name="option07"
+
                   label="1/2"
-                  value="1"  
+                  value="1/2"
                 />
                 <Form.Check
                   type="radio"
-                  name="option08"
-                  id="less"
+                  name="option07"
+
                   label="1/4 or Less"
-                  value="1" 
+                  value="1/4 or Less"
                 />
                 
               </Form.Group>
@@ -408,18 +415,18 @@ export const VI_Form = () => {
                 <Form.Label>Is the park brake functioning correctly?</Form.Label>
                 <Form.Check
                   type="radio"
-                  name="option07"
-                  id="yes07"
+                  name="option08"
+                  id="yes08"
                   label="Yes"
-                  value="0"
+                  value="Yes"
                   
                 />
                 <Form.Check
                   type="radio"
-                  name="option07"
-                  id="no07"
+                  name="option08"
+                  id="no08"
                   label="No"
-                  value="1"
+                  value="No"
                   
                   
                 />
@@ -433,24 +440,24 @@ export const VI_Form = () => {
                 <Form.Label>Are all the operating upper/lower and emergency controls functioning properly?</Form.Label>
                 <Form.Check
                   type="radio"
-                  name="option07"
-                  id="yes07"
+                  name="option09"
+                  id="yes09"
                   label="Yes"
-                  value="0"
-                  checked={selectedOption07 === "0"}
-                  onChange={(e7) => setSelectedOption07(e7.target.value)}
+                  value="Yes"
+                  checked={selectedOption09 === "Yes"}
+                  onChange={(e9) => setSelectedOption09(e9.target.value)}
                 />
                 <Form.Check
                   type="radio"
-                  name="option07"
-                  id="no07"
+                  name="option09"
+                  id="no09"
                   label="No"
-                  value="1"
-                  checked={selectedOption07 === "1"}
-                  onChange={(e7) => setSelectedOption07(e7.target.value)}
+                  value="No"
+                  checked={selectedOption09 === "No"}
+                  onChange={(e9) => setSelectedOption09(e9.target.value)}
                 />
               </Form.Group>
-              {selectedOption07 === "1" && (
+              {selectedOption09 === "No" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -460,26 +467,27 @@ export const VI_Form = () => {
           <Col md={6} className="mb-3">
           <Form.Group id="safetyWarningDecalsCondition">
                 <Form.Label>Is the operators manual,safety,warning decals and capacity plate onboard and legible?</Form.Label>
-                <Form.Check
+              <Form.Check
                   type="radio"
-                  name="option08"
-                  id="no08"
-                  label="No"
-                  value="0"
-                  checked={selectedOption08 === "0"}
-                  onChange={(e8) => setSelectedOption08(e8.target.value)}
-                />
-                <Form.Check
-                  type="radio"
-                  name="option08"
-                  id="yes08"
+                  name="option10"
+                  id="yes10"
                   label="Yes"
-                  value="1"
-                  checked={selectedOption08 === "1"}
-                  onChange={(e8) => setSelectedOption08(e8.target.value)}
+                  value="Yes"
+                  checked={selectedOption10 === "Yes"}
+                  onChange={(e10) => setSelectedOption10(e10.target.value)}
+              />
+                <Form.Check
+                  type="radio"
+                  name="option10"
+                  id="no10"
+                  label="No"
+                  value="No"
+                  checked={selectedOption10 === "No"}
+                  onChange={(e10) => setSelectedOption10(e10.target.value)}
                 />
+
               </Form.Group>
-              {selectedOption08 === "1" && (
+              {selectedOption10 === "No" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -1356,6 +1364,7 @@ if (redirect){
 };
 
 export const Contract_Drawing_Form = (props) => {
+    const history = useHistory();
   const [formData, setFormData] = useState({
     name: '',
     isContract: 'true'
@@ -1382,6 +1391,8 @@ export const Contract_Drawing_Form = (props) => {
         finalFormData.append('file', document.getElementById('img01').files[0]);
       const response = await axios.post(url, finalFormData);
       console.log('Response:', response.data);
+      // history.goBack()
+        props.closeModal()
 
     } catch (error) {
       console.error('Error inserting data:', error);

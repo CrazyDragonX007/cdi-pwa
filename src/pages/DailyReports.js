@@ -18,12 +18,12 @@ export default () => {
           <h4>Daily Reports</h4>
           {/* <p className="mb-0">Your web analytics dashboard template.</p> */}
         </div>
-        <div className="btn-toolbar mb-2 mb-md-0">
-          <ButtonGroup>
-            {/* <Button variant="outline-primary" size="sm">Share</Button> */}
-            <Button variant="outline-primary" size="sm">Export to CSV</Button>
-          </ButtonGroup>
-        </div>
+        {/*<div className="btn-toolbar mb-2 mb-md-0">*/}
+        {/*  <ButtonGroup>*/}
+        {/*    /!* <Button variant="outline-primary" size="sm">Share</Button> *!/*/}
+        {/*    <Button variant="outline-primary" size="sm">Export to CSV</Button>*/}
+        {/*  </ButtonGroup>*/}
+        {/*</div>*/}
       </div>
 
       {/* <div className="table-settings mb-4">

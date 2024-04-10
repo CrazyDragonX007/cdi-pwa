@@ -54,7 +54,8 @@
     "react-scripts": "3.4.3",
     "react-transition-group": "^4.4.1",
     "sass": "^1.71.1",
-    "simplebar-react": "^2.3.0"
+    "simplebar-react": "^2.3.0",
+    "yarn": "^1.22.22"
   },
   "scripts": {
     "start": "react-scripts start",

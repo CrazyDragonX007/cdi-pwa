@@ -456,6 +456,8 @@ export const VMFTable = () => {
 export const DRTable = () => {
   const [forms, setForms] = useState([]);
   const [totalForms, setTotalForms] = useState(0);
+  const [headers, setHeaders] = useState([]);
+  const data = forms.map((item) => Object.values(item));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -465,6 +467,7 @@ export const DRTable = () => {
         let d = response.data
         d = d.reverse()
         setForms(d);
+        setHeaders(Object.keys(d[0]))
         setTotalForms(response.data.length);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -498,25 +501,33 @@ export const DRTable = () => {
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
-        <h5 style={{ padding: '10px', marginTop: '10px' }}>Daily Reports</h5>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
+          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Daily Reports</h5>
+          <Button variant='light'>
+            <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+              Export to CSV
+            </ExportCSV>
+          </Button>
+
+        </div>
         <Table hover className="user-table align-items-center">
           <thead>
-            <tr>
-              {/*<th className="border-bottom">#</th>*/}
-              {/*<th className="border-bottom">User ID</th>*/}
-              <th className="border-bottom">Date Time</th>
-              <th className="border-bottom">First Name</th>
-              <th className="border-bottom">Last Name</th>
-              <th className="border-bottom">Project Name</th>
-              <th className="border-bottom">Project Location</th>
-              <th className="border-bottom">Scope of Work</th>
-              <th className="border-bottom">Work Performed</th>
-              <th className="border-bottom">Weather Details</th>
-              <th className="border-bottom">Notes</th>
-            </tr>
+          <tr>
+            {/*<th className="border-bottom">#</th>*/}
+            {/*<th className="border-bottom">User ID</th>*/}
+            <th className="border-bottom">Date Time</th>
+            <th className="border-bottom">First Name</th>
+            <th className="border-bottom">Last Name</th>
+            <th className="border-bottom">Project Name</th>
+            <th className="border-bottom">Project Location</th>
+            <th className="border-bottom">Scope of Work</th>
+            <th className="border-bottom">Work Performed</th>
+            <th className="border-bottom">Weather Details</th>
+            <th className="border-bottom">Notes</th>
+          </tr>
           </thead>
           <tbody>
-            {forms.map((form, index) => (
+          {forms.map((form, index) => (
               <tr key={index}>
                 {/*<td>{index}</td>*/}
                 {/*<td>{form.userID}</td>*/}
@@ -531,7 +542,7 @@ export const DRTable = () => {
                 {/* <td>{getWeatherDetails('37.2090° N', '93.2923° W')}</td> */}
                 <td>{form.notes}</td>
               </tr>
-            ))}
+          ))}
           </tbody>
         </Table>
         <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
@@ -557,17 +568,17 @@ export const DRTable = () => {
 
 export const CommandsTable = () => {
   const TableRow = (props) => {
-    const { name, usage = [], description, link } = props;
+    const {name, usage = [], description, link} = props;
 
     return (
-      <tr>
-        <td className="border-0" style={{ width: '5%' }}>
-          <code>{name}</code>
-        </td>
-        <td className="fw-bold border-0" style={{ width: '5%' }}>
-          <ul className="ps-0">
-            {usage.map(u => (
-              <ol key={u} className="ps-0">
+        <tr>
+          <td className="border-0" style={{width: '5%'}}>
+            <code>{name}</code>
+          </td>
+          <td className="fw-bold border-0" style={{width: '5%'}}>
+            <ul className="ps-0">
+              {usage.map(u => (
+                  <ol key={u} className="ps-0">
                 <code>{u}</code>
               </ol>
             ))}
