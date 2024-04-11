@@ -29,6 +29,7 @@ import ScrollToTop from "./components/ScrollToTop";
 ReactDOM.render(
   <HashRouter>
     <ScrollToTop />
+      <p>Test build</p>
     <HomePage />
   </HashRouter>,
   document.getElementById("root")
