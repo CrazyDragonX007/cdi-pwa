@@ -31,7 +31,7 @@ const SignUpForm = () => {
     }));
   };
 
-  const apiURL = 'http://localhost:8000';
+  const apiURL = process.env.REACT_APP_BACKEND_URL;
   const createUser = `${apiURL}/crud/createUser`;
 
   const handleSubmit = async (e) => {

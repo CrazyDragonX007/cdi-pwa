@@ -28,7 +28,7 @@ const ValueChange = ({ value, suffix }) => {
   );
 };
 
-const apiURL = 'http://localhost:8000';
+const apiURL = process.env.REACT_APP_BACKEND_URL;
 const getVehicleMovingFormUrl = `${apiURL}/crud/getVehicleMovingForm`;
 const getVehicleInspectionFormUrl = `${apiURL}/crud/getVehicleInspectionForm`;
 const getDailyReports = `${apiURL}/crud/getDailyReports`

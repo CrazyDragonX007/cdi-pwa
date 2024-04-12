@@ -20,8 +20,9 @@ export default (props) => {
   const handleClose = () => setShowDefault(false);
 
   useEffect(() => {
-    const url1 = 'http://localhost:8000/crud/getcontracts';
-    const url2 = 'http://localhost:8000/crud/getdrawings';
+    const url = process.env.REACT_APP_BACKEND_URL;
+    const url1 = url+'/crud/getcontracts';
+    const url2 = url+'/crud/getdrawings';
     axios.get(url1,{params:{projectID:projectDetails.projectId}}).then((response) => {
       setContracts(response.data);
       console.log(response);

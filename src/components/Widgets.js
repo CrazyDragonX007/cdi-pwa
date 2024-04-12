@@ -162,7 +162,7 @@ export const BarChartWidget = (props) => {
   );
 };
 
-const apiURL = 'http://localhost:8000';
+const apiURL = process.env.REACT_APP_BACKEND_URL;
 const getUsers = `${apiURL}/crud/getUsers`;
 
 export const TeamMembersWidget = () => {

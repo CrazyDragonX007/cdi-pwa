@@ -13,7 +13,7 @@ export default () => {
   const history = useHistory();
   const login = () => {
     firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
-      const url = 'http://localhost:8000/crud/login';
+      const url = process.env.REACT_APP_BACKEND_URL+'/crud/login';
       const params = {google_uid: userCredential.user.uid};
       axios.post(url,params).then((response) => {
         localStorage.setItem('user', JSON.stringify(response.data[0]));
