@@ -1,6 +1,17 @@
 import React, {useEffect, useState} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faCog, faHome, faSearch, faPalette, faLaptopCode, faUser, faBookReader, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faCog,
+  faHome,
+  faSearch,
+  faPalette,
+  faLaptopCode,
+  faUser,
+  faBookReader,
+  faPlus,
+  faFile
+} from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Form, Button, ButtonGroup, Breadcrumb, InputGroup, Dropdown } from '@themesberg/react-bootstrap';
 import { Nav, Tab, Card, Modal } from '@themesberg/react-bootstrap';
 import { TransactionsTable, ContractsTable, DrawingsTable } from "../components/Tables";
@@ -88,6 +99,11 @@ export default (props) => {
                           <FontAwesomeIcon icon={faPalette} className="me-2" /> Drawings
                         </Nav.Link>
                       </Nav.Item>
+                      <Nav.Item>
+                        <Nav.Link eventKey="files" className="mb-sm-3 mb-md-0">
+                          <FontAwesomeIcon icon={faFile} className="me-2" /> Files
+                        </Nav.Link>
+                      </Nav.Item>
                     </Nav>
                     <Tab.Content>
 
@@ -96,6 +112,10 @@ export default (props) => {
                         //TODO: Add project's contracts here
                       </Tab.Pane>
                       <Tab.Pane eventKey="user_experience" className="py-4">
+                        {/*<DrawingsTable />*/}
+                        //TODO: Add project's drawings here
+                      </Tab.Pane>
+                      <Tab.Pane eventKey="files" className="py-4">
                         {/*<DrawingsTable />*/}
                         //TODO: Add project's drawings here
                       </Tab.Pane>
@@ -166,6 +186,11 @@ export default (props) => {
                           <FontAwesomeIcon icon={faPalette} className="me-2" /> Drawings
                         </Nav.Link>
                       </Nav.Item>
+                      <Nav.Item>
+                        <Nav.Link eventKey="files" className="mb-sm-3 mb-md-0">
+                          <FontAwesomeIcon icon={faFile} className="me-2" /> Files
+                        </Nav.Link>
+                      </Nav.Item>
                     </Nav>
                     <Tab.Content>
 
@@ -174,6 +199,10 @@ export default (props) => {
                         //TODO: Add project's contracts here
                       </Tab.Pane>
                       <Tab.Pane eventKey="user_experience" className="py-4">
+                        {/*<DrawingsTable />*/}
+                        //TODO: Add project's drawings here
+                      </Tab.Pane>
+                      <Tab.Pane eventKey="files" className="py-4">
                         {/*<DrawingsTable />*/}
                         //TODO: Add project's drawings here
                       </Tab.Pane>
