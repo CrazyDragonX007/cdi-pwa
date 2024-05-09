@@ -791,9 +791,7 @@ export const DR_Form = () => {
       console.error('Error inserting data:', error);
     }
   };
-
-  console.log()
-
+  
   return (
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
@@ -911,7 +909,7 @@ export const DR_Form = () => {
         </Col>
       </Row>
       <Row>
-        <Col md={6} className="mb-4">
+        <Col md={4} className="mb-4">
           <Form.Group id="projectNameDR">
             <Form.Label>Project Name</Form.Label>
             <Form.Control
@@ -924,7 +922,7 @@ export const DR_Form = () => {
             />
           </Form.Group>
         </Col>
-        <Col md={6} className="mb-4">
+        <Col md={4} className="mb-4">
           <Form.Group id="projectLocationDR">
             <Form.Label>Project Location</Form.Label>
             <Form.Control
@@ -937,6 +935,17 @@ export const DR_Form = () => {
             />
           </Form.Group>
         </Col>
+          <Col md={4} className="mb-4">
+              <Form.Group id="uploadImageObjectDR">
+                  <Form.Label>Upload Attachments</Form.Label>
+                  <br/>
+                  <input type="file" id="imgDR" multiple/>
+                  <div className="d-md-block text-start">
+                      {/*<div className="fw-normal text-dark mb-1">Choose Image</div>*/}
+                      <div className="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
+                  </div>
+              </Form.Group>
+          </Col>
       </Row>
       <Row>
         <Col md={6} className="mb-4">
