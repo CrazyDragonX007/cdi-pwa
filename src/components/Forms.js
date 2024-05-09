@@ -1369,7 +1369,7 @@ export const Contract_Drawing_Form = (props) => {
     const history = useHistory();
   const [formData, setFormData] = useState({
     name: '',
-    isContract: 'true'
+    isContract: 'contract'
   });
 
   const handleChange = (e) => {
@@ -1381,13 +1381,18 @@ export const Contract_Drawing_Form = (props) => {
     e.preventDefault();
     try {
         let url = process.env.REACT_APP_BACKEND_URL+'/crud';
-        if(formData.isContract ==='true'){
+        let nameType = '';
+        if(formData.isContract ==='contract'){
             url+='/createContract';
-        }else{
+            nameType = 'contractName';
+        }else if(formData.isContract ==='drawing'){
             url+='/createDrawing';
+            nameType = 'drawingName';
+        }else{
+            url+='/createMiscellaneousFile';
+            nameType = 'miscellaneousFileName';
         }
         const finalFormData = new FormData();
-        const nameType = formData.isContract==='true'?'contractName':'drawingName';
         finalFormData.append('projectID',props.projectID);
         finalFormData.append(nameType, formData.name);
         finalFormData.append('file', document.getElementById('img01').files[0]);
@@ -1406,12 +1411,12 @@ export const Contract_Drawing_Form = (props) => {
       <Row>
         <Col md={6} className="mb-3">
           <Form.Group id="name">
-            <Form.Label>Contract/Drawing Name</Form.Label>
+            <Form.Label>File Name</Form.Label>
             <Form.Control
               required
               name="name"
               type="text"
-              placeholder="Enter the Contract/Drawing name"
+              placeholder="Enter the file name"
               value={formData.name}
               onChange={handleChange}
             />
@@ -1425,8 +1430,9 @@ export const Contract_Drawing_Form = (props) => {
               value={formData.isContract}
               onChange={handleChange}
             >
-              <option value='true'>Contract</option>
-              <option value='false'>Drawing</option>
+              <option value='contract'>Contract</option>
+              <option value='drawing'>Drawing</option>
+                <option value='miscellaneous'>Miscellaneous</option>
             </Form.Select>
           </Form.Group>
         </Col>
