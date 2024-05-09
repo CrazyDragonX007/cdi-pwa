@@ -6,6 +6,7 @@ export const Routes = {
     VehicleMovingForm: {path: "/vehiclemoving"},
     DailyReports: {path: "/dailyreports"},
     VehicleInspectionForms: { path: "/vehicleinspection" },
+    IncidentReportForm: {path: "/incidentreport"},
     ProjectDetails: {path: "/projectdetails"},
     Projects: { path: "/projects" },
     VIForm: { path: "/viform" },

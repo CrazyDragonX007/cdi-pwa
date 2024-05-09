@@ -54,6 +54,7 @@ require('dotenv').config();
   const createDailyReports = `${apiURL}/crud/createDailyReports`
   const createProject = `${apiURL}/crud/createProject`
   const weatherAPI = `${apiURL}/crud/weather`
+  const createIncidentReportForm =  `${apiURL}/crud/createIncidentReportForm`
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
@@ -979,110 +980,127 @@ export const DR_Form = () => {
 };
 
 export const IR_Form = () => {
-  const [dateTime, setDateTime] = useState('');
-  // console.log(dateTime)
-  
-  const [formData, setFormData] = useState({
-    userID: 1, // Assuming this is the user ID
-    firstName: '',
-    lastName: '',
-    vehicleName: '',
-    vehicleNo: '',
-    pickupJobsite: '',
-    dropoffLocation: '',
-    notes: ''
-  });
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const [dateTime, setDateTime] = useState('');
+    const [empDateTime, setempDateTime] = useState('');
+    const [supDateTime, setsupDateTime] = useState('');
 
-  const handleDateTimeChange = (date) => {
-    setDateTime(date);
-  };
+    const [formData, setFormData] = useState({
+        incidentType: '', // Changed from vehicleName
+        location: '', // Changed from firstName
+        name: '', // Added for person completing the report
+        peopleInvolved: '', // Changed from lastName
+        vehicle: '', // Changed from vehicleName
+        vehicleNo: '',
+        pickupLocation: '', // Changed from pickupJobsite
+        dropoffLocation: '',
+        unsafeAct: '', // Changed from notes for unsafe act
+        description: '', // Changed from notes for description of event
+        employeeSign: '', // Added for employee signature
+        employeeSignDate: '', // Added for employee signature date
+        supervisorSign: '', // Added for supervisor signature
+        supervisorSignDate: '' // Added for supervisor signature date
+    });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(createVehicleMovingForm, {
-        userID: 1, // Assuming you have a specific user ID
-        dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
-        ...formData
-      });
-      console.log('Response:', response.data);
-    } catch (error) {
-      console.error('Error inserting data:', error);
-    }
-  };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
-  return (
-    <Card border="light" className="mb-4 bg-white shadow-sm">
-      <Card.Body>
-        <h5 className="mb-4">Incident Report Form</h5>
-        <Form onSubmit={handleSubmit}>
-          <Row>
-            <Col md = {6} className="mb-3">
-            <Form.Group id="gender">
-              <Form.Label>Documenting an:</Form.Label>
-                <Form.Select
-                  name="vehicleName"
-                  value={formData.vehicleName}
-                  onChange={handleChange}
-                >
-                  <option value="Lost Time/Injury">Lost Time/Injury</option>
-                  <option value="First Aid">First Aid</option>
-                  <option value="Incident">Incident</option>
-                  <option value="Close Call">Close Call</option>
-                  <option value="Observation">Observation</option>
-                  <option value="Other">Other</option>
-                </Form.Select>
-            </Form.Group>
-            </Col>
-            <Col md={6} className="mb-3">
-              <Form.Group id="firstName">
-                <Form.Label>Event Location</Form.Label>
-                <Form.Control
-                  required
-                  name="firstName"
-                  type="text"
-                  placeholder="Enter the location"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-        </Col>
-          </Row>
-      <Row>
-        <Col md={6} className="mb-3">
-          <Form.Group id="firstName">
-            <Form.Label>Person Completing Report</Form.Label>
-            <Form.Control
-              required
-              name="firstName"
-              type="text"
-              placeholder="Enter your Name"
-              value={formData.firstName}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-3">
-          <Form.Group id="lastName">
-            <Form.Label>People Involved</Form.Label>
-            <Form.Control
-              required
-              name="lastName"
-              type="text"
-              placeholder="List all the people"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
+    const handleDateTimeChange = (date) => {
+        setDateTime(date);
+    };
+
+    const handleEmpDateTimeChange = (date) => {
+        setempDateTime(date);
+    };
+
+    const handleSupDateTimeChange = (date) => {
+        setsupDateTime(date);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(createIncidentReportForm, {
+                ...formData,
+                dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
+                employeeSignDate: moment().format("YYYY-MM-DD HH:mm:ss"), // Assuming current date for simplicity
+                supervisorSignDate: moment().format("YYYY-MM-DD HH:mm:ss") // Assuming current date for simplicity
+            });
+            console.log('Response:', response.data);
+        } catch (error) {
+            console.error('Error inserting data:', error);
+        }
+    };
+
+    return (
+        <Card border="light" className="mb-4 bg-white shadow-sm">
+            <Card.Body>
+                <h5 className="mb-4">Incident Report Form</h5>
+                <Form onSubmit={handleSubmit}>
+                    <Row>
+                        <Col md={6} className="mb-3">
+                            <Form.Group id="incidentType">
+                                <Form.Label>Documenting an:</Form.Label>
+                                <Form.Select
+                                    name="incidentType"
+                                    value={formData.incidentType}
+                                    onChange={handleChange}
+                                >
+                                    <option value="Lost Time/Injury">Lost Time/Injury</option>
+                                    <option value="First Aid">First Aid</option>
+                                    <option value="Incident">Incident</option>
+                                    <option value="Close Call">Close Call</option>
+                                    <option value="Observation">Observation</option>
+                                    <option value="Other">Other</option>
+                                </Form.Select>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6} className="mb-3">
+                            <Form.Group id="location">
+                                <Form.Label>Event Location</Form.Label>
+                                <Form.Control
+                                    required
+                                    name="location"
+                                    type="text"
+                                    placeholder="Enter the location"
+                                    value={formData.location}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={6} className="mb-3">
+                            <Form.Group id="name">
+                                <Form.Label>Person Completing Report</Form.Label>
+                                <Form.Control
+                                    required
+                                    name="name"
+                                    type="text"
+                                    placeholder="Enter your Name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col md={6} className="mb-3">
+                            <Form.Group id="peopleInvolved">
+                                <Form.Label>People Involved</Form.Label>
+                                <Form.Control
+                                    required
+                                    name="peopleInvolved"
+                                    type="text"
+                                    placeholder="List all the people"
+                                    value={formData.peopleInvolved}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
       <Row className="align-items-center">
         <Col md={4} className="mb-4">
-        <Form.Group id="datetimeVM">
+        <Form.Group id="dateTime">
             <Form.Label>Date & Time</Form.Label>
             <Datetime
               onChange={handleDateTimeChange}
@@ -1107,11 +1125,11 @@ export const IR_Form = () => {
           </Form.Group>
         </Col>
         <Col md={4} className="mb-4">
-          <Form.Group id="gender">
+          <Form.Group id="vehicle">
             <Form.Label>Vehicle</Form.Label>
             <Form.Select
-              name="vehicleName"
-              value={formData.vehicleName}
+              name="vehicle"
+              value={formData.vehicle}
               onChange={handleChange}
             >
               <option value="">Vehicle</option>
@@ -1138,11 +1156,11 @@ export const IR_Form = () => {
       </Row>
       <Row>
         <Col md={6} className="mb-3">
-          <Form.Group id="pickupJobsite">
+          <Form.Group id="pickupLocation">
             <Form.Label>Pickup Location</Form.Label>
             <Form.Control
               required
-              name="pickupJobsite"
+              name="pickupLocation"
               type="text"
               placeholder="Enter your home address"
               value={formData.pickupJobsite}
@@ -1166,27 +1184,27 @@ export const IR_Form = () => {
       </Row>
       <Row>
       <Col md={6} className="mb-3">
-          <Form.Group id="notesVM">
+          <Form.Group id="unsafeAct">
             <Form.Label>Was this event caused by an unsafe act (activity or movement) or an unsafe condition (machinery or weather) ?</Form.Label>
             <Form.Control
               required
-              name="notes"
+              name="unsafeAct"
               as="textarea"
               rows={3}
-              value={formData.notes}
+              value={formData.unsafeAct}
               onChange={handleChange}
             />
           </Form.Group>
         </Col>
         <Col md={6} className="mb-3">
-          <Form.Group id="notesVM">
+          <Form.Group id="description">
             <Form.Label>Description of Event (Describe sequence of events and tasks being performed)</Form.Label>
             <Form.Control
               required
-              name="notes"
+              name="description"
               as="textarea"
               rows={3}
-              value={formData.notes}
+              value={formData.description}
               onChange={handleChange}
             />
           </Form.Group>
@@ -1195,24 +1213,24 @@ export const IR_Form = () => {
       </Row>
       <Row>
       <Col md={6} className="mb-3">
-          <Form.Group id="empSign">
+          <Form.Group id="employeeSign">
             <Form.Label>Employee Signature</Form.Label>
             <Form.Control
               required
-              name="empSign"
+              name="employeeSign"
               type="text"
               placeholder="Enter your Full Name"
-              value={formData.dropoffLocation}
+              value={formData.employeeSign}
               onChange={handleChange}
             />
           </Form.Group>
         </Col>
         <Col md={6} className="mb-3">
-        <Form.Group id="datetimeVM">
+        <Form.Group id="employeeSignDate">
             <Form.Label>Date & Time</Form.Label>
             <Datetime
-              onChange={handleDateTimeChange}
-              value={dateTime}
+              onChange={handleEmpDateTimeChange}
+              value={empDateTime}
               renderInput={(props, openCalendar) => (
                 <InputGroup>
                   <InputGroup.Text>
@@ -1220,9 +1238,9 @@ export const IR_Form = () => {
                   </InputGroup.Text>
                   <Form.Control
                     required
-                    name="dateTime"
+                    name="employeeSignDate"
                     type="text"
-                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                    value={empDateTime ? moment(empDateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
                     placeholder="Enter Date & Time"
                     onFocus={openCalendar}
                     onChange={() => {}}
@@ -1236,24 +1254,24 @@ export const IR_Form = () => {
       <Row>
       
         <Col md={6} className="mb-3">
-          <Form.Group id="supSign">
+          <Form.Group id="supervisorSign">
             <Form.Label>Supervisor Signature</Form.Label>
             <Form.Control
               required
-              name="supSign"
+              name="supervisorSign"
               type="text"
               placeholder="Enter your Full Name"
-              value={formData.dropoffLocation}
+              value={formData.supervisorSign}
               onChange={handleChange}
             />
           </Form.Group>
         </Col>
         <Col md={6} className="mb-3">
-        <Form.Group id="datetimeVM">
+        <Form.Group id="supervisorSignDate">
             <Form.Label>Date & Time</Form.Label>
             <Datetime
-              onChange={handleDateTimeChange}
-              value={dateTime}
+              onChange={handleSupDateTimeChange}
+              value={supDateTime}
               renderInput={(props, openCalendar) => (
                 <InputGroup>
                   <InputGroup.Text>
@@ -1261,9 +1279,9 @@ export const IR_Form = () => {
                   </InputGroup.Text>
                   <Form.Control
                     required
-                    name="dateTime"
+                    name="supervisorSignDate"
                     type="text"
-                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                    value={supDateTime ? moment(supDateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
                     placeholder="Enter Date & Time"
                     onFocus={openCalendar}
                     onChange={() => {}}

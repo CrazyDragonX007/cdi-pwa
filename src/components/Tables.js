@@ -35,6 +35,7 @@ const getDailyReports = `${apiURL}/crud/getDailyReports`
 const getProjects = `${apiURL}/crud/getProjects`
 const getContracts = `${apiURL}/crud/getContracts`
 const getDrawings = `${apiURL}/crud/getDrawings`
+const getIncidentReportForm = `${apiURL}/crud/getIncidentReportForm`
 
 export const PageVisitsTable = () => {
   const TableRow = (props) => {
@@ -566,6 +567,123 @@ export const DRTable = () => {
   );
 };
 
+export const IRTable = () => {
+  const [forms, setForms] = useState([]);
+  const [totalForms, setTotalForms] = useState(0);
+  const [headers, setHeaders] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getIncidentReportForm); // Adjusted to match your API endpoint
+        let d = response.data;
+        d = d.reverse();
+        setForms(d);
+        setHeaders(Object.keys(d[0]));
+        setTotalForms(d.length);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDateTime = (dateTime) => {
+    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
+  };
+
+  return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0">
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
+            <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Incident Reports</h5>
+            <Button variant='light'>
+              <ExportCSV data={[headers, ...forms.map(form => [
+                formatDateTime(form.dateTime),
+                form.name,
+                form.peopleInvolved,
+                form.incidentType,
+                form.location,
+                form.vehicle,
+                form.vehicleNo,
+                form.pickupLocation,
+                form.dropoffLocation,
+                form.unsafeAct,
+                form.description,
+                form.employeeSign,
+                form.employeeSignDate,
+                form.supervisorSign,
+                form.supervisorSignDate
+              ])]} filename="incident-reports.csv">
+                Export to CSV
+              </ExportCSV>
+            </Button>
+          </div>
+          <Table hover className="user-table align-items-center">
+            <thead>
+            <tr>
+              <th className="border-bottom">Date Time</th>
+              <th className="border-bottom">Name</th>
+              <th className="border-bottom">People Involved</th>
+              <th className="border-bottom">Incident Type</th>
+              <th className="border-bottom">Location</th>
+              <th className="border-bottom">Vehicle</th>
+              <th className="border-bottom">Vehicle No.</th>
+              <th className="border-bottom">Pickup Location</th>
+              <th className="border-bottom">Dropoff Location</th>
+              <th className="border-bottom">Unsafe Act</th>
+              <th className="border-bottom">Description</th>
+              <th className="border-bottom">Employee Signature</th>
+              <th className="border-bottom">Employee Sign Date</th>
+              <th className="border-bottom">Supervisor Signature</th>
+              <th className="border-bottom">Supervisor Sign Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {forms.map((form, index) => (
+                <tr key={index}>
+                  <td>{formatDateTime(form.dateTime)}</td>
+                  <td>{form.name}</td>
+                  <td>{form.peopleInvolved}</td>
+                  <td>{form.incidentType}</td>
+                  <td>{form.location}</td>
+                  <td>{form.vehicle}</td>
+                  <td>{form.vehicleNo}</td>
+                  <td>{form.pickupLocation}</td>
+                  <td>{form.dropoffLocation}</td>
+                  <td>{form.unsafeAct}</td>
+                  <td>{form.description}</td>
+                  <td>{form.employeeSign}</td>
+                  <td>{form.employeeSignDate}</td>
+                  <td>{form.supervisorSign}</td>
+                  <td>{form.supervisorSignDate}</td>
+                </tr>
+            ))}
+            </tbody>
+          </Table>
+          <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+            <Nav>
+              <Pagination className="mb-2 mb-lg-0">
+                <Pagination.Prev>Previous</Pagination.Prev>
+                <Pagination.Item active>1</Pagination.Item>
+                <Pagination.Item>2</Pagination.Item>
+                <Pagination.Item>3</Pagination.Item>
+                <Pagination.Item>4</Pagination.Item>
+                <Pagination.Item>5</Pagination.Item>
+                <Pagination.Next>Next</Pagination.Next>
+              </Pagination>
+            </Nav>
+            <small className="fw-bold">
+              Showing <b>{totalForms}</b> out of <b>{totalForms}</b> entries
+            </small>
+          </Card.Footer>
+        </Card.Body>
+      </Card>
+  );
+};
+
+
 export const CommandsTable = () => {
   const TableRow = (props) => {
     const {name, usage = [], description, link} = props;
@@ -685,14 +803,19 @@ export const ProjectsTable = () => {
   );
 };
 
-export const ContractsTable = () => {
+export const ContractsTable = (props) => {
   const [contracts, setContracts] = useState([]);
-
+  const projectId = props.projectID
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(getContracts);
+        const response = await axios.get(getContracts, {
+          params: {
+            projectID: projectId
+          }
+        });
+
         setContracts(response.data);
         console.log(response.data)
   
@@ -723,7 +846,7 @@ export const ContractsTable = () => {
               <tr key={index}>
                 <td>{contract.contractID}</td>
                 <td>{contract.contractName}</td>
-                <td>{contract.fileUrl}</td>
+                <td><a target= "_blank" href = {contract.fileUrl}>{contract.fileUrl}</a></td>
                
               </tr>
             ))}
@@ -750,14 +873,18 @@ export const ContractsTable = () => {
   );
 };
 
-export const DrawingsTable = () => {
+export const DrawingsTable = (props) => {
   const [drawings, setDrawings] = useState([]);
-
+  const projectId = props.projectID
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(getDrawings);
+        const response = await axios.get(getDrawings, {
+          params: {
+            projectID: projectId
+          }
+        });
         setDrawings(response.data);
         console.log(response.data)
   
@@ -772,7 +899,7 @@ export const DrawingsTable = () => {
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
-        <h5 style={{ padding: '10px', marginTop: '10px' }}>Contracts</h5>
+        <h5 style={{ padding: '10px', marginTop: '10px' }}>Drawings</h5>
         <Table hover className="user-table align-items-center">
           <thead>
             <tr>
@@ -788,8 +915,8 @@ export const DrawingsTable = () => {
               <tr key={index}>
                 <td>{drawing.drawingID}</td>
                 <td>{drawing.drawingName}</td>
-                <td>{drawing.fileUrl}</td>
-               
+                <td><a target= "_blank" href={drawing.fileUrl}>{drawing.fileUrl}</a></td>
+
               </tr>
             ))}
           </tbody>
@@ -812,5 +939,74 @@ export const DrawingsTable = () => {
         </Card.Footer>
       </Card.Body>
     </Card>
+  );
+};
+
+export const FilesTable = (props) => {
+  const [drawings, setDrawings] = useState([]);
+  const projectId = props.projectID
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getDrawings, {
+          params: {
+            projectID: projectId
+          }
+        });
+        setDrawings(response.data);
+        console.log(response.data)
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0">
+          <h5 style={{ padding: '10px', marginTop: '10px' }}>Drawings</h5>
+          <Table hover className="user-table align-items-center">
+            <thead>
+            <tr>
+              <th className="border-bottom">#</th>
+              <th className="border-bottom">Drawing Name</th>
+              <th className="border-bottom">File</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {drawings.map((drawing, index) => (
+                <tr key={index}>
+                  <td>{drawing.drawingID}</td>
+                  <td>{drawing.drawingName}</td>
+                  <td><a target= "_blank" href={drawing.fileUrl}>{drawing.fileUrl}</a></td>
+
+                </tr>
+            ))}
+            </tbody>
+          </Table>
+          <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+            <Nav>
+              <Pagination className="mb-2 mb-lg-0">
+                <Pagination.Prev>Previous</Pagination.Prev>
+                <Pagination.Item active>1</Pagination.Item>
+                <Pagination.Item>2</Pagination.Item>
+                <Pagination.Item>3</Pagination.Item>
+                <Pagination.Item>4</Pagination.Item>
+                <Pagination.Item>5</Pagination.Item>
+                <Pagination.Next>Next</Pagination.Next>
+              </Pagination>
+            </Nav>
+            <small className="fw-bold">
+              Showing <b>{drawings.length}</b> out of <b>25</b> entries
+            </small>
+          </Card.Footer>
+        </Card.Body>
+      </Card>
   );
 };
