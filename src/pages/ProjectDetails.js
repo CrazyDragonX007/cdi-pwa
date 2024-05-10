@@ -151,7 +151,7 @@ export default (props) => {
             </div>
             <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose}>
               <Modal.Header>
-                <Modal.Title className="h6">Upload Contract/Drawing</Modal.Title>
+                <Modal.Title className="h6">Upload File</Modal.Title>
                 <Button variant="close" aria-label="Close" onClick={handleClose} />
               </Modal.Header>
               <Modal.Body>
