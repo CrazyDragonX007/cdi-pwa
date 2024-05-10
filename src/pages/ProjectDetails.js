@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Form, Button, ButtonGroup, Breadcrumb, InputGroup, Dropdown } from '@themesberg/react-bootstrap';
 import { Nav, Tab, Card, Modal } from '@themesberg/react-bootstrap';
-import { TransactionsTable, ContractsTable, DrawingsTable } from "../components/Tables";
+import {TransactionsTable, ContractsTable, DrawingsTable, FilesTable} from "../components/Tables";
 import Documentation from "../components/Documentation";
 import { faDochub } from "@fortawesome/free-brands-svg-icons";
 import { Contract_Drawing_Form } from "../components/Forms";
@@ -91,12 +91,12 @@ export default (props) => {
                     <Nav fill variant="pills" className="flex-column flex-sm-row">
 
                       <Nav.Item>
-                        <Nav.Link eventKey="code_friendly" className="mb-sm-3 mb-md-0">
+                        <Nav.Link eventKey="contracts" className="mb-sm-3 mb-md-0">
                           <FontAwesomeIcon icon={faBookReader} className="me-2" /> Contracts
                         </Nav.Link>
                       </Nav.Item>
                       <Nav.Item>
-                        <Nav.Link eventKey="user_experience" className="mb-sm-3 mb-md-0">
+                        <Nav.Link eventKey="drawings" className="mb-sm-3 mb-md-0">
                           <FontAwesomeIcon icon={faPalette} className="me-2" /> Drawings
                         </Nav.Link>
                       </Nav.Item>
@@ -108,17 +108,17 @@ export default (props) => {
                     </Nav>
                     <Tab.Content>
 
-                      <Tab.Pane eventKey="code_friendly" className="py-4">
-                        {/*<ContractsTable />*/}
-                        //TODO: Add project's contracts here
+                      <Tab.Pane eventKey="contracts" className="py-4">
+                        <ContractsTable projectID={projectDetails.projectID}/>
+
                       </Tab.Pane>
-                      <Tab.Pane eventKey="user_experience" className="py-4">
-                        {/*<DrawingsTable />*/}
-                        //TODO: Add project's drawings here
+                      <Tab.Pane eventKey="drawings" className="py-4">
+                        <DrawingsTable projectID={projectDetails.projectID}/>
+
                       </Tab.Pane>
                       <Tab.Pane eventKey="files" className="py-4">
-                        {/*<DrawingsTable />*/}
-                        //TODO: Add project's drawings here
+                        <FilesTable projectID={projectDetails.projectID}/>
+
                       </Tab.Pane>
                     </Tab.Content>
                   </Col>

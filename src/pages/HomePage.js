@@ -7,6 +7,7 @@ import { Routes } from "../routes";
 import Upgrade from "./Upgrade";
 import DashboardOverview from "./dashboard/DashboardOverview";
 import VehicleInspectionForms from "./VehicleInspectionForms";
+import IncidentReportForm from "./IncidentReportForm";
 import VehicleMovingForm from './VehicleMovingForm';
 import DailyReports from './DailyReports';
 import Projects from './Projects';
@@ -128,6 +129,7 @@ export default () => {
             <RouteWithSidebar exact path={Routes.DashboardOverview.path} component={DashboardOverview} />
             <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} />
             <RouteWithSidebar exact path={Routes.VehicleInspectionForms.path} component={VehicleInspectionForms} />
+            <RouteWithSidebar exact path={Routes.IncidentReportForm.path} component={IncidentReportForm} />
             <RouteWithSidebar exact path={Routes.VehicleMovingForm.path} component={VehicleMovingForm} />
             <RouteWithSidebar exact path={Routes.DailyReports.path} component={DailyReports} />
             <RouteWithSidebar exact path={Routes.Projects.path} component={Projects} />

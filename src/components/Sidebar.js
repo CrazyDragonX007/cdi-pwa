@@ -216,6 +216,12 @@ export default (props = {}) => {
                       link={Routes.DailyReports.path}
                   />
 
+                  <NavItem
+                      title="Incident Reports"
+                      icon={faHandHoldingUsd}
+                      link={Routes.IncidentReportForm.path}
+                  />
+
                   <CollapsableNavItem
                       eventKey="forms/"
                       title="Forms"
