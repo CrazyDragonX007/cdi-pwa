@@ -55,7 +55,7 @@
     "sass": "^1.71.1",
     "simplebar-react": "^2.3.0",
     "yarn": "^1.22.22",
-    "node": "^14.21.3"
+    
   },
   "scripts": {
     "start": "react-scripts start",
