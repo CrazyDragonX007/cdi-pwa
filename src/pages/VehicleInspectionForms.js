@@ -12,9 +12,9 @@ export default () => {
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
             <Breadcrumb.Item><FontAwesomeIcon icon={faHome} /></Breadcrumb.Item>
             <Breadcrumb.Item>CDI</Breadcrumb.Item>
-            <Breadcrumb.Item active>Vehicle Inspection Forms</Breadcrumb.Item>
+            <Breadcrumb.Item active>Equipment Inspection Forms</Breadcrumb.Item>
           </Breadcrumb>
-          <h4>Vehicle Inspection Forms</h4>
+          <h4>Equipment Inspection Forms</h4>
           {/* <p className="mb-0">Your web analytics dashboard template.</p> */}
         </div>
         {/*<div className="btn-toolbar mb-2 mb-md-0">*/}

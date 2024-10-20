@@ -246,7 +246,7 @@ export const VIFTable = () => {
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
-          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Vehicle Inspection Submissions</h5>
+          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Equipment Inspection Submissions</h5>
           <Button variant='light'>
             <ExportCSV data={[headers, ...data]} filename="table-data.csv">
               Export to CSV
@@ -390,7 +390,7 @@ export const VMFTable = () => {
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
-          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Vehicle Moving Form Submissions</h5>
+          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Equipment Moving Form Submissions</h5>
           <Button variant='light'>
             <ExportCSV data={[headers, ...data]} filename="table-data.csv">
               Export to CSV

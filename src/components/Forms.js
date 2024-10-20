@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, cloneElement } from "react";
 import moment from "moment-timezone";
 import Datetime from "react-datetime";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -15,6 +16,9 @@ import {
 import axios from "axios";
 import Contracts from "../pages/ProjectDetails";
 import {useHistory, Redirect} from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 require('dotenv').config();
 // class WeatherData extends React.Component {
@@ -102,15 +106,31 @@ export const VI_Form = () => {
         }
       try {
         const response = await axios.post(createVehicleInspectionForm, formData);
-        console.log('Form submitted successfully:', response.data.message);
+        // console.log('Form submitted successfully:', response.data.message);
+          toast.success('Form submitted successfully!');
         setFormSubmitted(true);
       } catch (error) {
         console.error('Error submitting form:', error);
+          toast.error('Error submitting form. Please try again.');
       }
     };
   
   
   return (
+      <>
+          <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+
+          />
+
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
         <h5 className="mb-4">Daily Equipment Inspection Report</h5>
@@ -534,6 +554,7 @@ export const VI_Form = () => {
         </Form>
       </Card.Body>
     </Card>
+      </>
   );
 };
 
@@ -570,12 +591,27 @@ export const VM_Form = () => {
         ...formData
       });
       console.log('Response:', response.data);
+        toast.success('Form submitted successfully!');
     } catch (error) {
       console.error('Error inserting data:', error);
+        toast.error('Error submitting form. Please try again.');
     }
   };
 
   return (
+      <>
+      <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+
+      />
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
         <h5 className="mb-4">Vehicle Moving Form</h5>
@@ -716,6 +752,7 @@ export const VM_Form = () => {
     </Form>
       </Card.Body>
     </Card>
+    </>
   );
 };
 
@@ -787,12 +824,27 @@ export const DR_Form = () => {
         ...formData, weatherDetails
       });
       console.log('Response:', response.data);
+        toast.success('Form submitted successfully!');
     } catch (error) {
       console.error('Error inserting data:', error);
+        toast.error('Error submitting form. Please try again.');
     }
   };
   
   return (
+      <>
+          <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+
+          />
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
         <h5 className="mb-4">Daily Report</h5>
@@ -985,6 +1037,7 @@ export const DR_Form = () => {
     </Form>
       </Card.Body>
     </Card>
+          </>
   );
 };
 
@@ -1033,21 +1086,38 @@ export const IR_Form = () => {
             const response = await axios.post(createIncidentReportForm, {
                 ...formData,
                 dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
-                employeeSignDate: moment().format("YYYY-MM-DD HH:mm:ss"), // Assuming current date for simplicity
-                supervisorSignDate: moment().format("YYYY-MM-DD HH:mm:ss") // Assuming current date for simplicity
+                employeeSignDate: moment(empDateTime).format("YYYY-MM-DD HH:mm:ss"),
+                supervisorSignDate: moment(supDateTime).format("YYYY-MM-DD HH:mm:ss")
             });
             console.log('Response:', response.data);
+            console.log('toast')
+            toast.success('Form submitted successfully!');
         } catch (error) {
             console.error('Error inserting data:', error);
+            toast.error('Error submitting form. Please try again.');
         }
     };
 
     return (
+        <>
+        <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+
+        />
         <Card border="light" className="mb-4 bg-white shadow-sm">
             <Card.Body>
                 <h5 className="mb-4">Incident Report Form</h5>
                 <Form onSubmit={handleSubmit}>
                     <Row>
+
                         <Col md={6} className="mb-3">
                             <Form.Group id="incidentType">
                                 <Form.Label>Documenting an:</Form.Label>
@@ -1310,6 +1380,8 @@ export const IR_Form = () => {
     </Form>
       </Card.Body>
     </Card>
+
+        </>
   );
 };
 
