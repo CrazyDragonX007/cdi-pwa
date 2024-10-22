@@ -9,6 +9,7 @@ import DashboardOverview from "./dashboard/DashboardOverview";
 import VehicleInspectionForms from "./VehicleInspectionForms";
 import IncidentReportForm from "./IncidentReportForm";
 import VehicleMovingForm from './VehicleMovingForm';
+import TruckInspectionForm from "./TruckInspectionForm";
 import DailyReports from './DailyReports';
 import Projects from './Projects';
 import ProjectDetails from './ProjectDetails';
@@ -17,6 +18,7 @@ import VIForm from "./VIForm";
 import VMForm from './VMForm';
 import DRForm from './DRForm';
 import IRForm from './IRForm';
+import TIForm from "./TIForm";
 
 import BootstrapTables from "./tables/BootstrapTables";
 import Signin from "./examples/Signin";
@@ -132,12 +134,14 @@ export default () => {
             <RouteWithSidebar exact path={Routes.IncidentReportForm.path} component={IncidentReportForm} />
             <RouteWithSidebar exact path={Routes.VehicleMovingForm.path} component={VehicleMovingForm} />
             <RouteWithSidebar exact path={Routes.DailyReports.path} component={DailyReports} />
+            <RouteWithSidebar exact path={Routes.TruckInspectionForm.path} component={TruckInspectionForm} />
             <RouteWithSidebar exact path={Routes.Projects.path} component={Projects} />
             <RouteWithSidebar exact path={Routes.ProjectDetails.path} component={ProjectDetails} />
             <RouteWithSidebar exact path={Routes.VIForm.path} component={VIForm} />
             <RouteWithSidebar exact path={Routes.VMForm.path} component={VMForm} />
             <RouteWithSidebar exact path={Routes.DRForm.path} component={DRForm} />
             <RouteWithSidebar exact path={Routes.IRForm.path} component={IRForm} />
+            <RouteWithSidebar exact path={Routes.TIForm.path} component={TIForm} />
             <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
 
             {/* components */}

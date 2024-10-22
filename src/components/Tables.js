@@ -36,6 +36,7 @@ const getProjects = `${apiURL}/crud/getProjects`
 const getContracts = `${apiURL}/crud/getContracts`
 const getDrawings = `${apiURL}/crud/getDrawings`
 const getIncidentReportForm = `${apiURL}/crud/getIncidentReportForm`
+const getTruckInspection = `${apiURL}/crud/getTruckInspectionForm`
 
 export const PageVisitsTable = () => {
   const TableRow = (props) => {
@@ -683,6 +684,136 @@ export const IRTable = () => {
   );
 };
 
+export const TITable = () => {
+  const [forms, setForms] = useState([]);
+  const [totalForms, setTotalForms] = useState(0);
+  const [headers, setHeaders] = useState([]);
+
+  const data = forms.map((item) => Object.values(item));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getTruckInspection);
+        let d = response.data.reverse();
+        setForms(d);
+        setHeaders(Object.keys(d[0]));
+        setTotalForms(d.length);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDateTime = (dateTime) => {
+    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
+  };
+
+  return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0">
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
+            <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Truck Inspection Submissions</h5>
+            <Button variant='light'>
+              <ExportCSV data={[headers, ...data]} filename="truck-inspection-data.csv">
+                Export to CSV
+              </ExportCSV>
+            </Button>
+          </div>
+          <Table hover className="user-table align-items-center">
+            <thead>
+            <tr>
+              <th className="border-bottom">Inspection ID</th>
+              <th className="border-bottom">Truck No</th>
+              <th className="border-bottom">Mileage</th>
+              <th className="border-bottom">Date Time</th>
+              <th className="border-bottom">Engine Oil</th>
+              <th className="border-bottom">Anti-Freeze</th>
+              <th className="border-bottom">Power Steering</th>
+              <th className="border-bottom">Transmission</th>
+              <th className="border-bottom">Washer</th>
+              <th className="border-bottom">GPS Holder</th>
+              <th className="border-bottom">Insurance/Reg</th>
+              <th className="border-bottom">Backup Alarm</th>
+              <th className="border-bottom">Fire Ext</th>
+              <th className="border-bottom">Horn</th>
+              <th className="border-bottom">All Glass</th>
+              <th className="border-bottom">Mirrors</th>
+              <th className="border-bottom">Tire PSI</th>
+              <th className="border-bottom">Head Lights</th>
+              <th className="border-bottom">Park Lights</th>
+              <th className="border-bottom">Flasher</th>
+              <th className="border-bottom">Strobe Lights</th>
+              <th className="border-bottom">Work Lights</th>
+              <th className="border-bottom">Four Straps</th>
+              <th className="border-bottom">Tommy Gate</th>
+              <th className="border-bottom">Trailer Towed</th>
+              <th className="border-bottom">Drain Air Tanks</th>
+              <th className="border-bottom">Dashboard Clear</th>
+              <th className="border-bottom">Policy Ack</th>
+              <th className="border-bottom">Sign Name</th>
+              <th className="border-bottom">Notes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {forms.map((form, index) => (
+                <tr key={index}>
+                  <td>{form.inspectionID}</td>
+                  <td>{form.truckNo}</td>
+                  <td>{form.mileage}</td>
+                  <td>{formatDateTime(form.dateTime)}</td>
+                  <td>{form.engineOil}</td>
+                  <td>{form.antiFreeze}</td>
+                  <td>{form.powerSteering}</td>
+                  <td>{form.transmission}</td>
+                  <td>{form.washer}</td>
+                  <td>{form.gpsHolder}</td>
+                  <td>{form.insuranceReg}</td>
+                  <td>{form.backupAlarm}</td>
+                  <td>{form.fireExt}</td>
+                  <td>{form.horn}</td>
+                  <td>{form.allGlass}</td>
+                  <td>{form.mirrors}</td>
+                  <td>{form.tirePSI}</td>
+                  <td>{form.headLights}</td>
+                  <td>{form.parkLights}</td>
+                  <td>{form.flasher}</td>
+                  <td>{form.strobeLights}</td>
+                  <td>{form.workLights}</td>
+                  <td>{form.fourStraps}</td>
+                  <td>{form.tommyGate}</td>
+                  <td>{form.trailerTowed}</td>
+                  <td>{form.drainAirtanks}</td>
+                  <td>{form.dashboardClear}</td>
+                  <td>{form.policyAck}</td>
+                  <td>{form.signName}</td>
+                  <td>{form.notes}</td>
+                </tr>
+            ))}
+            </tbody>
+          </Table>
+          <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+            <Nav>
+              <Pagination className="mb-2 mb-lg-0">
+                <Pagination.Prev>Previous</Pagination.Prev>
+                <Pagination.Item active>1</Pagination.Item>
+                <Pagination.Item>2</Pagination.Item>
+                <Pagination.Item>3</Pagination.Item>
+                <Pagination.Item>4</Pagination.Item>
+                <Pagination.Item>5</Pagination.Item>
+                <Pagination.Next>Next</Pagination.Next>
+              </Pagination>
+            </Nav>
+            <small className="fw-bold">
+              Showing <b>{totalForms}</b> out of <b>25</b> entries
+            </small>
+          </Card.Footer>
+        </Card.Body>
+      </Card>
+  );
+};
 
 export const CommandsTable = () => {
   const TableRow = (props) => {

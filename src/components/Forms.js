@@ -59,6 +59,7 @@ require('dotenv').config();
   const createProject = `${apiURL}/crud/createProject`
   const weatherAPI = `${apiURL}/crud/weather`
   const createIncidentReportForm =  `${apiURL}/crud/createIncidentReportForm`
+  const createTruckInspectionForm = `${apiURL}/crud/createTruckInspectionForm`
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
@@ -1383,6 +1384,240 @@ export const IR_Form = () => {
 
         </>
   );
+};
+
+
+export const TI_Form = () => {
+    const [dateTime, setDateTime] = useState('');
+    const [formData, setFormData] = useState({
+        truckNo: '',
+        mileage: '',
+        engineOil: '',
+        antiFreeze: '',
+        powerSteering: '',
+        transmission: '',
+        washer: '',
+        gpsHolder: '',
+        insuranceReg: '',
+        backupAlarm: '',
+        fireExt: '',
+        horn: '',
+        allGlass: '',
+        mirrors: '',
+        tirePSI: '',
+        headLights: '',
+        parkLights: '',
+        flasher: '',
+        strobeLights: '',
+        workLights: '',
+        fourStraps: '',
+        tommyGate: '',
+        trailerTowed: '',
+        drainAirtanks: '',
+        dashboardClear: '',
+        policyAck: '',
+        signName: '',
+        notes: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleDateTimeChange = (date) => {
+        setDateTime(date);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(createTruckInspectionForm, {
+                ...formData,
+                dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss")
+            });
+            console.log('Response:', response.data);
+            toast.success('Truck inspection form submitted successfully!');
+        } catch (error) {
+            console.error('Error inserting data:', error);
+            toast.error('Error submitting form. Please try again.');
+        }
+    };
+
+    const renderRadioGroup = (name, label) => (
+        <Form.Group className="mb-3">
+            <Form.Label>{label}</Form.Label>
+            <div>
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="Good"
+                    name={name}
+                    value="Good"
+                    checked={formData[name] === "Good"}
+                    onChange={handleChange}
+                />
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="Bad"
+                    name={name}
+                    value="Bad"
+                    checked={formData[name] === "Bad"}
+                    onChange={handleChange}
+                />
+            </div>
+        </Form.Group>
+    );
+
+    return (
+        <>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+            <Card border="light" className="mb-4 bg-white shadow-sm">
+                <Card.Body>
+                    <h5 className="mb-4">Truck Inspection Form</h5>
+                    <Form onSubmit={handleSubmit}>
+                        <Row>
+                            <Col md={4} className="mb-3">
+                                <Form.Group>
+                                    <Form.Label>Truck Number</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="truckNo"
+                                        type="text"
+                                        placeholder="Enter truck number"
+                                        value={formData.truckNo}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={4} className="mb-3">
+                                <Form.Group>
+                                    <Form.Label>Mileage</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="mileage"
+                                        type="text"
+                                        placeholder="Enter mileage"
+                                        value={formData.mileage}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={4} className="mb-3">
+                                <Form.Group>
+                                    <Form.Label>Date & Time</Form.Label>
+                                    <Datetime
+                                        onChange={handleDateTimeChange}
+                                        value={dateTime}
+                                        renderInput={(props, openCalendar) => (
+                                            <InputGroup>
+                                                <InputGroup.Text>
+                                                    <FontAwesomeIcon icon={faCalendarAlt} />
+                                                </InputGroup.Text>
+                                                <Form.Control
+                                                    required
+                                                    type="text"
+                                                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                                                    placeholder="Enter Date & Time"
+                                                    onFocus={openCalendar}
+                                                    onChange={() => {}}
+                                                />
+                                            </InputGroup>
+                                        )}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={4}>{renderRadioGroup("engineOil", "Engine Oil")}</Col>
+                            <Col md={4}>{renderRadioGroup("antiFreeze", "Anti-Freeze")}</Col>
+                            <Col md={4}>{renderRadioGroup("powerSteering", "Power Steering")}</Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={4}>{renderRadioGroup("transmission", "Transmission")}</Col>
+                            <Col md={4}>{renderRadioGroup("washer", "Washer")}</Col>
+                            <Col md={4}>{renderRadioGroup("gpsHolder", "GPS Holder")}</Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={4}>{renderRadioGroup("insuranceReg", "Insurance/Registration")}</Col>
+                            <Col md={4}>{renderRadioGroup("backupAlarm", "Backup Alarm")}</Col>
+                            <Col md={4}>{renderRadioGroup("fireExt", "Fire Extinguisher")}</Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={4}>{renderRadioGroup("horn", "Horn")}</Col>
+                            <Col md={4}>{renderRadioGroup("allGlass", "All Glass")}</Col>
+                            <Col md={4}>{renderRadioGroup("mirrors", "Mirrors")}</Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={4}>{renderRadioGroup("tirePSI", "Tire PSI")}</Col>
+                            <Col md={4}>{renderRadioGroup("headLights", "Head Lights")}</Col>
+                            <Col md={4}>{renderRadioGroup("parkLights", "Park Lights")}</Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={4}>{renderRadioGroup("flasher", "Flasher")}</Col>
+                            <Col md={4}>{renderRadioGroup("strobeLights", "Strobe Lights")}</Col>
+                            <Col md={4}>{renderRadioGroup("workLights", "Work Lights")}</Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={4}>{renderRadioGroup("fourStraps", "Four Straps")}</Col>
+                            <Col md={4}>{renderRadioGroup("tommyGate", "Tommy Gate")}</Col>
+                            <Col md={4}>{renderRadioGroup("trailerTowed", "Trailer Towed")}</Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={4}>{renderRadioGroup("drainAirtanks", "Drain Air Tanks")}</Col>
+                            <Col md={4}>{renderRadioGroup("dashboardClear", "Dashboard Clear")}</Col>
+                            <Col md={4}>{renderRadioGroup("policyAck", "Policy Acknowledgement")}</Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={6} className="mb-3">
+                                <Form.Group>
+                                    <Form.Label>Notes</Form.Label>
+                                    <Form.Control
+                                        name="notes"
+                                        as="textarea"
+                                        rows={3}
+                                        placeholder="Enter any additional notes"
+                                        value={formData.notes}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6} className="mb-3">
+                                <Form.Group>
+                                    <Form.Label>Sign Name</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="signName"
+                                        type="text"
+                                        placeholder="Enter your name"
+                                        value={formData.signName}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+
+                        </Row>
+
+                        <div className="mt-3">
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </div>
+                    </Form>
+                </Card.Body>
+            </Card>
+        </>
+    );
 };
 
 export const Project_Form = () => {

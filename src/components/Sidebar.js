@@ -33,7 +33,7 @@ import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
 
-import logoImg from "../assets/img/cdi-logo.jpg";
+import logoImg from "../assets/img/image.png";
 // const logoImg = "../assets/img/cdi-logo.jpg";
 
 export default (props = {}) => {
@@ -187,11 +187,11 @@ export default (props = {}) => {
                 <Nav className="flex-column pt-md-0 pt-3 ">
                   <NavItem link={Routes.DashboardOverview.path} image={logoImg}/>
 
-                  <NavItem
-                      title="Overview"
-                      link={Routes.DashboardOverview.path}
-                      icon={faChartPie}
-                  />
+                  {/*<NavItem*/}
+                  {/*    title="Overview"*/}
+                  {/*    link={Routes.DashboardOverview.path}*/}
+                  {/*    icon={faChartPie}*/}
+                  {/*/>*/}
                   {/* <NavItem
                 external
                 title="Messages"
@@ -221,6 +221,11 @@ export default (props = {}) => {
                       icon={faHandHoldingUsd}
                       link={Routes.IncidentReportForm.path}
                   />
+                  <NavItem
+                      title="Truck Inspection"
+                      icon={faHandHoldingUsd}
+                      link={Routes.TruckInspectionForm.path}
+                  />
 
                   <CollapsableNavItem
                       eventKey="forms/"
@@ -246,6 +251,11 @@ export default (props = {}) => {
                         title="Incident Report"
                         icon={faCog}
                         link={Routes.IRForm.path}
+                    />
+                    <NavItem
+                        title="Truck Inspection"
+                        icon={faCog}
+                        link={Routes.TIForm.path}
                     />
                   </CollapsableNavItem>
 
@@ -489,6 +499,11 @@ export default (props = {}) => {
                         title="IR Form"
                         icon={faCog}
                         link={Routes.IRForm.path}
+                    />
+                    <NavItem
+                        title="Truck Inspection"
+                        icon={faCog}
+                        link={Routes.TIForm.path}
                     />
                   </CollapsableNavItem>
 
