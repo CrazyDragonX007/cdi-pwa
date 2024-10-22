@@ -208,377 +208,17 @@ export const VIFTable = () => {
   const [totalForms, setTotalForms] = useState(0);
   const [folderUrl, setFolderUrl] = useState('');
   const [headers, setHeaders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [formsPerPage] = useState(10); // Adjust this number as needed
+  const [showDefault, setShowDefault] = useState(false);
 
-  // const headers = Object.keys(forms[0]);
   const data = forms.map((item) => Object.values(item));
-  // console.log(forms)
-  // const headers = (forms[0] !== null | forms[0] !== undefined)  ? Object.keys(forms[0]) : null;
-  // console.log(header);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(getVehicleInspectionFormUrl);
-        let d = response.data
-        d = d.reverse()
-        setForms(d);
-        setHeaders(Object.keys(d[0]))
-
-        setTotalForms(response.data.length);
-        
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const formatDateTime = (dateTime) => {
-    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
-  };
-  const [showDefault, setShowDefault] = useState(false);
-  const handleClose = () => setShowDefault(false);
-  const handleSubmit = (formData) => {
-    handleClose();
-  };
-
-  return (
-    <Card border="light" className="table-wrapper table-responsive shadow-sm">
-      <Card.Body className="pt-0">
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
-          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Equipment Inspection Submissions</h5>
-          <Button variant='light'>
-            <ExportCSV data={[headers, ...data]} filename="table-data.csv">
-              Export to CSV
-            </ExportCSV>
-          </Button>
-
-        </div>
-        <Table hover className="user-table align-items-center">
-          <thead>
-          <tr>
-            <th className="border-bottom">#</th>
-            {/* <th className="border-bottom">User ID</th> */}
-            <th className="border-bottom">Date Time</th>
-            {/* <th className="border-bottom">First Name</th> */}
-            <th className="border-bottom">Vehicle Name</th>
-            <th className="border-bottom">Vehicle No</th>
-            <th className="border-bottom">Pickup Jobsite</th>
-            <th className="border-bottom">Dropoff Location</th>
-            <th className="border-bottom">Inspected By</th>
-            <th className="border-bottom">Physical Damage</th>
-            <th className="border-bottom">Leak Status</th>
-            <th className="border-bottom">LHA Condition</th>
-            <th className="border-bottom">Safety Devices Condition</th>
-            <th className="border-bottom">Up Low Emergency Controls</th>
-            <th className="border-bottom">Oil Capacity</th>
-            <th className="border-bottom">Safety Warning Decals Condition</th>
-            <th className="border-bottom">Park Brake Condition</th>
-            <th className="border-bottom">Image Object</th>
-            <th className="border-bottom">Notes</th>
-            {/* <th className="border-bottom">Last Name</th> */}
-          </tr>
-          </thead>
-
-
-          <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose} size='xl'>
-            <Modal.Header>
-              <Modal.Title className="h6">Attachments</Modal.Title>
-              <Button variant="close" aria-label="Close" onClick={handleClose}/>
-            </Modal.Header>
-            <Modal.Body>
-              <S3FileList folderUrl={folderUrl}/>
-            </Modal.Body>
-            <Modal.Footer>
-              {/* <Button variant="secondary" onClick={handleClose}>
-                    I Got It
-                </Button> */}
-              <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          <tbody>
-          {forms.map((form, index) => (
-              <tr key={index}>
-                <td>{form.formID}</td>
-                {/* <td>{form.userID}</td> */}
-                <td>{formatDateTime(form.dateTime)}</td>
-                {/* <td>{form.firstName}</td> */}
-                <td>{form.vehicleName}</td>
-                <td>{form.vehicleNo}</td>
-                <td>{form.pickupJobsite}</td>
-                <td>{form.dropoffLocation}</td>
-                <td>{form.inspectedBy}</td>
-                <td>{form.physicalDamage}</td>
-                <td>{form.leakStatus}</td>
-                <td>{form.lhaCondition}</td>
-                <td>{form.safetyDevicesCondition}</td>
-                <td>{form.up_lowEmergencyControls}</td>
-                <td>{form.oilCapacity}</td>
-                <td>{form.safetyWarningDecalsCondition}</td>
-                <td>{form.parkBrakeCondition}</td>
-                {/* <td>{form.folderUrl}</td> */}
-                {/* <td>
-                  {Array.isArray(form.folderUrl) && form.folderUrl.length > 1 ? (
-                    <Button variant="light" className="my-3" onClick={() => setShowDefault(true)}>Open</Button>
-                  ) : (
-                    form.folderUrl
-                  )}
-                </td> */}
-                <td><Button variant="light" className="my-3" onClick={() => {
-                  setFolderUrl(form.folderUrl)
-                  setShowDefault(true)
-
-                }}>Open</Button></td>
-                <td>{form.notes}</td>
-                {/* <td>{form.lastName}</td> */}
-              </tr>
-          ))}
-          </tbody>
-        </Table>
-        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
-          <Nav>
-            <Pagination className="mb-2 mb-lg-0">
-              <Pagination.Prev>Previous</Pagination.Prev>
-              <Pagination.Item active>1</Pagination.Item>
-              <Pagination.Item>2</Pagination.Item>
-              <Pagination.Item>3</Pagination.Item>
-              <Pagination.Item>4</Pagination.Item>
-              <Pagination.Item>5</Pagination.Item>
-              <Pagination.Next>Next</Pagination.Next>
-            </Pagination>
-          </Nav>
-          <small className="fw-bold">
-            Showing <b>{totalForms}</b> out of <b>25</b> entries
-          </small>
-        </Card.Footer>
-      </Card.Body>
-    </Card>
-  );
-};
-
-export const VMFTable = () => {
-  const [forms, setForms] = useState([]);
-  const [totalForms, setTotalForms] = useState(0);
-  const [headers, setHeaders] = useState([]);
-  const data = forms.map((item) => Object.values(item));
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getVehicleMovingFormUrl);
-        let d = response.data
-        d = d.reverse()
-        setForms(d);
-        setHeaders(Object.keys(d[0]))
-        // setForms(response.data);
-        // console.log(response.data)
-        setTotalForms(response.data.length);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const formatDateTime = (dateTime) => {
-    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
-  };
-  return (
-    <Card border="light" className="table-wrapper table-responsive shadow-sm">
-      <Card.Body className="pt-0">
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
-          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Equipment Moving Form Submissions</h5>
-          <Button variant='light'>
-            <ExportCSV data={[headers, ...data]} filename="table-data.csv">
-              Export to CSV
-            </ExportCSV>
-          </Button>
-
-        </div>
-
-        <Table hover className="user-table align-items-center">
-          <thead>
-          <tr>
-            <th className="border-bottom">#</th>
-            <th className="border-bottom">User ID</th>
-            <th className="border-bottom">Date Time</th>
-            <th className="border-bottom">First Name</th>
-            <th className="border-bottom">Last Name</th>
-            <th className="border-bottom">Vehicle Name</th>
-            <th className="border-bottom">Vehicle No</th>
-            <th className="border-bottom">Pickup Jobsite</th>
-            <th className="border-bottom">Dropoff Location</th>
-            <th className="border-bottom">Notes</th>
-
-          </tr>
-          </thead>
-          <tbody>
-          {forms.map((form, index) => (
-              <tr key={index}>
-                <td>{form.formID}</td>
-                <td>{form.userID}</td>
-                <td>{formatDateTime(form.dateTime)}</td>
-                <td>{form.firstName}</td>
-                <td>{form.lastName}</td>
-                <td>{form.vehicleName}</td>
-                <td>{form.vehicleNo}</td>
-                <td>{form.pickupJobsite}</td>
-                <td>{form.dropoffLocation}</td>
-                <td>{form.notes}</td>
-
-              </tr>
-          ))}
-          </tbody>
-        </Table>
-        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
-          <Nav>
-            <Pagination className="mb-2 mb-lg-0">
-              <Pagination.Prev>Previous</Pagination.Prev>
-              <Pagination.Item active>1</Pagination.Item>
-              <Pagination.Item>2</Pagination.Item>
-              <Pagination.Item>3</Pagination.Item>
-              <Pagination.Item>4</Pagination.Item>
-              <Pagination.Item>5</Pagination.Item>
-              <Pagination.Next>Next</Pagination.Next>
-            </Pagination>
-          </Nav>
-          <small className="fw-bold">
-            Showing <b>{totalForms}</b> out of <b>25</b> entries
-          </small>
-        </Card.Footer>
-      </Card.Body>
-    </Card>
-  );
-};
-
-export const DRTable = () => {
-  const [forms, setForms] = useState([]);
-  const [totalForms, setTotalForms] = useState(0);
-  const [headers, setHeaders] = useState([]);
-  const data = forms.map((item) => Object.values(item));
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getDailyReports);
-        // setForms(response.data);
-        let d = response.data
-        d = d.reverse()
-        setForms(d);
-        setHeaders(Object.keys(d[0]))
-        setTotalForms(response.data.length);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const formatDateTime = (dateTime) => {
-    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
-  };
-
-  
-  // Coordinates of Springfield, MO
-  // const latitude = '37.2090° N';
-  // const longitude = '93.2923° W';
-  // const API_KEY = '7036f0b118db1fe7096dddf444b4a0bb';
-  // const getWeatherDetails = async (latitude, longitude) => {
-  //   try {
-  //     const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
-  //     console.log(response.data.weather);
-  //     return response.data.weather[0].description;
-      
-  //   } catch (error) {
-  //     console.error('Error fetching weather data:', error);
-  //     return 'Weather data not available';
-  //   }
-  // };
-  
-  return (
-    <Card border="light" className="table-wrapper table-responsive shadow-sm">
-      <Card.Body className="pt-0">
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
-          <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Daily Reports</h5>
-          <Button variant='light'>
-            <ExportCSV data={[headers, ...data]} filename="table-data.csv">
-              Export to CSV
-            </ExportCSV>
-          </Button>
-
-        </div>
-        <Table hover className="user-table align-items-center">
-          <thead>
-          <tr>
-            {/*<th className="border-bottom">#</th>*/}
-            {/*<th className="border-bottom">User ID</th>*/}
-            <th className="border-bottom">Date Time</th>
-            <th className="border-bottom">First Name</th>
-            <th className="border-bottom">Last Name</th>
-            <th className="border-bottom">Project Name</th>
-            <th className="border-bottom">Project Location</th>
-            <th className="border-bottom">Scope of Work</th>
-            <th className="border-bottom">Work Performed</th>
-            <th className="border-bottom">Weather Details</th>
-            <th className="border-bottom">Notes</th>
-          </tr>
-          </thead>
-          <tbody>
-          {forms.map((form, index) => (
-              <tr key={index}>
-                {/*<td>{index}</td>*/}
-                {/*<td>{form.userID}</td>*/}
-                <td>{formatDateTime(form.dateTime)}</td>
-                <td>{form.firstName}</td>
-                <td>{form.lastName}</td>
-                <td>{form.projectName}</td>
-                <td>{form.projectLocation}</td>
-                <td>{form.scopeOfWork}</td>
-                <td>{form.workPerformed}</td>
-                <td>{form.weatherDetails}</td>
-                {/* <td>{getWeatherDetails('37.2090° N', '93.2923° W')}</td> */}
-                <td>{form.notes}</td>
-              </tr>
-          ))}
-          </tbody>
-        </Table>
-        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
-          <Nav>
-            <Pagination className="mb-2 mb-lg-0">
-              <Pagination.Prev>Previous</Pagination.Prev>
-              <Pagination.Item active>1</Pagination.Item>
-              <Pagination.Item>2</Pagination.Item>
-              <Pagination.Item>3</Pagination.Item>
-              <Pagination.Item>4</Pagination.Item>
-              <Pagination.Item>5</Pagination.Item>
-              <Pagination.Next>Next</Pagination.Next>
-            </Pagination>
-          </Nav>
-          <small className="fw-bold">
-            Showing <b>{totalForms}</b> out of <b>25</b> entries
-          </small>
-        </Card.Footer>
-      </Card.Body>
-    </Card>
-  );
-};
-
-export const IRTable = () => {
-  const [forms, setForms] = useState([]);
-  const [totalForms, setTotalForms] = useState(0);
-  const [headers, setHeaders] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getIncidentReportForm); // Adjusted to match your API endpoint
-        let d = response.data;
-        d = d.reverse();
+        let d = response.data.reverse();
         setForms(d);
         setHeaders(Object.keys(d[0]));
         setTotalForms(d.length);
@@ -593,6 +233,406 @@ export const IRTable = () => {
   const formatDateTime = (dateTime) => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
   };
+
+  const handleClose = () => setShowDefault(false);
+
+  // Get current forms
+  const indexOfLastForm = currentPage * formsPerPage;
+  const indexOfFirstForm = indexOfLastForm - formsPerPage;
+  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(forms.length / formsPerPage);
+
+  return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0">
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
+            <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Equipment Inspection Submissions</h5>
+            <Button variant='light'>
+              <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+                Export to CSV
+              </ExportCSV>
+            </Button>
+          </div>
+          <Table hover className="user-table align-items-center">
+            <thead>
+            <tr>
+              <th className="border-bottom">#</th>
+              <th className="border-bottom">Date Time</th>
+              <th className="border-bottom">Vehicle Name</th>
+              <th className="border-bottom">Vehicle No</th>
+              <th className="border-bottom">Pickup Jobsite</th>
+              <th className="border-bottom">Dropoff Location</th>
+              <th className="border-bottom">Inspected By</th>
+              <th className="border-bottom">Physical Damage</th>
+              <th className="border-bottom">Leak Status</th>
+              <th className="border-bottom">LHA Condition</th>
+              <th className="border-bottom">Safety Devices Condition</th>
+              <th className="border-bottom">Up Low Emergency Controls</th>
+              <th className="border-bottom">Oil Capacity</th>
+              <th className="border-bottom">Safety Warning Decals Condition</th>
+              <th className="border-bottom">Park Brake Condition</th>
+              <th className="border-bottom">Image Object</th>
+              <th className="border-bottom">Notes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {currentForms.map((form, index) => (
+                <tr key={index}>
+                  <td>{form.formID}</td>
+                  <td>{formatDateTime(form.dateTime)}</td>
+                  <td>{form.vehicleName}</td>
+                  <td>{form.vehicleNo}</td>
+                  <td>{form.pickupJobsite}</td>
+                  <td>{form.dropoffLocation}</td>
+                  <td>{form.inspectedBy}</td>
+                  <td>{form.physicalDamage}</td>
+                  <td>{form.leakStatus}</td>
+                  <td>{form.lhaCondition}</td>
+                  <td>{form.safetyDevicesCondition}</td>
+                  <td>{form.up_lowEmergencyControls}</td>
+                  <td>{form.oilCapacity}</td>
+                  <td>{form.safetyWarningDecalsCondition}</td>
+                  <td>{form.parkBrakeCondition}</td>
+                  <td>
+                    <Button variant="light" className="my-3" onClick={() => {
+                      setFolderUrl(form.folderUrl);
+                      setShowDefault(true);
+                    }}>
+                      Open
+                    </Button>
+                  </td>
+                  <td>{form.notes}</td>
+                </tr>
+            ))}
+            </tbody>
+          </Table>
+          <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+            <Nav>
+              <Pagination className="mb-2 mb-lg-0">
+                <Pagination.Prev
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                  Previous
+                </Pagination.Prev>
+                {[...Array(totalPages).keys()].map((number) => (
+                    <Pagination.Item
+                        key={number + 1}
+                        active={number + 1 === currentPage}
+                        onClick={() => paginate(number + 1)}
+                    >
+                      {number + 1}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                  Next
+                </Pagination.Next>
+              </Pagination>
+            </Nav>
+            <small className="fw-bold">
+              Showing <b>{indexOfFirstForm + 1}</b> to <b>{Math.min(indexOfLastForm, totalForms)}</b> out of <b>{totalForms}</b> entries
+            </small>
+          </Card.Footer>
+        </Card.Body>
+
+        <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose} size='xl'>
+          <Modal.Header>
+            <Modal.Title className="h6">Attachments</Modal.Title>
+            <Button variant="close" aria-label="Close" onClick={handleClose}/>
+          </Modal.Header>
+          <Modal.Body>
+            <S3FileList folderUrl={folderUrl}/>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </Card>
+  );
+};
+
+export const VMFTable = () => {
+  const [forms, setForms] = useState([]);
+  const [totalForms, setTotalForms] = useState(0);
+  const [headers, setHeaders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [formsPerPage] = useState(10); // Adjust this number as needed
+
+  const data = forms.map((item) => Object.values(item));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getVehicleMovingFormUrl);
+        let d = response.data.reverse();
+        setForms(d);
+        setHeaders(Object.keys(d[0]));
+        setTotalForms(d.length);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDateTime = (dateTime) => {
+    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
+  };
+
+  // Get current forms
+  const indexOfLastForm = currentPage * formsPerPage;
+  const indexOfFirstForm = indexOfLastForm - formsPerPage;
+  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(forms.length / formsPerPage);
+
+  return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0">
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
+            <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Equipment Moving Form Submissions</h5>
+            <Button variant='light'>
+              <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+                Export to CSV
+              </ExportCSV>
+            </Button>
+          </div>
+
+          <Table hover className="user-table align-items-center">
+            <thead>
+            <tr>
+              <th className="border-bottom">#</th>
+              <th className="border-bottom">User ID</th>
+              <th className="border-bottom">Date Time</th>
+              <th className="border-bottom">First Name</th>
+              <th className="border-bottom">Last Name</th>
+              <th className="border-bottom">Vehicle Name</th>
+              <th className="border-bottom">Vehicle No</th>
+              <th className="border-bottom">Pickup Jobsite</th>
+              <th className="border-bottom">Dropoff Location</th>
+              <th className="border-bottom">Notes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {currentForms.map((form, index) => (
+                <tr key={index}>
+                  <td>{form.formID}</td>
+                  <td>{form.userID}</td>
+                  <td>{formatDateTime(form.dateTime)}</td>
+                  <td>{form.firstName}</td>
+                  <td>{form.lastName}</td>
+                  <td>{form.vehicleName}</td>
+                  <td>{form.vehicleNo}</td>
+                  <td>{form.pickupJobsite}</td>
+                  <td>{form.dropoffLocation}</td>
+                  <td>{form.notes}</td>
+                </tr>
+            ))}
+            </tbody>
+          </Table>
+          <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+            <Nav>
+              <Pagination className="mb-2 mb-lg-0">
+                <Pagination.Prev
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                  Previous
+                </Pagination.Prev>
+                {[...Array(totalPages).keys()].map((number) => (
+                    <Pagination.Item
+                        key={number + 1}
+                        active={number + 1 === currentPage}
+                        onClick={() => paginate(number + 1)}
+                    >
+                      {number + 1}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                  Next
+                </Pagination.Next>
+              </Pagination>
+            </Nav>
+            <small className="fw-bold">
+              Showing <b>{indexOfFirstForm + 1}</b> to <b>{Math.min(indexOfLastForm, totalForms)}</b> out of <b>{totalForms}</b> entries
+            </small>
+          </Card.Footer>
+        </Card.Body>
+      </Card>
+  );
+};
+
+export const DRTable = () => {
+  const [forms, setForms] = useState([]);
+  const [totalForms, setTotalForms] = useState(0);
+  const [headers, setHeaders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [formsPerPage] = useState(10); // Adjust this number as needed
+
+  const data = forms.map((item) => Object.values(item));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getDailyReports);
+        let d = response.data.reverse();
+        setForms(d);
+        setHeaders(Object.keys(d[0]));
+        setTotalForms(d.length);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDateTime = (dateTime) => {
+    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
+  };
+
+  // Get current forms
+  const indexOfLastForm = currentPage * formsPerPage;
+  const indexOfFirstForm = indexOfLastForm - formsPerPage;
+  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(forms.length / formsPerPage);
+
+  return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0">
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
+            <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Daily Reports</h5>
+            <Button variant='light'>
+              <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+                Export to CSV
+              </ExportCSV>
+            </Button>
+          </div>
+          <Table hover className="user-table align-items-center">
+            <thead>
+            <tr>
+              <th className="border-bottom">Date Time</th>
+              <th className="border-bottom">First Name</th>
+              <th className="border-bottom">Last Name</th>
+              <th className="border-bottom">Project Name</th>
+              <th className="border-bottom">Project Location</th>
+              <th className="border-bottom">Scope of Work</th>
+              <th className="border-bottom">Work Performed</th>
+              <th className="border-bottom">Weather Details</th>
+              <th className="border-bottom">Notes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {currentForms.map((form, index) => (
+                <tr key={index}>
+                  <td>{formatDateTime(form.dateTime)}</td>
+                  <td>{form.firstName}</td>
+                  <td>{form.lastName}</td>
+                  <td>{form.projectName}</td>
+                  <td>{form.projectLocation}</td>
+                  <td>{form.scopeOfWork}</td>
+                  <td>{form.workPerformed}</td>
+                  <td>{form.weatherDetails}</td>
+                  <td>{form.notes}</td>
+                </tr>
+            ))}
+            </tbody>
+          </Table>
+          <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+            <Nav>
+              <Pagination className="mb-2 mb-lg-0">
+                <Pagination.Prev
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                  Previous
+                </Pagination.Prev>
+                {[...Array(totalPages).keys()].map((number) => (
+                    <Pagination.Item
+                        key={number + 1}
+                        active={number + 1 === currentPage}
+                        onClick={() => paginate(number + 1)}
+                    >
+                      {number + 1}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                  Next
+                </Pagination.Next>
+              </Pagination>
+            </Nav>
+            <small className="fw-bold">
+              Showing <b>{indexOfFirstForm + 1}</b> to <b>{Math.min(indexOfLastForm, totalForms)}</b> out of <b>{totalForms}</b> entries
+            </small>
+          </Card.Footer>
+        </Card.Body>
+      </Card>
+  );
+};
+
+export const IRTable = () => {
+  const [forms, setForms] = useState([]);
+  const [totalForms, setTotalForms] = useState(0);
+  const [headers, setHeaders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [formsPerPage] = useState(10); // Adjust this number as needed
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(getIncidentReportForm);
+        let d = response.data.reverse();
+        setForms(d);
+        setHeaders(Object.keys(d[0]));
+        setTotalForms(d.length);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDateTime = (dateTime) => {
+    return moment(dateTime).format('MM/DD/YYYY hh:mm A');
+  };
+
+  // Get current forms
+  const indexOfLastForm = currentPage * formsPerPage;
+  const indexOfFirstForm = indexOfLastForm - formsPerPage;
+  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(forms.length / formsPerPage);
 
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -642,7 +682,7 @@ export const IRTable = () => {
             </tr>
             </thead>
             <tbody>
-            {forms.map((form, index) => (
+            {currentForms.map((form, index) => (
                 <tr key={index}>
                   <td>{formatDateTime(form.dateTime)}</td>
                   <td>{form.name}</td>
@@ -666,17 +706,31 @@ export const IRTable = () => {
           <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
             <Nav>
               <Pagination className="mb-2 mb-lg-0">
-                <Pagination.Prev>Previous</Pagination.Prev>
-                <Pagination.Item active>1</Pagination.Item>
-                <Pagination.Item>2</Pagination.Item>
-                <Pagination.Item>3</Pagination.Item>
-                <Pagination.Item>4</Pagination.Item>
-                <Pagination.Item>5</Pagination.Item>
-                <Pagination.Next>Next</Pagination.Next>
+                <Pagination.Prev
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                  Previous
+                </Pagination.Prev>
+                {[...Array(totalPages).keys()].map((number) => (
+                    <Pagination.Item
+                        key={number + 1}
+                        active={number + 1 === currentPage}
+                        onClick={() => paginate(number + 1)}
+                    >
+                      {number + 1}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                  Next
+                </Pagination.Next>
               </Pagination>
             </Nav>
             <small className="fw-bold">
-              Showing <b>{totalForms}</b> out of <b>{totalForms}</b> entries
+              Showing <b>{indexOfFirstForm + 1}</b> to <b>{Math.min(indexOfLastForm, totalForms)}</b> out of <b>{totalForms}</b> entries
             </small>
           </Card.Footer>
         </Card.Body>
@@ -688,6 +742,8 @@ export const TITable = () => {
   const [forms, setForms] = useState([]);
   const [totalForms, setTotalForms] = useState(0);
   const [headers, setHeaders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [formsPerPage] = useState(10); // You can adjust this number as needed
 
   const data = forms.map((item) => Object.values(item));
 
@@ -710,6 +766,17 @@ export const TITable = () => {
   const formatDateTime = (dateTime) => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
   };
+
+  // Get current forms
+  const indexOfLastForm = currentPage * formsPerPage;
+  const indexOfFirstForm = indexOfLastForm - formsPerPage;
+  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(forms.length / formsPerPage);
 
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -758,7 +825,7 @@ export const TITable = () => {
             </tr>
             </thead>
             <tbody>
-            {forms.map((form, index) => (
+            {currentForms.map((form, index) => (
                 <tr key={index}>
                   <td>{form.inspectionID}</td>
                   <td>{form.truckNo}</td>
@@ -797,17 +864,31 @@ export const TITable = () => {
           <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
             <Nav>
               <Pagination className="mb-2 mb-lg-0">
-                <Pagination.Prev>Previous</Pagination.Prev>
-                <Pagination.Item active>1</Pagination.Item>
-                <Pagination.Item>2</Pagination.Item>
-                <Pagination.Item>3</Pagination.Item>
-                <Pagination.Item>4</Pagination.Item>
-                <Pagination.Item>5</Pagination.Item>
-                <Pagination.Next>Next</Pagination.Next>
+                <Pagination.Prev
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                  Previous
+                </Pagination.Prev>
+                {[...Array(totalPages).keys()].map((number) => (
+                    <Pagination.Item
+                        key={number + 1}
+                        active={number + 1 === currentPage}
+                        onClick={() => paginate(number + 1)}
+                    >
+                      {number + 1}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                  Next
+                </Pagination.Next>
               </Pagination>
             </Nav>
             <small className="fw-bold">
-              Showing <b>{totalForms}</b> out of <b>25</b> entries
+              Showing <b>{indexOfFirstForm + 1}</b> to <b>{Math.min(indexOfLastForm, totalForms)}</b> out of <b>{totalForms}</b> entries
             </small>
           </Card.Footer>
         </Card.Body>
@@ -866,15 +947,17 @@ export const CommandsTable = () => {
 
 export const ProjectsTable = () => {
   const [projects, setProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [projectsPerPage] = useState(10);
   const history = useHistory();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(getProjects);
-        setProjects(response.data);
-        console.log(response.data)
-  
+        let d = response.data.reverse();
+        setProjects(d);
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -884,53 +967,95 @@ export const ProjectsTable = () => {
   }, []);
 
   const goToProjectDetails = (project) => {
-    history.push({pathname:'/projectdetails',state:{ project:project }});
+    history.push({pathname:'/projectdetails', state:{ project:project }});
+  }
+
+  // Get current projects
+  const indexOfLastProject = currentPage * projectsPerPage;
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Generate page numbers
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(projects.length / projectsPerPage); i++) {
+    pageNumbers.push(i);
   }
 
   return (
-    <Card border="light" className="table-wrapper table-responsive shadow-sm">
-      <Card.Body className="pt-0">
-        <h5 style={{ padding: '10px', marginTop: '10px' }}>Projects</h5>
-        <Table hover className="user-table align-items-center">
-          <thead>
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0">
+          <h5 style={{ padding: '10px', marginTop: '10px' }}>Projects</h5>
+          <Table hover className="user-table align-items-center">
+            <thead>
             <tr>
               <th className="border-bottom">#</th>
               <th className="border-bottom">Project Name</th>
               <th className="border-bottom">Project Status</th>
               <th className="border-bottom">Action</th>
-              
-              
             </tr>
-          </thead>
-          <tbody>
-            {projects.map((project, index) => (
-              <tr key={index}>
-                <td>{project.projectID}</td>
-                <td>{project.projectName}</td>
-                <td>{project.projectStatus}</td>
-                <td><Button variant="link" className="text-gray ms-auto" onClick={()=>goToProjectDetails(project)}><FontAwesomeIcon icon={faEye} /></Button></td>
-              </tr>
+            </thead>
+            <tbody>
+            {currentProjects.map((project, index) => (
+                <tr
+                    key={index}
+                    onClick={() => goToProjectDetails(project)}
+                    style={{cursor: 'pointer'}}
+                    className="hover-row" // Add this class
+                >
+                  <td>{project.projectID}</td>
+                  <td>{project.projectName}</td>
+                  <td>{project.projectStatus}</td>
+                  <td>
+                    <Button
+                        variant="link"
+                        className="text-gray ms-auto"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          goToProjectDetails(project);
+                        }}
+                    >
+                      <FontAwesomeIcon icon={faEye}/>
+                    </Button>
+                  </td>
+                </tr>
             ))}
-          </tbody>
-        </Table>
-        <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
+            </tbody>
+          </Table>
+          <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
           <Nav>
-            <Pagination className="mb-2 mb-lg-0">
-              <Pagination.Prev>Previous</Pagination.Prev>
-              <Pagination.Item active>1</Pagination.Item>
-              <Pagination.Item>2</Pagination.Item>
-              <Pagination.Item>3</Pagination.Item>
-              <Pagination.Item>4</Pagination.Item>
-              <Pagination.Item>5</Pagination.Item>
-              <Pagination.Next>Next</Pagination.Next>
-            </Pagination>
-          </Nav>
-          <small className="fw-bold">
-            Showing <b>{projects.length}</b> out of <b>25</b> entries
-          </small>
-        </Card.Footer>
-      </Card.Body>
-    </Card>
+              <Pagination className="mb-2 mb-lg-0">
+                <Pagination.Prev
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                  Previous
+                </Pagination.Prev>
+                {pageNumbers.map(number => (
+                    <Pagination.Item
+                        key={number}
+                        active={number === currentPage}
+                        onClick={() => paginate(number)}
+                    >
+                      {number}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === Math.ceil(projects.length / projectsPerPage)}
+                >
+                  Next
+                </Pagination.Next>
+              </Pagination>
+            </Nav>
+            <small className="fw-bold">
+              Showing <b>{indexOfFirstProject + 1}</b> to <b>{Math.min(indexOfLastProject, projects.length)}</b> out of <b>{projects.length}</b> entries
+            </small>
+          </Card.Footer>
+        </Card.Body>
+      </Card>
   );
 };
 
