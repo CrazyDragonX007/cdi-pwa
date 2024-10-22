@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCashRegister, faTruck, faTruckLoading, faTruckPickup, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-bootstrap';
@@ -7,6 +7,16 @@ import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-boots
 import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
 import { PageVisitsTable, VIFTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
+import axios from "axios";
+
+require('dotenv').config();
+
+
+// const apiURL = process.env.REACT_APP_BACKEND_URL;
+// const vifCount = `${apiURL}/crud/countVIF`
+// const irfCount = `${apiURL}/crud/countIRF`
+// const vmfCount = `${apiURL}/crud/countVMF`
+
 
 
 export default () => {
@@ -55,8 +65,8 @@ export default () => {
           <CounterWidget
             category="Vehicle Inspection Submissions"
             title="345k"
-            period="Feb 1 - Apr 1"
-            percentage={18.2}
+            // period="Feb 1 - Apr 1"
+            // percentage={18.2}
             icon={faTruckLoading}
             iconColor="shape-secondary"
           />
@@ -66,8 +76,8 @@ export default () => {
           <CounterWidget
             category="Vehicle Moving Submissions"
             title="$43,594"
-            period="Feb 1 - Apr 1"
-            percentage={28.4}
+            // period="Feb 1 - Apr 1"
+            // percentage={28.4}
             icon={faTruckPickup}
             iconColor="shape-tertiary"
           />
@@ -77,8 +87,8 @@ export default () => {
         <CounterWidget
             category="Total Report Submissions"
             title="$43,594"
-            period="Feb 1 - Apr 1"
-            percentage={28.4}
+            // period="Feb 1 - Apr 1"
+            // percentage={28.4}
             icon={faChartLine}
             iconColor="shape-tertiary"
           />
