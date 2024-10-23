@@ -56,7 +56,9 @@
     "sass": "^1.71.1",
     "simplebar-react": "^2.3.0",
     "yarn": "^1.22.22"
-  },
+  },"resolutions": {
+  "caniuse-lite": "1.0.30001632"
+},
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
