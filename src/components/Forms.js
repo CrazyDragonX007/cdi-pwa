@@ -53,6 +53,7 @@ require('dotenv').config();
 
   const apiURL = process.env.REACT_APP_BACKEND_URL;
   const getUsers = `${apiURL}/crud/getUsers`;
+  const sendEmail = `${apiURL}/send-email`;
   const createVehicleInspectionForm = `${apiURL}/crud/createVehicleInspectionForm`
   const createVehicleMovingForm = `${apiURL}/crud/createVehicleMovingForm`
   const createDailyReports = `${apiURL}/crud/createDailyReports`
@@ -60,6 +61,7 @@ require('dotenv').config();
   const weatherAPI = `${apiURL}/crud/weather`
   const createIncidentReportForm =  `${apiURL}/crud/createIncidentReportForm`
   const createTruckInspectionForm = `${apiURL}/crud/createTruckInspectionForm`
+
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
@@ -109,7 +111,12 @@ export const VI_Form = () => {
         const response = await axios.post(createVehicleInspectionForm, formData);
         // console.log('Form submitted successfully:', response.data.message);
           toast.success('Form submitted successfully!');
+
+          console.log('Email sent successfully');
         setFormSubmitted(true);
+          await axios.post(sendEmail, {
+              comment: `Equipment Inspected for ${formData.vehicleName}: ${formData.vehicleNo}`
+          });
       } catch (error) {
         console.error('Error submitting form:', error);
           toast.error('Error submitting form. Please try again.');
@@ -261,8 +268,8 @@ export const VI_Form = () => {
                 <Form.Check
                   type="radio"
                   name="option02"
-                  id="no02"
-                  label="No"
+                  id="yes02"
+                  label="Yes"
                   value="0"
                   checked={selectedOption02 === "0"}
                   onChange={(e2) => setSelectedOption02(e2.target.value)}
@@ -270,8 +277,8 @@ export const VI_Form = () => {
                 <Form.Check
                   type="radio"
                   name="option02"
-                  id="yes02"
-                  label="Yes"
+                  id="no02"
+                  label="No"
                   value="1"
                   checked={selectedOption02 === "1"}
                   onChange={(e2) => setSelectedOption02(e2.target.value)}
@@ -1093,6 +1100,12 @@ export const IR_Form = () => {
             console.log('Response:', response.data);
             console.log('toast')
             toast.success('Form submitted successfully!');
+
+            await axios.post(sendEmail, {
+                    comment: `Incident Report Form Submitted by ${formData.employeeSign}`
+                });
+            console.log('Email sent successfully');
+
         } catch (error) {
             console.error('Error inserting data:', error);
             toast.error('Error submitting form. Please try again.');
@@ -1438,6 +1451,12 @@ export const TI_Form = () => {
             });
             console.log('Response:', response.data);
             toast.success('Truck inspection form submitted successfully!');
+            if (formData.policyAck === "Yes") {
+                await axios.post(sendEmail, {
+                    comment: `Form Submitted for ${formData.truckNo}`
+                });
+                console.log('Email sent successfully');
+            }
         } catch (error) {
             console.error('Error inserting data:', error);
             toast.error('Error submitting form. Please try again.');
@@ -1451,19 +1470,19 @@ export const TI_Form = () => {
                 <Form.Check
                     inline
                     type="radio"
-                    label="Good"
+                    label="Yes"
                     name={name}
-                    value="Good"
-                    checked={formData[name] === "Good"}
+                    value="Yes"
+                    checked={formData[name] === "Yes"}
                     onChange={handleChange}
                 />
                 <Form.Check
                     inline
                     type="radio"
-                    label="Bad"
+                    label="No"
                     name={name}
-                    value="Bad"
-                    checked={formData[name] === "Bad"}
+                    value="No"
+                    checked={formData[name] === "No"}
                     onChange={handleChange}
                 />
             </div>
@@ -1569,13 +1588,13 @@ export const TI_Form = () => {
                         <Row>
                             <Col md={4}>{renderRadioGroup("fourStraps", "Four Straps")}</Col>
                             <Col md={4}>{renderRadioGroup("tommyGate", "Tommy Gate")}</Col>
-                            <Col md={4}>{renderRadioGroup("trailerTowed", "Trailer Towed")}</Col>
+                            <Col md={4}>{renderRadioGroup("trailerTowed", "Check all Doors")}</Col>
                         </Row>
 
                         <Row>
                             <Col md={4}>{renderRadioGroup("drainAirtanks", "Drain Air Tanks")}</Col>
                             <Col md={4}>{renderRadioGroup("dashboardClear", "Dashboard Clear")}</Col>
-                            <Col md={4}>{renderRadioGroup("policyAck", "Policy Acknowledgement")}</Col>
+                            <Col md={4}>{renderRadioGroup("policyAck", "Notify Team Members")}</Col>
                         </Row>
 
                         <Row>
