@@ -76,6 +76,7 @@ export const VI_Form = () => {
   const [selectedOption08, setSelectedOption08] = useState("0");
     const [selectedOption09, setSelectedOption09] = useState("0");
     const [selectedOption10, setSelectedOption10] = useState("0");
+    const [selectedOption11, setSelectedOption11] = useState("0");
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [users, setUsers] = useState([]);
@@ -103,20 +104,25 @@ export const VI_Form = () => {
         formData.append('safetyWarningDecalsCondition', selectedOption07);
         formData.append('parkBrakeCondition', selectedOption08);
         formData.append('notes', e.target.notes.value);
+        formData.append('notifyTeam', selectedOption11);
       const files = document.getElementById('img01').files;
         for (let i = 0; i < files.length; i++) {
             formData.append('file', files[i]);
         }
       try {
+            const truckNumber = e.target.vehicleNo.value;
         const response = await axios.post(createVehicleInspectionForm, formData);
         // console.log('Form submitted successfully:', response.data.message);
           toast.success('Form submitted successfully!');
 
           console.log('Email sent successfully');
-        setFormSubmitted(true);
-          await axios.post(sendEmail, {
-              comment: `Equipment Inspected for ${formData.vehicleName}: ${formData.vehicleNo}`
-          });
+          if (selectedOption11 === "Yes") {
+              await axios.post(sendEmail, {
+                  comment: `Equipment Inspection Form Submitted for Truck No. ${truckNumber}`
+              });
+              console.log('Email sent successfully');
+          }
+
       } catch (error) {
         console.error('Error submitting form:', error);
           toast.error('Error submitting form. Please try again.');
@@ -538,6 +544,37 @@ export const VI_Form = () => {
                     </div>
                 </Form.Group>
             </Col>
+              <Col md={6} className="mb-3">
+                  <Form.Group id="notifyTeam">
+                      <Form.Label>Notify Team Members</Form.Label>
+                      <Form.Check
+                          type="radio"
+                          name="option11"
+                          id="yes11"
+                          label="Yes"
+                          value="Yes"
+                          checked={selectedOption11 === "Yes"}
+                          onChange={(e11) => setSelectedOption11(e11.target.value)}
+                      />
+                      <Form.Check
+                          type="radio"
+                          name="option11"
+                          id="no11"
+                          label="No"
+                          value="No"
+                          checked={selectedOption11 === "No"}
+                          onChange={(e11) => setSelectedOption11(e11.target.value)}
+                      />
+
+
+                  {selectedOption10 === "No" && (
+                      <Form.Group>
+                          <Form.Label>Please Specify</Form.Label>
+                          <Form.Control as="textarea" rows={3} />
+                      </Form.Group>
+                  )}
+                  </Form.Group>
+              </Col>
               <Col md={6} className="mb-3">
                   <Form.Group id="notesVI">
 

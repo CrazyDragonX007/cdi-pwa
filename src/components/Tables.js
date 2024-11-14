@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup, Modal } from '@themesberg/react-bootstrap';
@@ -209,10 +209,81 @@ export const VIFTable = () => {
   const [folderUrl, setFolderUrl] = useState('');
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [formsPerPage] = useState(10); // Adjust this number as needed
+  const [formsPerPage] = useState(10);
   const [showDefault, setShowDefault] = useState(false);
 
+  // New state for sorting
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'ascending'
+  });
+
   const data = forms.map((item) => Object.values(item));
+
+  // Sorting function
+  const sortedForms = useMemo(() => {
+    let sortableItems = [...forms];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        // Special handling for date columns
+        if (sortConfig.key === 'dateTime') {
+          return sortConfig.direction === 'ascending'
+              ? new Date(a[sortConfig.key]) - new Date(b[sortConfig.key])
+              : new Date(b[sortConfig.key]) - new Date(a[sortConfig.key]);
+        }
+
+        // Handle numeric columns
+        if (sortConfig.key === 'formID') {
+          return sortConfig.direction === 'ascending'
+              ? a[sortConfig.key] - b[sortConfig.key]
+              : b[sortConfig.key] - a[sortConfig.key];
+        }
+
+        // Handle string comparisons
+        if (typeof a[sortConfig.key] === 'string') {
+          return sortConfig.direction === 'ascending'
+              ? a[sortConfig.key].localeCompare(b[sortConfig.key])
+              : b[sortConfig.key].localeCompare(a[sortConfig.key]);
+        }
+
+        // Default comparison for other types
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [forms, sortConfig]);
+
+  // Request sort
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Sorting header component
+  const SortableHeader =  ({ column, children }) => (
+
+      <th
+          className="border-bottom sortable"
+          onClick={() => requestSort(column)}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        {children}
+        {sortConfig.key === column && (
+            <span style={{ marginLeft: '5px' }}>
+          {sortConfig.direction === 'ascending' ? '▲' : '▼'}
+        </span>
+        )}
+      </th>
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -236,16 +307,16 @@ export const VIFTable = () => {
 
   const handleClose = () => setShowDefault(false);
 
-  // Get current forms
+  // Get current forms based on sorted data
   const indexOfLastForm = currentPage * formsPerPage;
   const indexOfFirstForm = indexOfLastForm - formsPerPage;
-  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+  const currentForms = sortedForms.slice(indexOfFirstForm, indexOfLastForm);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Calculate total pages
-  const totalPages = Math.ceil(forms.length / formsPerPage);
+  const totalPages = Math.ceil(sortedForms.length / formsPerPage);
 
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -253,7 +324,7 @@ export const VIFTable = () => {
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
             <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Equipment Inspection Submissions</h5>
             <Button variant='light'>
-              <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+              <ExportCSV data={[headers, ...data]} filename="vehicle-inspection-forms.csv">
                 Export to CSV
               </ExportCSV>
             </Button>
@@ -261,23 +332,23 @@ export const VIFTable = () => {
           <Table hover className="user-table align-items-center">
             <thead>
             <tr>
-              <th className="border-bottom">#</th>
-              <th className="border-bottom">Date Time</th>
-              <th className="border-bottom">Vehicle Name</th>
-              <th className="border-bottom">Vehicle No</th>
-              <th className="border-bottom">Pickup Jobsite</th>
-              <th className="border-bottom">Dropoff Location</th>
-              <th className="border-bottom">Inspected By</th>
-              <th className="border-bottom">Physical Damage</th>
-              <th className="border-bottom">Leak Status</th>
-              <th className="border-bottom">LHA Condition</th>
-              <th className="border-bottom">Safety Devices Condition</th>
-              <th className="border-bottom">Up Low Emergency Controls</th>
-              <th className="border-bottom">Oil Capacity</th>
-              <th className="border-bottom">Safety Warning Decals Condition</th>
-              <th className="border-bottom">Park Brake Condition</th>
+              <SortableHeader column="formID">#</SortableHeader>
+              <SortableHeader column="dateTime">Date Time</SortableHeader>
+              <SortableHeader column="vehicleName">Vehicle Name</SortableHeader>
+              <SortableHeader column="vehicleNo">Vehicle No</SortableHeader>
+              <SortableHeader column="pickupJobsite">Pickup Jobsite</SortableHeader>
+              <SortableHeader column="dropoffLocation">Dropoff Location</SortableHeader>
+              <SortableHeader column="inspectedBy">Inspected By</SortableHeader>
+              <SortableHeader column="physicalDamage">Physical Damage</SortableHeader>
+              <SortableHeader column="leakStatus">Leak Status</SortableHeader>
+              <SortableHeader column="lhaCondition">LHA Condition</SortableHeader>
+              <SortableHeader column="safetyDevicesCondition">Safety Devices Condition</SortableHeader>
+              <SortableHeader column="up_lowEmergencyControls">Up Low Emergency Controls</SortableHeader>
+              <SortableHeader column="oilCapacity">Oil Capacity</SortableHeader>
+              <SortableHeader column="safetyWarningDecalsCondition">Safety Warning Decals Condition</SortableHeader>
+              <SortableHeader column="parkBrakeCondition">Park Brake Condition</SortableHeader>
               <th className="border-bottom">Image Object</th>
-              <th className="border-bottom">Notes</th>
+              <SortableHeader column="notes">Notes</SortableHeader>
             </tr>
             </thead>
             <tbody>
@@ -366,9 +437,79 @@ export const VMFTable = () => {
   const [totalForms, setTotalForms] = useState(0);
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [formsPerPage] = useState(10); // Adjust this number as needed
+  const [formsPerPage] = useState(10);
+
+  // New state for sorting
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'ascending'
+  });
 
   const data = forms.map((item) => Object.values(item));
+
+  // Sorting function
+  const sortedForms = useMemo(() => {
+    let sortableItems = [...forms];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        // Special handling for date columns
+        if (sortConfig.key === 'dateTime') {
+          return sortConfig.direction === 'ascending'
+              ? new Date(a[sortConfig.key]) - new Date(b[sortConfig.key])
+              : new Date(b[sortConfig.key]) - new Date(a[sortConfig.key]);
+        }
+
+        // Handle numeric columns
+        if (['formID', 'userID'].includes(sortConfig.key)) {
+          return sortConfig.direction === 'ascending'
+              ? a[sortConfig.key] - b[sortConfig.key]
+              : b[sortConfig.key] - a[sortConfig.key];
+        }
+
+        // Handle string comparisons
+        if (typeof a[sortConfig.key] === 'string') {
+          return sortConfig.direction === 'ascending'
+              ? a[sortConfig.key].localeCompare(b[sortConfig.key])
+              : b[sortConfig.key].localeCompare(a[sortConfig.key]);
+        }
+
+        // Default comparison for other types
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [forms, sortConfig]);
+
+  // Request sort
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Sorting header component
+  const SortableHeader = ({ column, children }) => (
+      <th
+          className="border-bottom sortable"
+          onClick={() => requestSort(column)}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        {children}
+        {sortConfig.key === column && (
+            <span style={{ marginLeft: '5px' }}>
+          {sortConfig.direction === 'ascending' ? '▲' : '▼'}
+        </span>
+        )}
+      </th>
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -390,16 +531,16 @@ export const VMFTable = () => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
   };
 
-  // Get current forms
+  // Get current forms based on sorted data
   const indexOfLastForm = currentPage * formsPerPage;
   const indexOfFirstForm = indexOfLastForm - formsPerPage;
-  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+  const currentForms = sortedForms.slice(indexOfFirstForm, indexOfLastForm);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Calculate total pages
-  const totalPages = Math.ceil(forms.length / formsPerPage);
+  const totalPages = Math.ceil(sortedForms.length / formsPerPage);
 
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -407,7 +548,7 @@ export const VMFTable = () => {
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
             <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Equipment Moving Form Submissions</h5>
             <Button variant='light'>
-              <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+              <ExportCSV data={[headers, ...data]} filename="vehicle-moving-forms.csv">
                 Export to CSV
               </ExportCSV>
             </Button>
@@ -416,16 +557,16 @@ export const VMFTable = () => {
           <Table hover className="user-table align-items-center">
             <thead>
             <tr>
-              <th className="border-bottom">#</th>
-              <th className="border-bottom">User ID</th>
-              <th className="border-bottom">Date Time</th>
-              <th className="border-bottom">First Name</th>
-              <th className="border-bottom">Last Name</th>
-              <th className="border-bottom">Vehicle Name</th>
-              <th className="border-bottom">Vehicle No</th>
-              <th className="border-bottom">Pickup Jobsite</th>
-              <th className="border-bottom">Dropoff Location</th>
-              <th className="border-bottom">Notes</th>
+              <SortableHeader column="formID">#</SortableHeader>
+              <SortableHeader column="userID">User ID</SortableHeader>
+              <SortableHeader column="dateTime">Date Time</SortableHeader>
+              <SortableHeader column="firstName">First Name</SortableHeader>
+              <SortableHeader column="lastName">Last Name</SortableHeader>
+              <SortableHeader column="vehicleName">Vehicle Name</SortableHeader>
+              <SortableHeader column="vehicleNo">Vehicle No</SortableHeader>
+              <SortableHeader column="pickupJobsite">Pickup Jobsite</SortableHeader>
+              <SortableHeader column="dropoffLocation">Dropoff Location</SortableHeader>
+              <SortableHeader column="notes">Notes</SortableHeader>
             </tr>
             </thead>
             <tbody>
@@ -485,9 +626,72 @@ export const DRTable = () => {
   const [totalForms, setTotalForms] = useState(0);
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [formsPerPage] = useState(10); // Adjust this number as needed
+  const [formsPerPage] = useState(10);
+
+  // New state for sorting
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'ascending'
+  });
 
   const data = forms.map((item) => Object.values(item));
+
+  // Sorting function
+  const sortedForms = useMemo(() => {
+    let sortableItems = [...forms];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        // Special handling for date columns
+        if (sortConfig.key === 'dateTime') {
+          return sortConfig.direction === 'ascending'
+              ? new Date(a[sortConfig.key]) - new Date(b[sortConfig.key])
+              : new Date(b[sortConfig.key]) - new Date(a[sortConfig.key]);
+        }
+
+        // Handle string comparisons
+        if (typeof a[sortConfig.key] === 'string') {
+          return sortConfig.direction === 'ascending'
+              ? a[sortConfig.key].localeCompare(b[sortConfig.key])
+              : b[sortConfig.key].localeCompare(a[sortConfig.key]);
+        }
+
+        // Default comparison for other types
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [forms, sortConfig]);
+
+  // Request sort
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Sorting header component
+  const SortableHeader = ({ column, children }) => (
+      <th
+          className="border-bottom sortable"
+          onClick={() => requestSort(column)}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        {children}
+        {sortConfig.key === column && (
+            <span style={{ marginLeft: '5px' }}>
+          {sortConfig.direction === 'ascending' ? '▲' : '▼'}
+        </span>
+        )}
+      </th>
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -509,16 +713,16 @@ export const DRTable = () => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
   };
 
-  // Get current forms
+  // Get current forms based on sorted data
   const indexOfLastForm = currentPage * formsPerPage;
   const indexOfFirstForm = indexOfLastForm - formsPerPage;
-  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+  const currentForms = sortedForms.slice(indexOfFirstForm, indexOfLastForm);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Calculate total pages
-  const totalPages = Math.ceil(forms.length / formsPerPage);
+  const totalPages = Math.ceil(sortedForms.length / formsPerPage);
 
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -526,7 +730,7 @@ export const DRTable = () => {
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
             <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Daily Reports</h5>
             <Button variant='light'>
-              <ExportCSV data={[headers, ...data]} filename="table-data.csv">
+              <ExportCSV data={[headers, ...data]} filename="daily-reports.csv">
                 Export to CSV
               </ExportCSV>
             </Button>
@@ -534,15 +738,15 @@ export const DRTable = () => {
           <Table hover className="user-table align-items-center">
             <thead>
             <tr>
-              <th className="border-bottom">Date Time</th>
-              <th className="border-bottom">First Name</th>
-              <th className="border-bottom">Last Name</th>
-              <th className="border-bottom">Project Name</th>
-              <th className="border-bottom">Project Location</th>
-              <th className="border-bottom">Scope of Work</th>
-              <th className="border-bottom">Work Performed</th>
-              <th className="border-bottom">Weather Details</th>
-              <th className="border-bottom">Notes</th>
+              <SortableHeader column="dateTime">Date Time</SortableHeader>
+              <SortableHeader column="firstName">First Name</SortableHeader>
+              <SortableHeader column="lastName">Last Name</SortableHeader>
+              <SortableHeader column="projectName">Project Name</SortableHeader>
+              <SortableHeader column="projectLocation">Project Location</SortableHeader>
+              <SortableHeader column="scopeOfWork">Scope of Work</SortableHeader>
+              <SortableHeader column="workPerformed">Work Performed</SortableHeader>
+              <SortableHeader column="weatherDetails">Weather Details</SortableHeader>
+              <SortableHeader column="notes">Notes</SortableHeader>
             </tr>
             </thead>
             <tbody>
@@ -601,7 +805,70 @@ export const IRTable = () => {
   const [totalForms, setTotalForms] = useState(0);
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [formsPerPage] = useState(10); // Adjust this number as needed
+  const [formsPerPage] = useState(10);
+
+  // New state for sorting
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'ascending'
+  });
+
+  // Sorting function
+  const sortedForms = useMemo(() => {
+    let sortableItems = [...forms];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        // Special handling for date columns
+        if (['dateTime', 'employeeSignDate', 'supervisorSignDate'].includes(sortConfig.key)) {
+          return sortConfig.direction === 'ascending'
+              ? new Date(a[sortConfig.key]) - new Date(b[sortConfig.key])
+              : new Date(b[sortConfig.key]) - new Date(a[sortConfig.key]);
+        }
+
+        // Handle string comparisons
+        if (typeof a[sortConfig.key] === 'string') {
+          return sortConfig.direction === 'ascending'
+              ? a[sortConfig.key].localeCompare(b[sortConfig.key])
+              : b[sortConfig.key].localeCompare(a[sortConfig.key]);
+        }
+
+        // Default comparison for other types
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [forms, sortConfig]);
+
+  // Request sort
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Sorting header component
+  const SortableHeader = ({ column, children }) => (
+      <th
+          className="border-bottom sortable"
+          onClick={() => requestSort(column)}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        {children}
+        {sortConfig.key === column && (
+            <span style={{ marginLeft: '5px' }}>
+          {sortConfig.direction === 'ascending' ? '▲' : '▼'}
+        </span>
+        )}
+      </th>
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -623,16 +890,16 @@ export const IRTable = () => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
   };
 
-  // Get current forms
+  // Get current forms based on sorted data
   const indexOfLastForm = currentPage * formsPerPage;
   const indexOfFirstForm = indexOfLastForm - formsPerPage;
-  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+  const currentForms = sortedForms.slice(indexOfFirstForm, indexOfLastForm);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Calculate total pages
-  const totalPages = Math.ceil(forms.length / formsPerPage);
+  const totalPages = Math.ceil(sortedForms.length / formsPerPage);
 
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -640,23 +907,29 @@ export const IRTable = () => {
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}>
             <h5 style={{margin: '0', padding: '10px', flexGrow: '1'}}>Incident Reports</h5>
             <Button variant='light'>
-              <ExportCSV data={[headers, ...forms.map(form => [
-                formatDateTime(form.dateTime),
-                form.name,
-                form.peopleInvolved,
-                form.incidentType,
-                form.location,
-                form.vehicle,
-                form.vehicleNo,
-                form.pickupLocation,
-                form.dropoffLocation,
-                form.unsafeAct,
-                form.description,
-                form.employeeSign,
-                form.employeeSignDate,
-                form.supervisorSign,
-                form.supervisorSignDate
-              ])]} filename="incident-reports.csv">
+              <ExportCSV
+                  data={[
+                    headers,
+                    ...forms.map(form => [
+                      formatDateTime(form.dateTime),
+                      form.name,
+                      form.peopleInvolved,
+                      form.incidentType,
+                      form.location,
+                      form.vehicle,
+                      form.vehicleNo,
+                      form.pickupLocation,
+                      form.dropoffLocation,
+                      form.unsafeAct,
+                      form.description,
+                      form.employeeSign,
+                      form.employeeSignDate,
+                      form.supervisorSign,
+                      form.supervisorSignDate
+                    ])
+                  ]}
+                  filename="incident-reports.csv"
+              >
                 Export to CSV
               </ExportCSV>
             </Button>
@@ -664,21 +937,21 @@ export const IRTable = () => {
           <Table hover className="user-table align-items-center">
             <thead>
             <tr>
-              <th className="border-bottom">Date Time</th>
-              <th className="border-bottom">Name</th>
-              <th className="border-bottom">People Involved</th>
-              <th className="border-bottom">Incident Type</th>
-              <th className="border-bottom">Location</th>
-              <th className="border-bottom">Vehicle</th>
-              <th className="border-bottom">Vehicle No.</th>
-              <th className="border-bottom">Pickup Location</th>
-              <th className="border-bottom">Dropoff Location</th>
-              <th className="border-bottom">Unsafe Act</th>
-              <th className="border-bottom">Description</th>
-              <th className="border-bottom">Employee Signature</th>
-              <th className="border-bottom">Employee Sign Date</th>
-              <th className="border-bottom">Supervisor Signature</th>
-              <th className="border-bottom">Supervisor Sign Date</th>
+              <SortableHeader column="dateTime">Date Time</SortableHeader>
+              <SortableHeader column="name">Name</SortableHeader>
+              <SortableHeader column="peopleInvolved">People Involved</SortableHeader>
+              <SortableHeader column="incidentType">Incident Type</SortableHeader>
+              <SortableHeader column="location">Location</SortableHeader>
+              <SortableHeader column="vehicle">Vehicle</SortableHeader>
+              <SortableHeader column="vehicleNo">Vehicle No.</SortableHeader>
+              <SortableHeader column="pickupLocation">Pickup Location</SortableHeader>
+              <SortableHeader column="dropoffLocation">Dropoff Location</SortableHeader>
+              <SortableHeader column="unsafeAct">Unsafe Act</SortableHeader>
+              <SortableHeader column="description">Description</SortableHeader>
+              <SortableHeader column="employeeSign">Employee Signature</SortableHeader>
+              <SortableHeader column="employeeSignDate">Employee Sign Date</SortableHeader>
+              <SortableHeader column="supervisorSign">Supervisor Signature</SortableHeader>
+              <SortableHeader column="supervisorSignDate">Supervisor Sign Date</SortableHeader>
             </tr>
             </thead>
             <tbody>
@@ -743,9 +1016,72 @@ export const TITable = () => {
   const [totalForms, setTotalForms] = useState(0);
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [formsPerPage] = useState(10); // You can adjust this number as needed
+  const [formsPerPage] = useState(10);
+
+  // New state for sorting
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'ascending'
+  });
 
   const data = forms.map((item) => Object.values(item));
+
+  // Sorting function
+  const sortedForms = useMemo(() => {
+    let sortableItems = [...forms];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        // Special handling for date
+        if (sortConfig.key === 'dateTime') {
+          return sortConfig.direction === 'ascending'
+              ? new Date(a[sortConfig.key]) - new Date(b[sortConfig.key])
+              : new Date(b[sortConfig.key]) - new Date(a[sortConfig.key]);
+        }
+
+        // Handle numeric columns
+        if (['mileage', 'inspectionID'].includes(sortConfig.key)) {
+          return sortConfig.direction === 'ascending'
+              ? a[sortConfig.key] - b[sortConfig.key]
+              : b[sortConfig.key] - a[sortConfig.key];
+        }
+
+        // Default string comparison
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [forms, sortConfig]);
+
+  // Request sort
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Sorting header component
+  const SortableHeader = ({ column, children }) => (
+      <th
+          className="border-bottom sortable"
+          onClick={() => requestSort(column)}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        {children}
+        {sortConfig.key === column && (
+            <span style={{ marginLeft: '5px' }}>
+          {sortConfig.direction === 'ascending' ? '▲' : '▼'}
+        </span>
+        )}
+      </th>
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -767,16 +1103,16 @@ export const TITable = () => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
   };
 
-  // Get current forms
+  // Get current forms based on sorted data
   const indexOfLastForm = currentPage * formsPerPage;
   const indexOfFirstForm = indexOfLastForm - formsPerPage;
-  const currentForms = forms.slice(indexOfFirstForm, indexOfLastForm);
+  const currentForms = sortedForms.slice(indexOfFirstForm, indexOfLastForm);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Calculate total pages
-  const totalPages = Math.ceil(forms.length / formsPerPage);
+  const totalPages = Math.ceil(sortedForms.length / formsPerPage);
 
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -792,10 +1128,10 @@ export const TITable = () => {
           <Table hover className="user-table align-items-center">
             <thead>
             <tr>
-              <th className="border-bottom">Inspection ID</th>
-              <th className="border-bottom">Truck No</th>
-              <th className="border-bottom">Mileage</th>
-              <th className="border-bottom">Date Time</th>
+              <SortableHeader column="inspectionID">Inspection ID</SortableHeader>
+              <SortableHeader column="truckNo">Truck No</SortableHeader>
+              <SortableHeader column="mileage">Mileage</SortableHeader>
+              <SortableHeader column="dateTime">Date Time</SortableHeader>
               <th className="border-bottom">Engine Oil</th>
               <th className="border-bottom">Anti-Freeze</th>
               <th className="border-bottom">Power Steering</th>
