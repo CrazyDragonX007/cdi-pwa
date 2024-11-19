@@ -370,7 +370,9 @@ export const VIFTable = () => {
                   <td>{form.safetyWarningDecalsCondition}</td>
                   <td>{form.parkBrakeCondition}</td>
                   <td>
-                    <Button variant="light" className="my-3" onClick={() => {
+                    <Button variant="light" style = {{
+                      lineHeight: '0.5', padding: '10px'
+                    }} onClick={() => {
                       setFolderUrl(form.folderUrl);
                       setShowDefault(true);
                     }}>

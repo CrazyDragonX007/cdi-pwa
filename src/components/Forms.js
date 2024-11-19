@@ -192,16 +192,17 @@ export const VI_Form = () => {
             <Col md={3} className="mb-3">
               <Form.Group id="vehicleName">
                 <Form.Label>Vehicle</Form.Label>
-                <Form.Select defaultValue="Boom Lift" name="vehicleName">
+                  <Form.Select defaultValue="Boom Lift" name="vehicleName">
 
-                  <option value="Boom Lift">Boom Lift</option>
-                  <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
-                  <option value="Telehandler">Telehandler</option>
-                  <option value="Electric Scissor Lift">Electric Scissor Lift</option>
-                </Form.Select>
+                      <option value="Boom Lift">Boom Lift</option>
+                      <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
+                      <option value="Telehandler">Telehandler</option>
+                      <option value="Electric Scissor Lift">Electric Scissor Lift</option>
+                      <option value="Others">Others</option>
+                  </Form.Select>
               </Form.Group>
             </Col>
-            <Col md={3} className="mb-3">
+              <Col md={3} className="mb-3">
               <Form.Group id="vehicleNo">
                 <Form.Label>Vehicle No.</Form.Label>
                 <Form.Control
@@ -863,6 +864,11 @@ export const DR_Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+        if ((formData.notes).length > 0) {
+            await axios.post(sendEmail, {
+                comment: `Daily Report submitted by ${formData.firstName} ${formData.lastName}`
+            });
+        }
       const response = await axios.post(createDailyReports, {
         userID: 1, // Assuming you have a specific user ID
         dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
@@ -991,17 +997,18 @@ export const DR_Form = () => {
         <Col md={4} className="mb-4">
           <Form.Group id="scopeOfWork">
             <Form.Label>Scope of Work</Form.Label>
-            <Form.Select
-              name="scopeOfWork"
-              value={formData.scopeOfWork}
-              onChange={handleChange}
-            >
-              <option value="">Select Scope of Work</option>
-              <option value="Steel">Steel</option>
-              <option value="Dry Wall">Dry Wall</option>
-              <option value="Light Gauge Framing">Light Gauge Framing</option>
-              <option value="Ceilings">Ceilings</option>
-            </Form.Select>
+              <Form.Select
+                  name="scopeOfWork"
+                  value={formData.scopeOfWork}
+                  onChange={handleChange}
+              >
+                  <option value="">Select Scope of Work</option>
+                  <option value="Structural Steel">Structural Steel</option>
+                  <option value="PEMB">PEMB</option>
+                  <option value="Drywall">Drywall</option>
+                  <option value="Light Gauge Framing">Light Gauge Framing</option>
+                  <option value="Ceilings">Ceilings</option>
+              </Form.Select>
           </Form.Group>
         </Col>
       </Row>
@@ -1104,8 +1111,8 @@ export const IR_Form = () => {
         description: '', // Changed from notes for description of event
         employeeSign: '', // Added for employee signature
         employeeSignDate: '', // Added for employee signature date
-        supervisorSign: '', // Added for supervisor signature
-        supervisorSignDate: '' // Added for supervisor signature date
+        // supervisorSign: '', // Added for supervisor signature
+        // supervisorSignDate: '' // Added for supervisor signature date
     });
 
     const handleChange = (e) => {
@@ -1132,7 +1139,7 @@ export const IR_Form = () => {
                 ...formData,
                 dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
                 employeeSignDate: moment(empDateTime).format("YYYY-MM-DD HH:mm:ss"),
-                supervisorSignDate: moment(supDateTime).format("YYYY-MM-DD HH:mm:ss")
+                // supervisorSignDate: moment(supDateTime).format("YYYY-MM-DD HH:mm:ss")
             });
             console.log('Response:', response.data);
             console.log('toast')
@@ -1257,20 +1264,21 @@ export const IR_Form = () => {
         <Col md={4} className="mb-4">
           <Form.Group id="vehicle">
             <Form.Label>Vehicle</Form.Label>
-            <Form.Select
-              name="vehicle"
-              value={formData.vehicle}
-              onChange={handleChange}
-            >
-              <option value="">Vehicle</option>
-              <option value="Boom Lift">Boom Lift</option>
-              <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
-              <option value="Telehandler">Telehandler</option>
-              <option value="Electric Scissor Lift">Electric Scissor Lift</option>
-            </Form.Select>
+              <Form.Select
+                  name="vehicle"
+                  value={formData.vehicle}
+                  onChange={handleChange}
+              >
+                  <option value="">Vehicle</option>
+                  <option value="Boom Lift">Boom Lift</option>
+                  <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
+                  <option value="Telehandler">Telehandler</option>
+                  <option value="Electric Scissor Lift">Electric Scissor Lift</option>
+                  <option value="Others">Others</option>
+              </Form.Select>
           </Form.Group>
         </Col>
-        <Col md={4} className="mb-4">
+          <Col md={4} className="mb-4">
           <Form.Group id="vehicleNo">
             <Form.Label>Vehicle No.</Form.Label>
             <Form.Control
@@ -1381,47 +1389,47 @@ export const IR_Form = () => {
           </Form.Group>
         </Col>
       </Row>
-      <Row>
+      {/*<Row>*/}
       
-        <Col md={6} className="mb-3">
-          <Form.Group id="supervisorSign">
-            <Form.Label>Supervisor Signature</Form.Label>
-            <Form.Control
-              required
-              name="supervisorSign"
-              type="text"
-              placeholder="Enter your Full Name"
-              value={formData.supervisorSign}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-3">
-        <Form.Group id="supervisorSignDate">
-            <Form.Label>Date & Time</Form.Label>
-            <Datetime
-              onChange={handleSupDateTimeChange}
-              value={supDateTime}
-              renderInput={(props, openCalendar) => (
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faCalendarAlt} />
-                  </InputGroup.Text>
-                  <Form.Control
-                    required
-                    name="supervisorSignDate"
-                    type="text"
-                    value={supDateTime ? moment(supDateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                    placeholder="Enter Date & Time"
-                    onFocus={openCalendar}
-                    onChange={() => {}}
-                  />
-                </InputGroup>
-              )}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
+      {/*  <Col md={6} className="mb-3">*/}
+      {/*    <Form.Group id="supervisorSign">*/}
+      {/*      <Form.Label>Supervisor Signature</Form.Label>*/}
+      {/*      <Form.Control*/}
+      {/*        required*/}
+      {/*        name="supervisorSign"*/}
+      {/*        type="text"*/}
+      {/*        placeholder="Enter your Full Name"*/}
+      {/*        value={formData.supervisorSign}*/}
+      {/*        onChange={handleChange}*/}
+      {/*      />*/}
+      {/*    </Form.Group>*/}
+      {/*  </Col>*/}
+      {/*  <Col md={6} className="mb-3">*/}
+      {/*  <Form.Group id="supervisorSignDate">*/}
+      {/*      <Form.Label>Date & Time</Form.Label>*/}
+      {/*      <Datetime*/}
+      {/*        onChange={handleSupDateTimeChange}*/}
+      {/*        value={supDateTime}*/}
+      {/*        renderInput={(props, openCalendar) => (*/}
+      {/*          <InputGroup>*/}
+      {/*            <InputGroup.Text>*/}
+      {/*              <FontAwesomeIcon icon={faCalendarAlt} />*/}
+      {/*            </InputGroup.Text>*/}
+      {/*            <Form.Control*/}
+      {/*              required*/}
+      {/*              name="supervisorSignDate"*/}
+      {/*              type="text"*/}
+      {/*              value={supDateTime ? moment(supDateTime).format("MM/DD/YYYY HH:mm:ss") : ""}*/}
+      {/*              placeholder="Enter Date & Time"*/}
+      {/*              onFocus={openCalendar}*/}
+      {/*              onChange={() => {}}*/}
+      {/*            />*/}
+      {/*          </InputGroup>*/}
+      {/*        )}*/}
+      {/*      />*/}
+      {/*    </Form.Group>*/}
+      {/*  </Col>*/}
+      {/*</Row>*/}
       <div className="mt-3">
         <Button variant="primary" type="submit">
           Submit
@@ -1501,6 +1509,32 @@ export const TI_Form = () => {
     };
 
     const renderRadioGroup = (name, label) => (
+        <Form.Group className="mb-3">
+            <Form.Label>{label}</Form.Label>
+            <div>
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="Ok"
+                    name={name}
+                    value="Ok"
+                    checked={formData[name] === "Ok"}
+                    onChange={handleChange}
+                />
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="Added"
+                    name={name}
+                    value="Added"
+                    checked={formData[name] === "Added"}
+                    onChange={handleChange}
+                />
+            </div>
+        </Form.Group>
+    );
+
+    const renderRadioGroup2 = (name, label) => (
         <Form.Group className="mb-3">
             <Form.Label>{label}</Form.Label>
             <div>
@@ -1631,7 +1665,7 @@ export const TI_Form = () => {
                         <Row>
                             <Col md={4}>{renderRadioGroup("drainAirtanks", "Drain Air Tanks")}</Col>
                             <Col md={4}>{renderRadioGroup("dashboardClear", "Dashboard Clear")}</Col>
-                            <Col md={4}>{renderRadioGroup("policyAck", "Notify Team Members")}</Col>
+                            <Col md={4}>{renderRadioGroup2("policyAck", "Notify Team Members")}</Col>
                         </Row>
 
                         <Row>
