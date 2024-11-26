@@ -1514,6 +1514,7 @@ export const TI_Form = () => {
             const response = await axios.post(createTruckInspectionForm, {
                 ...formData,
                 dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss")
+
             });
             console.log('Response:', response.data);
             toast.success('Truck inspection form submitted successfully!');
