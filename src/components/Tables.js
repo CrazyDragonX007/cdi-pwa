@@ -336,8 +336,8 @@ export const VIFTable = () => {
               <SortableHeader column="dateTime">Date Time</SortableHeader>
               <SortableHeader column="vehicleName">Vehicle Name</SortableHeader>
               <SortableHeader column="vehicleNo">Vehicle No</SortableHeader>
-              <SortableHeader column="pickupJobsite">Pickup Jobsite</SortableHeader>
-              <SortableHeader column="dropoffLocation">Dropoff Location</SortableHeader>
+              <SortableHeader column="projectName">Project Name</SortableHeader>
+
               <SortableHeader column="inspectedBy">Inspected By</SortableHeader>
               <SortableHeader column="physicalDamage">Physical Damage</SortableHeader>
               <SortableHeader column="leakStatus">Leak Status</SortableHeader>
@@ -358,8 +358,8 @@ export const VIFTable = () => {
                   <td>{formatDateTime(form.dateTime)}</td>
                   <td>{form.vehicleName}</td>
                   <td>{form.vehicleNo}</td>
-                  <td>{form.pickupJobsite}</td>
-                  <td>{form.dropoffLocation}</td>
+                  <td>{form.projectName}</td>
+
                   <td>{form.inspectedBy}</td>
                   <td>{form.physicalDamage}</td>
                   <td>{form.leakStatus}</td>

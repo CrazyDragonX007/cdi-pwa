@@ -20,6 +20,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
+const timestamp = moment().format('MM/DD/YYYY HH:mm:ss');
+console.log(timestamp)
 require('dotenv').config();
 // class WeatherData extends React.Component {
 //   constructor(props) {
@@ -62,10 +64,19 @@ require('dotenv').config();
   const createIncidentReportForm =  `${apiURL}/crud/createIncidentReportForm`
   const createTruckInspectionForm = `${apiURL}/crud/createTruckInspectionForm`
 
+const projectList = [
+    "Prairie Chapel Church",
+    "UPS Warehouse",
+    "Robert's Industrial Westgate",
+    "Thermal Engineering",
+    "Davis Electric",
+    "Metro Appliances",
+    "Premier Trucking",
+    "Prime Hanger"
+];
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
-  console.log(date)
   const [selectedOption01, setSelectedOption01] = useState("0");
   const [selectedOption02, setSelectedOption02] = useState("0");
   const [selectedOption03, setSelectedOption03] = useState("0");
@@ -91,8 +102,9 @@ export const VI_Form = () => {
     const handleSubmit = async (e) => {
       e.preventDefault();
         const formData = new FormData();
-        formData.append('dateTime', date);
+        formData.append('dateTime', timestamp);
         formData.append('vehicleName', e.target.vehicleName.value);
+        formData.append('projectName', e.target.projectName.value);
         formData.append('vehicleNo', e.target.vehicleNo.value);
         formData.append('inspectedBy', e.target.inspectedBy.value);
         formData.append('physicalDamage', selectedOption01);
@@ -111,6 +123,9 @@ export const VI_Form = () => {
         }
       try {
             const truckNumber = e.target.vehicleNo.value;
+          const projectName = e.target.projectName.value;
+          console.log(projectName);
+          console.log(formData)
         const response = await axios.post(createVehicleInspectionForm, formData);
         // console.log('Form submitted successfully:', response.data.message);
           toast.success('Form submitted successfully!');
@@ -151,34 +166,34 @@ export const VI_Form = () => {
         <Form onSubmit={handleSubmit}>
 
           <Row className="align-items-center">
-            <Col md={3} className="mb-3">
-              <Form.Group id="dateTime">
-                <Form.Label>Date & Time</Form.Label>
-                <Datetime
-                  
-                  onChange={setDate}
-                  renderInput={(props, openCalendar) => (
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faCalendarAlt} />
-                      </InputGroup.Text>
-                      <Form.Control
-                        required
-                        name="dateTime"
-                        type="text"
-                        value={date ? moment(date).format("MM/DD/YYYY HH:mm:ss") : ""}
-                        placeholder="Enter Date & Time"
-                        onFocus={openCalendar}
-                        onChange={() => {}}
-                      />
-                     
-                    </InputGroup>
+            {/*<Col md={3} className="mb-3">*/}
+            {/*  <Form.Group id="dateTime">*/}
+            {/*    <Form.Label>Date & Time</Form.Label>*/}
+            {/*    <Datetime*/}
+
+            {/*      onChange={setDate}*/}
+            {/*      renderInput={(props, openCalendar) => (*/}
+            {/*        <InputGroup>*/}
+            {/*          <InputGroup.Text>*/}
+            {/*            <FontAwesomeIcon icon={faCalendarAlt} />*/}
+            {/*          </InputGroup.Text>*/}
+            {/*          <Form.Control*/}
+
+            {/*            name="dateTime"*/}
+            {/*            type="text"*/}
+            {/*            value={date ? moment(date).format("MM/DD/YYYY HH:mm:ss") : ""}*/}
+            {/*            placeholder="Enter Date & Time"*/}
+            {/*            onFocus={openCalendar}*/}
+            {/*            onChange={() => {}}*/}
+            {/*          />*/}
+
+            {/*        </InputGroup>*/}
 
 
-                  )}
-                />
-              </Form.Group>
-            </Col>
+            {/*      )}*/}
+            {/*    />*/}
+            {/*  </Form.Group>*/}
+            {/*</Col>*/}
             <Col md={3} className="mb-3">
             <Form.Group id="inspectedBy">
               <Form.Label>Inspected By</Form.Label>
@@ -213,32 +228,44 @@ export const VI_Form = () => {
                 />
               </Form.Group>
             </Col>
+              <Col md={3} className="mb-3">
+                  <Form.Group id="projectName">
+                      <Form.Label>Project Name</Form.Label>
+                      <Form.Select defaultValue={projectList[0]} name="projectName">
+                          {projectList.map((projectName, index) => (
+                              <option key={index} value={projectName}>
+                                  {projectName}
+                              </option>
+                          ))}
+                      </Form.Select>
+                  </Form.Group>
+              </Col>
           </Row>
-            <Row>
-                <Col md={6} className="mb-3">
-                    <Form.Group id="pickupJobsite">
-                        <Form.Label>Pickup Jobsite</Form.Label>
-                        <Form.Control
-                            required
-                            type="text"
-                            name="pickupJobsite"
-                            placeholder="Location"
-                        />
-                    </Form.Group>
-                </Col>
-                <Col md={6} className="mb-3">
-                    <Form.Group id="dropoffLocation">
-                        <Form.Label>Dropoff Location</Form.Label>
-                        <Form.Control
-                            required
-                            type="text"
-                            name="dropoffLocation"
-                            placeholder="Location"
-                        />
-                    </Form.Group>
-                </Col>
+            {/*<Row>*/}
+            {/*    <Col md={6} className="mb-3">*/}
+            {/*        <Form.Group id="pickupJobsite">*/}
+            {/*            <Form.Label>Pickup Jobsite</Form.Label>*/}
+            {/*            <Form.Control*/}
+            {/*                required*/}
+            {/*                type="text"*/}
+            {/*                name="pickupJobsite"*/}
+            {/*                placeholder="Location"*/}
+            {/*            />*/}
+            {/*        </Form.Group>*/}
+            {/*    </Col>*/}
+            {/*    <Col md={6} className="mb-3">*/}
+            {/*        <Form.Group id="dropoffLocation">*/}
+            {/*            <Form.Label>Dropoff Location</Form.Label>*/}
+            {/*            <Form.Control*/}
+            {/*                required*/}
+            {/*                type="text"*/}
+            {/*                name="dropoffLocation"*/}
+            {/*                placeholder="Location"*/}
+            {/*            />*/}
+            {/*        </Form.Group>*/}
+            {/*    </Col>*/}
 
-            </Row>
+            {/*</Row>*/}
           <Row>
           <Col md={6} className="mb-3">
           <Form.Group id="physicalDamage">
@@ -625,15 +652,16 @@ export const VM_Form = () => {
   };
 
   const handleDateTimeChange = (date) => {
-    setDateTime(date);
+    setDateTime(timestamp);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+        console.log(timestamp)
       const response = await axios.post(createVehicleMovingForm, {
         userID: 1, // Assuming you have a specific user ID
-        dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
+        dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
         ...formData
       });
       console.log('Response:', response.data);
@@ -691,31 +719,31 @@ export const VM_Form = () => {
         </Col>
       </Row>
       <Row className="align-items-center">
-        <Col md={4} className="mb-4">
-        <Form.Group id="datetimeVM">
-            <Form.Label>Date & Time</Form.Label>
-            <Datetime
-              onChange={handleDateTimeChange}
-              value={dateTime}
-              renderInput={(props, openCalendar) => (
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faCalendarAlt} />
-                  </InputGroup.Text>
-                  <Form.Control
-                    required
-                    name="dateTime"
-                    type="text"
-                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                    placeholder="Enter Date & Time"
-                    onFocus={openCalendar}
-                    onChange={() => {}}
-                  />
-                </InputGroup>
-              )}
-            />
-          </Form.Group>
-        </Col>
+        {/*<Col md={4} className="mb-4">*/}
+        {/*<Form.Group id="datetimeVM">*/}
+        {/*    <Form.Label>Date & Time</Form.Label>*/}
+        {/*    <Datetime*/}
+        {/*      onChange={handleDateTimeChange}*/}
+        {/*      value={dateTime}*/}
+        {/*      renderInput={(props, openCalendar) => (*/}
+        {/*        <InputGroup>*/}
+        {/*          <InputGroup.Text>*/}
+        {/*            <FontAwesomeIcon icon={faCalendarAlt} />*/}
+        {/*          </InputGroup.Text>*/}
+        {/*          <Form.Control*/}
+        {/*            required*/}
+        {/*            name="dateTime"*/}
+        {/*            type="text"*/}
+        {/*            value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}*/}
+        {/*            placeholder="Enter Date & Time"*/}
+        {/*            onFocus={openCalendar}*/}
+        {/*            onChange={() => {}}*/}
+        {/*          />*/}
+        {/*        </InputGroup>*/}
+        {/*      )}*/}
+        {/*    />*/}
+        {/*  </Form.Group>*/}
+        {/*</Col>*/}
         <Col md={4} className="mb-4">
           <Form.Group id="gender">
             <Form.Label>Vehicle</Form.Label>
@@ -804,10 +832,12 @@ export const VM_Form = () => {
 
 
 export const DR_Form = () => {
+
     const [weatherData, setWeatherData] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
     const [weatherDetails, setWeatherDetails] = useState('');
     const [isFetching, setIsFetching] = useState(false);
+
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -821,9 +851,9 @@ export const DR_Form = () => {
             }
         );
     }, []);
+
     let userLat = userLocation ? userLocation.latitude : null;
     let userLong = userLocation ? userLocation.longitude : null;
-    // console.log(userLat, userLong);
 
     const handleFetchWeather = async () => {
         if (isFetching) return;
@@ -835,262 +865,253 @@ export const DR_Form = () => {
             console.log(weatherDetails);
         } catch (error) {
             console.error('Error fetching weather data:', error);
-        }
-        finally {
+        } finally {
             setIsFetching(false);
-
-    }};
-
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    projectName: '',
-    projectLocation: '',
-    scopeOfWork: '',
-    workPerformed: '',
-    notes: ''
-  });
-  const [dateTime, setDateTime] = useState('');
-
-  const handleDateTimeChange = (date) => {
-    setDateTime(date);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        if ((formData.notes).length > 0) {
-            await axios.post(sendEmail, {
-                comment: `Daily Report submitted by ${formData.firstName} ${formData.lastName}`
-            });
         }
-      const response = await axios.post(createDailyReports, {
-        userID: 1, // Assuming you have a specific user ID
-        dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
-        ...formData, weatherDetails
-      });
-      console.log('Response:', response.data);
-        toast.success('Form submitted successfully!');
-    } catch (error) {
-      console.error('Error inserting data:', error);
-        toast.error('Error submitting form. Please try again.');
-    }
-  };
-  
-  return (
-      <>
-          <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
+    };
 
-          />
-    <Card border="light" className="mb-4 bg-white shadow-sm">
-      <Card.Body>
-        <h5 className="mb-4">Daily Report</h5>
-        <Form onSubmit={handleSubmit}>
-      <Row>
-        <Col md={6} className="mb-3">
-          <Form.Group id="firstName">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              required
-              name="firstName"
-              type="text"
-              placeholder="Enter your first name"
-              value={formData.firstName}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-3">
-          <Form.Group id="lastName">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              required
-              name="lastName"
-              type="text"
-              placeholder="Enter your last name"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row className="align-items-center">
-        <Col md={4} className="mb-4">
-          <Form.Group id="datetimeDR">
-            <Form.Label>Date & Time</Form.Label>
-            <Datetime
-              onChange={handleDateTimeChange}
-              value={dateTime}
-              renderInput={(props, openCalendar) => (
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faCalendarAlt} />
-                  </InputGroup.Text>
-                  <Form.Control
-                    required
-                    name="dateTime"
-                    type="text"
-                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                    placeholder="Enter Date & Time"
-                    onFocus={openCalendar}
-                    onChange={() => {}}
-                  />
-                </InputGroup>
-              )}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={4} className="mb-4">
-          {/*<Form.Group id="weatherDetails">*/}
-          {/*  <Form.Label>Weather Details</Form.Label>*/}
-          {/*  <Form.Control*/}
-          {/*    required*/}
-          {/*    name="weatherDetails"*/}
-          {/*    type="text"*/}
-          {/*    value={weatherDetails}*/}
-          {/*    placeholder=""*/}
-          {/*    disabled*/}
-          {/*  />*/}
-          {/*</Form.Group>*/}
-          {/*  <Button variant='link' onClick={handleFetchWeather} disabled={isFetching}>*/}
-          {/*      {isFetching ? 'Fetching...' : 'Fetch Weather'}*/}
-          {/*  </Button>*/}
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        projectName: '',
+        // projectLocation: '',
+        scopeOfWork: '',
+        workPerformed: '',
+        notes: ''
+    });
 
-            <Form.Group id="weatherDetails" className="position-relative">
-                <Form.Label>Weather Details</Form.Label>
-                <div className="d-flex align-items-center">
-                    <Form.Control
-                        required
-                        name="weatherDetails"
-                        type="text"
-                        onChange={handleChange}
-                        value={weatherDetails}
-                        placeholder=""
-                        disabled
-                    />
-                    <Button
-                        variant="link"
-                        onClick={handleFetchWeather}
-                        disabled={isFetching}
-                        className="position-absolute end-0 "
-                        style={{ right: '10px' }}
-                    >
-                        {isFetching ? 'Fetching...' : 'Fetch Data'}
-                    </Button>
-                </div>
-            </Form.Group>
-        </Col>
-        <Col md={4} className="mb-4">
-          <Form.Group id="scopeOfWork">
-            <Form.Label>Scope of Work</Form.Label>
-              <Form.Select
-                  name="scopeOfWork"
-                  value={formData.scopeOfWork}
-                  onChange={handleChange}
-              >
-                  <option value="">Select Scope of Work</option>
-                  <option value="Structural Steel">Structural Steel</option>
-                  <option value="PEMB">PEMB</option>
-                  <option value="Drywall">Drywall</option>
-                  <option value="Light Gauge Framing">Light Gauge Framing</option>
-                  <option value="Ceilings">Ceilings</option>
-              </Form.Select>
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={4} className="mb-4">
-          <Form.Group id="projectNameDR">
-            <Form.Label>Project Name</Form.Label>
-            <Form.Control
-              required
-              name="projectName"
-              type="text"
-              placeholder=""
-              value={formData.projectName}
-              onChange={handleChange}
+    const [dateTime, setDateTime] = useState('');
+
+    const handleDateTimeChange = (timestamp) => {
+        setDateTime(timestamp);
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            if ((formData.notes).length > 0) {
+                await axios.post(sendEmail, {
+                    comment: `Daily Report submitted by ${formData.firstName} ${formData.lastName}`
+                });
+            }
+            const response = await axios.post(createDailyReports, {
+                userID: 1,
+                dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
+                ...formData,
+                weatherDetails
+            });
+            console.log('Response:', response.data);
+            toast.success('Form submitted successfully!');
+        } catch (error) {
+            console.error('Error inserting data:', error);
+            toast.error('Error submitting form. Please try again.');
+        }
+    };
+
+    return (
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
             />
-          </Form.Group>
-        </Col>
-        <Col md={4} className="mb-4">
-          <Form.Group id="projectLocationDR">
-            <Form.Label>Project Location</Form.Label>
-            <Form.Control
-              required
-              name="projectLocation"
-              type="text"
-              placeholder=""
-              value={formData.projectLocation}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-          <Col md={4} className="mb-4">
-              <Form.Group id="uploadImageObjectDR">
-                  <Form.Label>Upload Attachments</Form.Label>
-                  <br/>
-                  <input type="file" id="imgDR" multiple/>
-                  <div className="d-md-block text-start">
-                      {/*<div className="fw-normal text-dark mb-1">Choose Image</div>*/}
-                      <div className="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
-                  </div>
-              </Form.Group>
-          </Col>
-      </Row>
-      <Row>
-        <Col md={6} className="mb-4">
-          <Form.Group id="workPerformedDR">
-            <Form.Label>Work Performed</Form.Label>
-            <Form.Control
-              required
-              name="workPerformed"
-              as="textarea"
-              rows={3}
-              placeholder=""
-              value={formData.workPerformed}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-4">
-          <Form.Group id="notesDR">
-            <Form.Label>Notes</Form.Label>
-            <Form.Control
-              required
-              name="notes"
-              as="textarea"
-              rows={3}
-              placeholder=""
-              value={formData.notes}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <div className="mt-3">
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-      </div>
-    </Form>
-      </Card.Body>
-    </Card>
-          </>
-  );
+            <Card border="light" className="mb-4 bg-white shadow-sm">
+                <Card.Body>
+                    <h5 className="mb-4">Daily Report</h5>
+                    <Form onSubmit={handleSubmit}>
+                        <Row>
+                            <Col md={3} className="mb-3">
+                                <Form.Group id="firstName">
+                                    <Form.Label>First Name</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="firstName"
+                                        type="text"
+                                        placeholder="Enter your first name"
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={3} className="mb-3">
+                                <Form.Group id="lastName">
+                                    <Form.Label>Last Name</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="lastName"
+                                        type="text"
+                                        placeholder="Enter your last name"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+
+                            {/*<Col md={4} className="mb-4">*/}
+                            {/*    <Form.Group id="datetimeDR">*/}
+                            {/*        <Form.Label>Date & Time</Form.Label>*/}
+                            {/*        <Datetime*/}
+                            {/*            onChange={handleDateTimeChange}*/}
+                            {/*            value={dateTime}*/}
+                            {/*            renderInput={(props, openCalendar) => (*/}
+                            {/*                <InputGroup>*/}
+                            {/*                    <InputGroup.Text>*/}
+                            {/*                        <FontAwesomeIcon icon={faCalendarAlt} />*/}
+                            {/*                    </InputGroup.Text>*/}
+                            {/*                    <Form.Control*/}
+                            {/*                        required*/}
+                            {/*                        name="dateTime"*/}
+                            {/*                        type="text"*/}
+                            {/*                        value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}*/}
+                            {/*                        placeholder="Enter Date & Time"*/}
+                            {/*                        onFocus={openCalendar}*/}
+                            {/*                        onChange={() => {}}*/}
+                            {/*                    />*/}
+                            {/*                </InputGroup>*/}
+                            {/*            )}*/}
+                            {/*        />*/}
+                            {/*    </Form.Group>*/}
+                            {/*</Col>*/}
+                            <Col md={3} className="mb-4">
+                                <Form.Group id="weatherDetails" className="position-relative">
+                                    <Form.Label>Weather Details</Form.Label>
+                                    <div className="d-flex align-items-center">
+                                        <Form.Control
+                                            required
+                                            name="weatherDetails"
+                                            type="text"
+                                            onChange={handleChange}
+                                            value={weatherDetails}
+                                            placeholder=""
+                                            disabled
+                                        />
+                                        <Button
+                                            variant="link"
+                                            onClick={handleFetchWeather}
+                                            disabled={isFetching}
+                                            className="position-absolute end-0"
+                                            style={{ right: '10px' }}
+                                        >
+                                            {isFetching ? 'Fetching...' : 'Fetch Data'}
+                                        </Button>
+                                    </div>
+                                </Form.Group>
+                            </Col>
+                            <Col md={3} className="mb-4">
+                                <Form.Group id="scopeOfWork">
+                                    <Form.Label>Scope of Work</Form.Label>
+                                    <Form.Select
+                                        name="scopeOfWork"
+                                        value={formData.scopeOfWork}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select Scope of Work</option>
+                                        <option value="Structural Steel">Structural Steel</option>
+                                        <option value="PEMB">PEMB</option>
+                                        <option value="Drywall">Drywall</option>
+                                        <option value="Light Gauge Framing">Light Gauge Framing</option>
+                                        <option value="Ceilings">Ceilings</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={4} className="mb-4">
+                                <Form.Group id="projectName">
+                                    <Form.Label>Project Name</Form.Label>
+                                    <Form.Select
+                                        required
+                                        name="projectName"
+                                        value={formData.projectName}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select Project</option>
+                                        {projectList.map((project, index) => (
+                                            <option key={index} value={project}>
+                                                {project}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                            {/*<Col md={4} className="mb-4">*/}
+                            {/*    <Form.Group id="projectLocationDR">*/}
+                            {/*        <Form.Label>Project Location</Form.Label>*/}
+                            {/*        <Form.Control*/}
+                            {/*            required*/}
+                            {/*            name="projectLocation"*/}
+                            {/*            type="text"*/}
+                            {/*            placeholder=""*/}
+                            {/*            value={formData.projectLocation}*/}
+                            {/*            onChange={handleChange}*/}
+                            {/*        />*/}
+                            {/*    </Form.Group>*/}
+                            {/*</Col>*/}
+                            <Col md={4} className="mb-4">
+                                <Form.Group id="uploadImageObjectDR">
+                                    <Form.Label>Upload Attachments</Form.Label>
+                                    <br/>
+                                    <input type="file" id="imgDR" multiple/>
+                                    <div className="d-md-block text-start">
+                                        <div className="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
+                                    </div>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6} className="mb-4">
+                                <Form.Group id="workPerformedDR">
+                                    <Form.Label>Work Performed</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="workPerformed"
+                                        as="textarea"
+                                        rows={3}
+                                        placeholder=""
+                                        value={formData.workPerformed}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6} className="mb-4">
+                                <Form.Group id="notesDR">
+                                    <Form.Label>Notes</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="notes"
+                                        as="textarea"
+                                        rows={3}
+                                        placeholder=""
+                                        value={formData.notes}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <div className="mt-3">
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </div>
+                    </Form>
+                </Card.Body>
+            </Card>
+        </>
+    );
 };
 
 export const IR_Form = () => {
@@ -1483,8 +1504,8 @@ export const TI_Form = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleDateTimeChange = (date) => {
-        setDateTime(date);
+    const handleDateTimeChange = (timestamp) => {
+        setDateTime(timestamp);
     };
 
     const handleSubmit = async (e) => {
@@ -1492,7 +1513,7 @@ export const TI_Form = () => {
         try {
             const response = await axios.post(createTruckInspectionForm, {
                 ...formData,
-                dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss")
+                dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss")
             });
             console.log('Response:', response.data);
             toast.success('Truck inspection form submitted successfully!');
@@ -1568,7 +1589,7 @@ export const TI_Form = () => {
                     <h5 className="mb-4">Truck Inspection Form</h5>
                     <Form onSubmit={handleSubmit}>
                         <Row>
-                            <Col md={4} className="mb-3">
+                            <Col md={6} className="mb-3">
                                 <Form.Group>
                                     <Form.Label>Truck Number</Form.Label>
                                     <Form.Control
@@ -1581,7 +1602,7 @@ export const TI_Form = () => {
                                     />
                                 </Form.Group>
                             </Col>
-                            <Col md={4} className="mb-3">
+                            <Col md={6} className="mb-3">
                                 <Form.Group>
                                     <Form.Label>Mileage</Form.Label>
                                     <Form.Control
@@ -1594,30 +1615,30 @@ export const TI_Form = () => {
                                     />
                                 </Form.Group>
                             </Col>
-                            <Col md={4} className="mb-3">
-                                <Form.Group>
-                                    <Form.Label>Date & Time</Form.Label>
-                                    <Datetime
-                                        onChange={handleDateTimeChange}
-                                        value={dateTime}
-                                        renderInput={(props, openCalendar) => (
-                                            <InputGroup>
-                                                <InputGroup.Text>
-                                                    <FontAwesomeIcon icon={faCalendarAlt} />
-                                                </InputGroup.Text>
-                                                <Form.Control
-                                                    required
-                                                    type="text"
-                                                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                                                    placeholder="Enter Date & Time"
-                                                    onFocus={openCalendar}
-                                                    onChange={() => {}}
-                                                />
-                                            </InputGroup>
-                                        )}
-                                    />
-                                </Form.Group>
-                            </Col>
+                            {/*<Col md={4} className="mb-3">*/}
+                            {/*    <Form.Group>*/}
+                            {/*        <Form.Label>Date & Time</Form.Label>*/}
+                            {/*        <Datetime*/}
+                            {/*            onChange={handleDateTimeChange}*/}
+                            {/*            value={dateTime}*/}
+                            {/*            renderInput={(props, openCalendar) => (*/}
+                            {/*                <InputGroup>*/}
+                            {/*                    <InputGroup.Text>*/}
+                            {/*                        <FontAwesomeIcon icon={faCalendarAlt} />*/}
+                            {/*                    </InputGroup.Text>*/}
+                            {/*                    <Form.Control*/}
+                            {/*                        required*/}
+                            {/*                        type="text"*/}
+                            {/*                        value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}*/}
+                            {/*                        placeholder="Enter Date & Time"*/}
+                            {/*                        onFocus={openCalendar}*/}
+                            {/*                        onChange={() => {}}*/}
+                            {/*                    />*/}
+                            {/*                </InputGroup>*/}
+                            {/*            )}*/}
+                            {/*        />*/}
+                            {/*    </Form.Group>*/}
+                            {/*</Col>*/}
                         </Row>
 
                         <Row>
