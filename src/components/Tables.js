@@ -564,6 +564,7 @@ export const VMFTable = () => {
               <SortableHeader column="dateTime">Date Time</SortableHeader>
               <SortableHeader column="firstName">First Name</SortableHeader>
               <SortableHeader column="lastName">Last Name</SortableHeader>
+              <SortableHeader column="projectName">Project Name</SortableHeader>
               <SortableHeader column="vehicleName">Vehicle Name</SortableHeader>
               <SortableHeader column="vehicleNo">Vehicle No</SortableHeader>
               <SortableHeader column="pickupJobsite">Pickup Jobsite</SortableHeader>
@@ -579,6 +580,7 @@ export const VMFTable = () => {
                   <td>{formatDateTime(form.dateTime)}</td>
                   <td>{form.firstName}</td>
                   <td>{form.lastName}</td>
+                  <td>{form.projectName}</td>
                   <td>{form.vehicleName}</td>
                   <td>{form.vehicleNo}</td>
                   <td>{form.pickupJobsite}</td>

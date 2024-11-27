@@ -72,7 +72,9 @@ const projectList = [
     "Davis Electric",
     "Metro Appliances",
     "Premier Trucking",
-    "Prime Hanger"
+    "Prime Hanger",
+    "Shop - Office",
+    "Others - Not Listed"
 ];
 
 export const VI_Form = () => {
@@ -124,8 +126,8 @@ export const VI_Form = () => {
       try {
             const truckNumber = e.target.vehicleNo.value;
           const projectName = e.target.projectName.value;
-          console.log(projectName);
-          console.log(formData)
+          // console.log(projectName);
+          // console.log(formData)
         const response = await axios.post(createVehicleInspectionForm, formData);
         // console.log('Form submitted successfully:', response.data.message);
           toast.success('Form submitted successfully!');
@@ -633,201 +635,193 @@ export const VI_Form = () => {
 
 
 export const VM_Form = () => {
-  const [dateTime, setDateTime] = useState('');
-  // console.log(dateTime)
-  
-  const [formData, setFormData] = useState({
-    userID: 1, // Assuming this is the user ID
-    firstName: '',
-    lastName: '',
-    vehicleName: '',
-    vehicleNo: '',
-    pickupJobsite: '',
-    dropoffLocation: '',
-    notes: ''
-  });
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const [dateTime, setDateTime] = useState('');
 
-  const handleDateTimeChange = (date) => {
-    setDateTime(timestamp);
-  };
+    const [formData, setFormData] = useState({
+        userID: 1,
+        firstName: '',
+        lastName: '',
+        projectName: '',
+        vehicleName: '',
+        vehicleNo: '',
+        pickupJobsite: '',
+        dropoffLocation: '',
+        notes: ''
+    });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        console.log(timestamp)
-      const response = await axios.post(createVehicleMovingForm, {
-        userID: 1, // Assuming you have a specific user ID
-        dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
-        ...formData
-      });
-      console.log('Response:', response.data);
-        toast.success('Form submitted successfully!');
-    } catch (error) {
-      console.error('Error inserting data:', error);
-        toast.error('Error submitting form. Please try again.');
-    }
-  };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
-  return (
-      <>
-      <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
+    const handleDateTimeChange = (date) => {
+        setDateTime(timestamp);
+    };
 
-      />
-    <Card border="light" className="mb-4 bg-white shadow-sm">
-      <Card.Body>
-        <h5 className="mb-4">Vehicle Moving Form</h5>
-        <Form onSubmit={handleSubmit}>
-      <Row>
-        <Col md={6} className="mb-3">
-          <Form.Group id="firstName">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              required
-              name="firstName"
-              type="text"
-              placeholder="Enter your first name"
-              value={formData.firstName}
-              onChange={handleChange}
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            // console.log(timestamp)
+            const response = await axios.post(createVehicleMovingForm, {
+                userID: 1,
+                dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
+                ...formData
+            });
+            // console.log('Response:', response.data);
+            toast.success('Form submitted successfully!');
+        } catch (error) {
+            console.error('Error inserting data:', error);
+            toast.error('Error submitting form. Please try again.');
+        }
+    };
+
+    return (
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
             />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-3">
-          <Form.Group id="lastName">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              required
-              name="lastName"
-              type="text"
-              placeholder="Enter your last name"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row className="align-items-center">
-        {/*<Col md={4} className="mb-4">*/}
-        {/*<Form.Group id="datetimeVM">*/}
-        {/*    <Form.Label>Date & Time</Form.Label>*/}
-        {/*    <Datetime*/}
-        {/*      onChange={handleDateTimeChange}*/}
-        {/*      value={dateTime}*/}
-        {/*      renderInput={(props, openCalendar) => (*/}
-        {/*        <InputGroup>*/}
-        {/*          <InputGroup.Text>*/}
-        {/*            <FontAwesomeIcon icon={faCalendarAlt} />*/}
-        {/*          </InputGroup.Text>*/}
-        {/*          <Form.Control*/}
-        {/*            required*/}
-        {/*            name="dateTime"*/}
-        {/*            type="text"*/}
-        {/*            value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}*/}
-        {/*            placeholder="Enter Date & Time"*/}
-        {/*            onFocus={openCalendar}*/}
-        {/*            onChange={() => {}}*/}
-        {/*          />*/}
-        {/*        </InputGroup>*/}
-        {/*      )}*/}
-        {/*    />*/}
-        {/*  </Form.Group>*/}
-        {/*</Col>*/}
-        <Col md={4} className="mb-4">
-          <Form.Group id="gender">
-            <Form.Label>Vehicle</Form.Label>
-            <Form.Select
-              name="vehicleName"
-              value={formData.vehicleName}
-              onChange={handleChange}
-            >
-              <option value="">Vehicle</option>
-              <option value="Boom Lift">Boom Lift</option>
-              <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
-              <option value="Telehandler">Telehandler</option>
-              <option value="Electric Scissor Lift">Electric Scissor Lift</option>
-            </Form.Select>
-          </Form.Group>
-        </Col>
-        <Col md={4} className="mb-4">
-          <Form.Group id="vehicleNo">
-            <Form.Label>Vehicle No.</Form.Label>
-            <Form.Control
-              required
-              name="vehicleNo"
-              type="text"
-              placeholder="Vehicle Number"
-              value={formData.vehicleNo}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={6} className="mb-3">
-          <Form.Group id="pickupJobsite">
-            <Form.Label>Pickup Location</Form.Label>
-            <Form.Control
-              required
-              name="pickupJobsite"
-              type="text"
-              placeholder="Enter your home address"
-              value={formData.pickupJobsite}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-3">
-          <Form.Group id="dropoffLocation">
-            <Form.Label>Dropoff Location</Form.Label>
-            <Form.Control
-              required
-              name="dropoffLocation"
-              type="text"
-              placeholder="Enter your home address"
-              value={formData.dropoffLocation}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={12} className="mb-3">
-          <Form.Group id="notesVM">
-            <Form.Label>Notes</Form.Label>
-            <Form.Control
-              required
-              name="notes"
-              as="textarea"
-              rows={3}
-              value={formData.notes}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <div className="mt-3">
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-        
-      </div>
-    </Form>
-      </Card.Body>
-    </Card>
-    </>
-  );
+            <Card border="light" className="mb-4 bg-white shadow-sm">
+                <Card.Body>
+                    <h5 className="mb-4">Vehicle Moving Form</h5>
+                    <Form onSubmit={handleSubmit}>
+                        <Row>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="firstName">
+                                    <Form.Label>First Name</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="firstName"
+                                        type="text"
+                                        placeholder="Enter your first name"
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="lastName">
+                                    <Form.Label>Last Name</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="lastName"
+                                        type="text"
+                                        placeholder="Enter your last name"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row className="align-items-center">
+                            <Col md={4} className="mb-4">
+                                <Form.Group id="projectName">
+                                    <Form.Label>Project Name</Form.Label>
+                                    <Form.Select
+                                        required
+                                        name="projectName"
+                                        value={formData.projectName}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select Project</option>
+                                        {projectList.map((project, index) => (
+                                            <option key={index} value={project}>
+                                                {project}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                            <Col md={4} className="mb-4">
+                                <Form.Group id="gender">
+                                    <Form.Label>Vehicle</Form.Label>
+                                    <Form.Select
+                                        name="vehicleName"
+                                        value={formData.vehicleName}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Vehicle</option>
+                                        <option value="Boom Lift">Boom Lift</option>
+                                        <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
+                                        <option value="Telehandler">Telehandler</option>
+                                        <option value="Electric Scissor Lift">Electric Scissor Lift</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                            <Col md={4} className="mb-4">
+                                <Form.Group id="vehicleNo">
+                                    <Form.Label>Vehicle No.</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="vehicleNo"
+                                        type="text"
+                                        placeholder="Vehicle Number"
+                                        value={formData.vehicleNo}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="pickupJobsite">
+                                    <Form.Label>Pickup Location</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="pickupJobsite"
+                                        type="text"
+                                        placeholder="Enter your home address"
+                                        value={formData.pickupJobsite}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="dropoffLocation">
+                                    <Form.Label>Dropoff Location</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="dropoffLocation"
+                                        type="text"
+                                        placeholder="Enter your home address"
+                                        value={formData.dropoffLocation}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={12} className="mb-3">
+                                <Form.Group id="notesVM">
+                                    <Form.Label>Notes</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="notes"
+                                        as="textarea"
+                                        rows={3}
+                                        value={formData.notes}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <div className="mt-3">
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </div>
+                    </Form>
+                </Card.Body>
+            </Card>
+        </>
+    );
 };
 
 
@@ -908,7 +902,7 @@ export const DR_Form = () => {
                 ...formData,
                 weatherDetails
             });
-            console.log('Response:', response.data);
+            // console.log('Response:', response.data);
             toast.success('Form submitted successfully!');
         } catch (error) {
             console.error('Error inserting data:', error);
@@ -1162,7 +1156,7 @@ export const IR_Form = () => {
                 employeeSignDate: moment(empDateTime).format("YYYY-MM-DD HH:mm:ss"),
                 // supervisorSignDate: moment(supDateTime).format("YYYY-MM-DD HH:mm:ss")
             });
-            console.log('Response:', response.data);
+            // console.log('Response:', response.data);
             console.log('toast')
             toast.success('Form submitted successfully!');
 
@@ -1516,7 +1510,7 @@ export const TI_Form = () => {
                 dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss")
 
             });
-            console.log('Response:', response.data);
+            // console.log('Response:', response.data);
             toast.success('Truck inspection form submitted successfully!');
             if (formData.policyAck === "Yes") {
                 await axios.post(sendEmail, {
