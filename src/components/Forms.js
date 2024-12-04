@@ -65,17 +65,18 @@ require('dotenv').config();
   const createTruckInspectionForm = `${apiURL}/crud/createTruckInspectionForm`
 
 const projectList = [
-    "Prairie Chapel Church",
-    "UPS Warehouse",
-    "Robert's Industrial Westgate",
-    "Thermal Engineering",
-    "Davis Electric",
-    "Metro Appliances",
-    "Premier Trucking",
-    "Prime Hanger",
-    "Shop - Office",
+    "Prairie Chapel Church - 20414 Hwy. 65, Urbana, MO - 65767",
+    "UPS Warehouse - 4455 W success Pl, Springfield, Mo - 65803",
+    "Robert's Industrial Westgate - 2610 N. Westgate Ave., Springfield, MO - 65803",
+    "Thermal Engineering - 2702 W. Ninth St., Joplin, MO - 64801",
+    "Davis Electric - 1040 Kathryn St., Nixa, MO - 65714",
+    "Metro Appliances - 1436 E. Erie St., Springfield, MO - 65804",
+    "Premier Trucking - 759 E. Evergreen St., Strafford, MO - 65757",
+    "Prime Hanger - SGF Airport, N, General Aviation Ave., Springfield, MO - 65803",
+    "Shop - Office - 5511 W. Farm Rd., 164, Battlefield, MO - 65619",
     "Others - Not Listed"
 ];
+
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
@@ -164,7 +165,7 @@ export const VI_Form = () => {
 
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
-        <h5 className="mb-4">Daily Equipment Inspection Report</h5>
+        <h5 className="mb-4">Daily Equipment Inspection Form</h5>
         <Form onSubmit={handleSubmit}>
 
           <Row className="align-items-center">
@@ -208,7 +209,7 @@ export const VI_Form = () => {
             </Col>
             <Col md={3} className="mb-3">
               <Form.Group id="vehicleName">
-                <Form.Label>Vehicle</Form.Label>
+                <Form.Label>Unit</Form.Label>
                   <Form.Select defaultValue="Boom Lift" name="vehicleName">
 
                       <option value="Boom Lift">Boom Lift</option>
@@ -221,7 +222,7 @@ export const VI_Form = () => {
             </Col>
               <Col md={3} className="mb-3">
               <Form.Group id="vehicleNo">
-                <Form.Label>Vehicle No.</Form.Label>
+                <Form.Label>Unit No.</Form.Label>
                 <Form.Control
                   required
                   type="text"
@@ -738,7 +739,7 @@ export const VM_Form = () => {
                             {/*</Col>*/}
                             <Col md={4} className="mb-4">
                                 <Form.Group id="gender">
-                                    <Form.Label>Vehicle</Form.Label>
+                                    <Form.Label>Unit</Form.Label>
                                     <Form.Select
                                         name="vehicleName"
                                         value={formData.vehicleName}
@@ -754,7 +755,7 @@ export const VM_Form = () => {
                             </Col>
                             <Col md={4} className="mb-4">
                                 <Form.Group id="vehicleNo">
-                                    <Form.Label>Vehicle No.</Form.Label>
+                                    <Form.Label>Unit No.</Form.Label>
                                     <Form.Control
                                         required
                                         name="vehicleNo"
@@ -1197,8 +1198,32 @@ export const IR_Form = () => {
                 <h5 className="mb-4">Incident Report Form</h5>
                 <Form onSubmit={handleSubmit}>
                     <Row>
-
-                        <Col md={6} className="mb-3">
+                        <Col md={4} className="mb-4">
+                            <Form.Group id="dateTime">
+                                <Form.Label>Date & Time</Form.Label>
+                                <Datetime
+                                    onChange={handleDateTimeChange}
+                                    value={dateTime}
+                                    renderInput={(props, openCalendar) => (
+                                        <InputGroup>
+                                            <InputGroup.Text>
+                                                <FontAwesomeIcon icon={faCalendarAlt} />
+                                            </InputGroup.Text>
+                                            <Form.Control
+                                                required
+                                                name="dateTime"
+                                                type="text"
+                                                value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                                                placeholder="Enter Date & Time"
+                                                onFocus={openCalendar}
+                                                onChange={() => {}}
+                                            />
+                                        </InputGroup>
+                                    )}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col md={4} className="mb-3">
                             <Form.Group id="incidentType">
                                 <Form.Label>Documenting an:</Form.Label>
                                 <Form.Select
@@ -1215,7 +1240,7 @@ export const IR_Form = () => {
                                 </Form.Select>
                             </Form.Group>
                         </Col>
-                        <Col md={6} className="mb-3">
+                        <Col md={4} className="mb-3">
                             <Form.Group id="location">
                                 <Form.Label>Event Location</Form.Label>
                                 <Form.Control
@@ -1257,91 +1282,67 @@ export const IR_Form = () => {
                             </Form.Group>
                         </Col>
                     </Row>
-      <Row className="align-items-center">
-        <Col md={4} className="mb-4">
-        <Form.Group id="dateTime">
-            <Form.Label>Date & Time</Form.Label>
-            <Datetime
-              onChange={handleDateTimeChange}
-              value={dateTime}
-              renderInput={(props, openCalendar) => (
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faCalendarAlt} />
-                  </InputGroup.Text>
-                  <Form.Control
-                    required
-                    name="dateTime"
-                    type="text"
-                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                    placeholder="Enter Date & Time"
-                    onFocus={openCalendar}
-                    onChange={() => {}}
-                  />
-                </InputGroup>
-              )}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={4} className="mb-4">
-          <Form.Group id="vehicle">
-            <Form.Label>Vehicle</Form.Label>
-              <Form.Select
-                  name="vehicle"
-                  value={formData.vehicle}
-                  onChange={handleChange}
-              >
-                  <option value="">Vehicle</option>
-                  <option value="Boom Lift">Boom Lift</option>
-                  <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
-                  <option value="Telehandler">Telehandler</option>
-                  <option value="Electric Scissor Lift">Electric Scissor Lift</option>
-                  <option value="Others">Others</option>
-              </Form.Select>
-          </Form.Group>
-        </Col>
-          <Col md={4} className="mb-4">
-          <Form.Group id="vehicleNo">
-            <Form.Label>Vehicle No.</Form.Label>
-            <Form.Control
-              required
-              name="vehicleNo"
-              type="text"
-              placeholder="Vehicle Number"
-              value={formData.vehicleNo}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={6} className="mb-3">
-          <Form.Group id="pickupLocation">
-            <Form.Label>Pickup Location</Form.Label>
-            <Form.Control
-              required
-              name="pickupLocation"
-              type="text"
-              placeholder="Enter your home address"
-              value={formData.pickupJobsite}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-3">
-          <Form.Group id="dropoffLocation">
-            <Form.Label>Dropoff Location</Form.Label>
-            <Form.Control
-              required
-              name="dropoffLocation"
-              type="text"
-              placeholder="Enter your home address"
-              value={formData.dropoffLocation}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
+      {/*<Row className="align-items-center">*/}
+
+      {/*  <Col md={4} className="mb-4">*/}
+      {/*    <Form.Group id="vehicle">*/}
+      {/*      <Form.Label>Vehicle</Form.Label>*/}
+      {/*        <Form.Select*/}
+      {/*            name="vehicle"*/}
+      {/*            value={formData.vehicle}*/}
+      {/*            onChange={handleChange}*/}
+      {/*        >*/}
+      {/*            <option value="">Vehicle</option>*/}
+      {/*            <option value="Boom Lift">Boom Lift</option>*/}
+      {/*            <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>*/}
+      {/*            <option value="Telehandler">Telehandler</option>*/}
+      {/*            <option value="Electric Scissor Lift">Electric Scissor Lift</option>*/}
+      {/*            <option value="Others">Others</option>*/}
+      {/*        </Form.Select>*/}
+      {/*    </Form.Group>*/}
+      {/*  </Col>*/}
+      {/*    <Col md={4} className="mb-4">*/}
+      {/*    <Form.Group id="vehicleNo">*/}
+      {/*      <Form.Label>Vehicle No.</Form.Label>*/}
+      {/*      <Form.Control*/}
+      {/*        required*/}
+      {/*        name="vehicleNo"*/}
+      {/*        type="text"*/}
+      {/*        placeholder="Vehicle Number"*/}
+      {/*        value={formData.vehicleNo}*/}
+      {/*        onChange={handleChange}*/}
+      {/*      />*/}
+      {/*    </Form.Group>*/}
+      {/*  </Col>*/}
+      {/*</Row>*/}
+      {/*<Row>*/}
+      {/*  <Col md={6} className="mb-3">*/}
+      {/*    <Form.Group id="pickupLocation">*/}
+      {/*      <Form.Label>Pickup Location</Form.Label>*/}
+      {/*      <Form.Control*/}
+      {/*        required*/}
+      {/*        name="pickupLocation"*/}
+      {/*        type="text"*/}
+      {/*        placeholder="Enter your home address"*/}
+      {/*        value={formData.pickupJobsite}*/}
+      {/*        onChange={handleChange}*/}
+      {/*      />*/}
+      {/*    </Form.Group>*/}
+      {/*  </Col>*/}
+      {/*  <Col md={6} className="mb-3">*/}
+      {/*    <Form.Group id="dropoffLocation">*/}
+      {/*      <Form.Label>Dropoff Location</Form.Label>*/}
+      {/*      <Form.Control*/}
+      {/*        required*/}
+      {/*        name="dropoffLocation"*/}
+      {/*        type="text"*/}
+      {/*        placeholder="Enter your home address"*/}
+      {/*        value={formData.dropoffLocation}*/}
+      {/*        onChange={handleChange}*/}
+      {/*      />*/}
+      {/*    </Form.Group>*/}
+      {/*  </Col>*/}
+      {/*</Row>*/}
       <Row>
       <Col md={6} className="mb-3">
           <Form.Group id="unsafeAct">
@@ -1547,10 +1548,10 @@ export const TI_Form = () => {
                 <Form.Check
                     inline
                     type="radio"
-                    label="Added"
+                    label="Not Ok"
                     name={name}
-                    value="Added"
-                    checked={formData[name] === "Added"}
+                    value="Not Ok"
+                    checked={formData[name] === "Not Ok"}
                     onChange={handleChange}
                 />
             </div>
@@ -1577,6 +1578,66 @@ export const TI_Form = () => {
                     name={name}
                     value="No"
                     checked={formData[name] === "No"}
+                    onChange={handleChange}
+                />
+            </div>
+        </Form.Group>
+    );
+
+    const renderRadioGroup03 = (name, label) => (
+        <Form.Group className="mb-3">
+            <Form.Label>{label}</Form.Label>
+            <div>
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="Ok"
+                    name={name}
+                    value="Ok"
+                    checked={formData[name] === "Ok"}
+                    onChange={handleChange}
+                />
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="Added"
+                    name={name}
+                    value="Added"
+                    checked={formData[name] === "Added"}
+                    onChange={handleChange}
+                />
+            </div>
+        </Form.Group>
+    );
+    const renderRadioGroup04 = (name, label) => (
+        <Form.Group className="mb-3">
+            <Form.Label>{label}</Form.Label>
+            <div>
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="Ok"
+                    name={name}
+                    value="Ok"
+                    checked={formData[name] === "Ok"}
+                    onChange={handleChange}
+                />
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="Not Ok"
+                    name={name}
+                    value="Not Ok"
+                    checked={formData[name] === "Not Ok"}
+                    onChange={handleChange}
+                />
+                <Form.Check
+                    inline
+                    type="radio"
+                    label="N/A"
+                    name={name}
+                    value="N/A"
+                    checked={formData[name] === "N/A"}
                     onChange={handleChange}
                 />
             </div>
@@ -1644,15 +1705,16 @@ export const TI_Form = () => {
                         </Row>
 
                         <Row>
-                            <Col md={4}>{renderRadioGroup("engineOil", "Engine Oil")}</Col>
-                            <Col md={4}>{renderRadioGroup("antiFreeze", "Anti-Freeze")}</Col>
+                            <Col md={4}>{renderRadioGroup03("engineOil", "Engine Oil")}</Col>
+                            <Col md={4}>{renderRadioGroup03("antiFreeze", "Anti-Freeze")}</Col>
                             <Col md={4}>{renderRadioGroup("powerSteering", "Power Steering")}</Col>
                         </Row>
 
                         <Row>
                             <Col md={4}>{renderRadioGroup("transmission", "Transmission")}</Col>
-                            <Col md={4}>{renderRadioGroup("washer", "Washer")}</Col>
-                            <Col md={4}>{renderRadioGroup("gpsHolder", "GPS Holder")}</Col>
+                            <Col md={4}>{renderRadioGroup03("washer", "Washer Fluid")}</Col>
+                            <Col md={4}>{renderRadioGroup("dashboardClear", "Dashboard Clear")}</Col>
+                            {/*<Col md={4}>{renderRadioGroup("gpsHolder", "GPS Holder")}</Col>*/}
                         </Row>
 
                         <Row>
@@ -1681,20 +1743,20 @@ export const TI_Form = () => {
 
                         <Row>
                             <Col md={4}>{renderRadioGroup("fourStraps", "Four Straps")}</Col>
-                            <Col md={4}>{renderRadioGroup("tommyGate", "Tommy Gate")}</Col>
+                            <Col md={4}>{renderRadioGroup04("tommyGate", "Tommy Gate")}</Col>
                             <Col md={4}>{renderRadioGroup("trailerTowed", "Check all Doors")}</Col>
                         </Row>
 
                         <Row>
-                            <Col md={4}>{renderRadioGroup("drainAirtanks", "Drain Air Tanks")}</Col>
-                            <Col md={4}>{renderRadioGroup("dashboardClear", "Dashboard Clear")}</Col>
+                            {/*<Col md={4}>{renderRadioGroup("drainAirtanks", "Drain Air Tanks")}</Col>*/}
+
                             <Col md={4}>{renderRadioGroup2("policyAck", "Notify Team Members")}</Col>
                         </Row>
 
                         <Row>
                             <Col md={6} className="mb-3">
                                 <Form.Group>
-                                    <Form.Label>Notes</Form.Label>
+                                    <Form.Label>Notes (Fill out if not Ok or Added)</Form.Label>
                                     <Form.Control
                                         name="notes"
                                         as="textarea"
