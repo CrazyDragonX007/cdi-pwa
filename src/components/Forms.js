@@ -636,7 +636,6 @@ export const VI_Form = () => {
 
 export const VM_Form = () => {
     const [dateTime, setDateTime] = useState('');
-
     const [formData, setFormData] = useState({
         userID: 1,
         firstName: '',
@@ -661,13 +660,11 @@ export const VM_Form = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // console.log(timestamp)
             const response = await axios.post(createVehicleMovingForm, {
                 userID: 1,
                 dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
                 ...formData
             });
-            // console.log('Response:', response.data);
             toast.success('Form submitted successfully!');
         } catch (error) {
             console.error('Error inserting data:', error);
@@ -721,24 +718,24 @@ export const VM_Form = () => {
                             </Col>
                         </Row>
                         <Row className="align-items-center">
-                            <Col md={4} className="mb-4">
-                                <Form.Group id="projectName">
-                                    <Form.Label>Project Name</Form.Label>
-                                    <Form.Select
-                                        required
-                                        name="projectName"
-                                        value={formData.projectName}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">Select Project</option>
-                                        {projectList.map((project, index) => (
-                                            <option key={index} value={project}>
-                                                {project}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
+                            {/*<Col md={4} className="mb-4">*/}
+                            {/*    <Form.Group id="projectName">*/}
+                            {/*        <Form.Label>Project Name</Form.Label>*/}
+                            {/*        <Form.Select*/}
+                            {/*            required*/}
+                            {/*            name="projectName"*/}
+                            {/*            value={formData.projectName}*/}
+                            {/*            onChange={handleChange}*/}
+                            {/*        >*/}
+                            {/*            <option value="">Select Project</option>*/}
+                            {/*            {projectList.map((project, index) => (*/}
+                            {/*                <option key={index} value={project}>*/}
+                            {/*                    {project}*/}
+                            {/*                </option>*/}
+                            {/*            ))}*/}
+                            {/*        </Form.Select>*/}
+                            {/*    </Form.Group>*/}
+                            {/*</Col>*/}
                             <Col md={4} className="mb-4">
                                 <Form.Group id="gender">
                                     <Form.Label>Vehicle</Form.Label>
@@ -773,27 +770,37 @@ export const VM_Form = () => {
                             <Col md={6} className="mb-3">
                                 <Form.Group id="pickupJobsite">
                                     <Form.Label>Pickup Location</Form.Label>
-                                    <Form.Control
+                                    <Form.Select
                                         required
                                         name="pickupJobsite"
-                                        type="text"
-                                        placeholder="Enter your home address"
                                         value={formData.pickupJobsite}
                                         onChange={handleChange}
-                                    />
+                                    >
+                                        <option value="">Select Pickup Location</option>
+                                        {projectList.map((project, index) => (
+                                            <option key={index} value={project}>
+                                                {project}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
                                 </Form.Group>
                             </Col>
                             <Col md={6} className="mb-3">
                                 <Form.Group id="dropoffLocation">
                                     <Form.Label>Dropoff Location</Form.Label>
-                                    <Form.Control
+                                    <Form.Select
                                         required
                                         name="dropoffLocation"
-                                        type="text"
-                                        placeholder="Enter your home address"
                                         value={formData.dropoffLocation}
                                         onChange={handleChange}
-                                    />
+                                    >
+                                        <option value="">Select Dropoff Location</option>
+                                        {projectList.map((project, index) => (
+                                            <option key={index} value={project}>
+                                                {project}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
                                 </Form.Group>
                             </Col>
                         </Row>
