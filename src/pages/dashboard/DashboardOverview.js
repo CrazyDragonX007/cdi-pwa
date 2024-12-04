@@ -12,14 +12,35 @@ import axios from "axios";
 require('dotenv').config();
 
 
-// const apiURL = process.env.REACT_APP_BACKEND_URL;
-// const vifCount = `${apiURL}/crud/countVIF`
-// const irfCount = `${apiURL}/crud/countIRF`
-// const vmfCount = `${apiURL}/crud/countVMF`
+const apiURL = process.env.REACT_APP_BACKEND_URL;
+const vifCountAPI = `${apiURL}/crud/countVIF`
+const irfCountAPI = `${apiURL}/crud/countIRF`
+const vmfCountAPI = `${apiURL}/crud/countVMF`
 
 
 
 export default () => {
+    const [irfCount, setIrfCount] = useState(0);
+    const [vifCount, setVifCount] = useState(0);
+    const [vmfCount, setVmfCount] = useState(0);
+
+    useEffect(() => {
+        const fetchCount = async () => {
+            try {
+                const response01 = await axios.get(irfCountAPI);
+                const response02 = await axios.get(vifCountAPI);
+                const response03 = await axios.get(vmfCountAPI);
+                setIrfCount(response01.data[0]['count(*)']);
+                setVifCount(response02.data[0]['count(*)']);
+                setVmfCount(response03.data[0]['count(*)']);
+
+            } catch (error) {
+                console.error('Error fetching IRF count:', error);
+            }
+        };
+
+        fetchCount();
+    }, []);
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
@@ -64,7 +85,7 @@ export default () => {
         <Col xs={12} sm={6} xl={4} className="mb-4">
           <CounterWidget
             category="Vehicle Inspection Submissions"
-            title="345k"
+            title= {`${vifCount}`}
             // period="Feb 1 - Apr 1"
             // percentage={18.2}
             icon={faTruckLoading}
@@ -75,7 +96,7 @@ export default () => {
         <Col xs={12} sm={6} xl={4} className="mb-4">
           <CounterWidget
             category="Vehicle Moving Submissions"
-            title="$43,594"
+            title={`${vmfCount}`}
             // period="Feb 1 - Apr 1"
             // percentage={28.4}
             icon={faTruckPickup}
@@ -86,7 +107,7 @@ export default () => {
         <Col xs={12} sm={6} xl={4} className="mb-4">
         <CounterWidget
             category="Total Report Submissions"
-            title="$43,594"
+            title={`${irfCount}`}
             // period="Feb 1 - Apr 1"
             // percentage={28.4}
             icon={faChartLine}
