@@ -233,12 +233,12 @@ export default (props = {}) => {
                       icon={faTable}
                   >
                     <NavItem
-                        title="Inspection"
+                        title="Inspection Form"
                         icon={faCog}
                         link={Routes.VIForm.path}
                     />
                     <NavItem
-                        title="Moving"
+                        title="Moving Form"
                         icon={faCog}
                         link={Routes.VMForm.path}
                     />
