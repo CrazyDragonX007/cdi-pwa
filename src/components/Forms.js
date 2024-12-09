@@ -688,7 +688,7 @@ export const VM_Form = () => {
             />
             <Card border="light" className="mb-4 bg-white shadow-sm">
                 <Card.Body>
-                    <h5 className="mb-4">Vehicle Moving Form</h5>
+                    <h5 className="mb-4">Unit Moving Form</h5>
                     <Form onSubmit={handleSubmit}>
                         <Row>
                             <Col md={6} className="mb-3">
@@ -745,11 +745,12 @@ export const VM_Form = () => {
                                         value={formData.vehicleName}
                                         onChange={handleChange}
                                     >
-                                        <option value="">Vehicle</option>
+
                                         <option value="Boom Lift">Boom Lift</option>
                                         <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>
                                         <option value="Telehandler">Telehandler</option>
                                         <option value="Electric Scissor Lift">Electric Scissor Lift</option>
+                                        <option value="Others">Others</option>
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
@@ -1243,14 +1244,19 @@ export const IR_Form = () => {
                         <Col md={4} className="mb-3">
                             <Form.Group id="location">
                                 <Form.Label>Event Location</Form.Label>
-                                <Form.Control
+                                <Form.Select
                                     required
                                     name="location"
-                                    type="text"
-                                    placeholder="Enter the location"
                                     value={formData.location}
                                     onChange={handleChange}
-                                />
+                                >
+                                    <option value="">Select Location</option>
+                                    {projectList.map((project, index) => (
+                                        <option key={index} value={project}>
+                                            {project}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                             </Form.Group>
                         </Col>
                     </Row>
@@ -1737,12 +1743,12 @@ export const TI_Form = () => {
 
                         <Row>
                             <Col md={4}>{renderRadioGroup("flasher", "Flasher")}</Col>
-                            <Col md={4}>{renderRadioGroup("strobeLights", "Strobe Lights")}</Col>
+                            <Col md={4}>{renderRadioGroup04("strobeLights", "Strobe Lights")}</Col>
                             <Col md={4}>{renderRadioGroup("workLights", "Work Lights")}</Col>
                         </Row>
 
                         <Row>
-                            <Col md={4}>{renderRadioGroup("fourStraps", "Four Straps")}</Col>
+                            <Col md={4}>{renderRadioGroup04("fourStraps", "Straps")}</Col>
                             <Col md={4}>{renderRadioGroup04("tommyGate", "Tommy Gate")}</Col>
                             <Col md={4}>{renderRadioGroup("trailerTowed", "Check all Doors")}</Col>
                         </Row>
