@@ -134,9 +134,9 @@ export default () => {
             <Row>
             <Col xs={12} xl={12} className="mb-4">
               <Row>
-                <Col xs={12} className="mb-4">
-                  <VIFTable />
-                </Col>
+                {/*<Col xs={12} className="mb-4">*/}
+                {/*  <VIFTable />*/}
+                {/*</Col>*/}
                 {/* <Col xs={12} lg={6} className="mb-4">
                   <ProgressTrackWidget />
                 </Col> */}

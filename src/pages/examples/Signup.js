@@ -153,12 +153,13 @@ const SignUpForm = () => {
                   <Form.Group id="accessRole" className="mb-4">
                     <Form.Label>Role</Form.Label>
                     <Form.Select
-                      name="accessRole"
-                      value={formData.accessRole}
-                      onChange={handleChange}
+                        name="accessRole"
+                        value={formData.accessRole}
+                        onChange={handleChange}
                     >
-                      <option value="0">Super Admin</option>
-                      <option value="1">User</option>
+                      <option value="0">Manager</option>
+                      <option value="1">Lead</option>
+                      <option value="2">Member</option>
                       {/*<option value="2">User</option>*/}
                     </Form.Select>
                   </Form.Group>
