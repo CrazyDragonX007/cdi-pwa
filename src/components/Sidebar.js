@@ -133,7 +133,7 @@ export default (props = {}) => {
               expand={false}
               collapseOnSelect
               variant="light"
-              className="navbar-theme-primary d-md-none px-4"
+              className="navbar-theme-sometextcolor d-md-none px-4"
           >
             <Navbar.Brand
                 className="me-lg-5"
@@ -158,23 +158,20 @@ export default (props = {}) => {
                 <div className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
                   <div className="d-flex align-items-center">
                     <div className="user-avatar lg-avatar me-4">
-                      <Image
-                          src={ProfilePicture}
-                          className="card-img-top rounded-circle border-white"
-                      />
+
                     </div>
                     <div className="d-block">
-                      <h6>Hi, Jane</h6>
-                      <Button
-                          as={Link}
-                          variant="secondary"
-                          size="xs"
-                          to={Routes.Signin.path}
-                          className="text-dark"
-                      >
-                        <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />{" "}
-                        Sign Out
-                      </Button>
+                      {/*<h6>Hi, Jane</h6>*/}
+                      {/*<Button*/}
+                      {/*    as={Link}*/}
+                      {/*    variant="secondary"*/}
+                      {/*    size="xs"*/}
+                      {/*    to={Routes.Signin.path}*/}
+                      {/*    className="text-dark"*/}
+                      {/*>*/}
+                      {/*  <FontAwesomeIcon icon={faSignOutAlt} className="" />{" "}*/}
+                      {/*  Sign Out*/}
+                      {/*</Button>*/}
                     </div>
                   </div>
                   <Nav.Link
@@ -413,7 +410,7 @@ export default (props = {}) => {
               expand={false}
               collapseOnSelect
               variant="light"
-              className="navbar-theme-primary d-md-none px-4"
+              className="navbar-theme-sometextcolor d-md-none px-4"
           >
             <Navbar.Brand
                 className="me-lg-5"
@@ -437,25 +434,25 @@ export default (props = {}) => {
               <div className="sidebar-inner px-4 pt-3">
                 <div className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
                   <div className="d-flex align-items-center">
-                    <div className="user-avatar lg-avatar me-4">
-                      <Image
-                          src={ProfilePicture}
-                          className="card-img-top rounded-circle border-white"
-                      />
-                    </div>
-                    <div className="d-block">
-                      <h6>Hi, Jane</h6>
-                      <Button
-                          as={Link}
-                          variant="secondary"
-                          size="xs"
-                          to={Routes.Signin.path}
-                          className="text-dark"
-                      >
-                        <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />{" "}
-                        Sign Out
-                      </Button>
-                    </div>
+                    {/*<div className="user-avatar lg-avatar me-4">*/}
+                    {/*  <Image*/}
+                    {/*      src={ProfilePicture}*/}
+                    {/*      className="card-img-top rounded-circle border-white"*/}
+                    {/*  />*/}
+                    {/*</div>*/}
+                    {/*<div className="d-block">*/}
+                    {/*  <h6>Hi, Jane</h6>*/}
+                    {/*  <Button*/}
+                    {/*      as={Link}*/}
+                    {/*      variant="secondary"*/}
+                    {/*      size="xs"*/}
+                    {/*      to={Routes.Signin.path}*/}
+                    {/*      className="text-dark"*/}
+                    {/*  >*/}
+                    {/*    <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />{" "}*/}
+                    {/*    Sign Out*/}
+                    {/*  </Button>*/}
+                    {/*</div>*/}
                   </div>
                   <Nav.Link
                       className="collapse-close d-md-none"
@@ -693,7 +690,7 @@ export default (props = {}) => {
               expand={false}
               collapseOnSelect
               variant="light"
-              className="navbar-theme-primary d-md-none px-4"
+              className="navbar-theme-sometextcolor d-md-none px-4"
           >
             <Navbar.Brand
                 className="me-lg-5"
@@ -717,25 +714,25 @@ export default (props = {}) => {
               <div className="sidebar-inner px-4 pt-3">
                 <div className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
                   <div className="d-flex align-items-center">
-                    <div className="user-avatar lg-avatar me-4">
-                      <Image
-                          src={ProfilePicture}
-                          className="card-img-top rounded-circle border-white"
-                      />
-                    </div>
-                    <div className="d-block">
-                      <h6>Hi, Jane</h6>
-                      <Button
-                          as={Link}
-                          variant="secondary"
-                          size="xs"
-                          to={Routes.Signin.path}
-                          className="text-dark"
-                      >
-                        <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />{" "}
-                        Sign Out
-                      </Button>
-                    </div>
+                    {/*<div className="user-avatar lg-avatar me-4">*/}
+                    {/*  <Image*/}
+                    {/*      src={ProfilePicture}*/}
+                    {/*      className="card-img-top rounded-circle border-white"*/}
+                    {/*  />*/}
+                    {/*</div>*/}
+                    {/*<div className="d-block">*/}
+                    {/*  <h6>Hi, Jane</h6>*/}
+                    {/*  <Button*/}
+                    {/*      as={Link}*/}
+                    {/*      variant="secondary"*/}
+                    {/*      size="xs"*/}
+                    {/*      to={Routes.Signin.path}*/}
+                    {/*      className="text-dark"*/}
+                    {/*  >*/}
+                    {/*    <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />{" "}*/}
+                    {/*    Sign Out*/}
+                    {/*  </Button>*/}
+                    {/*</div>*/}
                   </div>
                   <Nav.Link
                       className="collapse-close d-md-none"

@@ -73,7 +73,7 @@ export default () => {
         </ButtonGroup> */}
       </div>
 
-      <Row className="justify-content-md-center">
+      <Row className="">
        
         {/* <Col xs={12} className="mb-4 d-sm-none">
           <SalesValueWidgetPhone
