@@ -184,13 +184,13 @@ export const TeamMembersWidget = () => {
   const getStatusLabel = (accessRole) => {
     switch (accessRole) {
       case 0:
-        return { color: 'success', label: 'Super Admin' };
+        return { color: 'success', label: 'Manager' };
       case 1:
-        return { color: 'warning', label: 'User' };
+        return { color: 'warning', label: 'Lead' };
       // case 2:
       //   return { color: 'danger', label: 'User' };
       default:
-        return { color: 'danger', label: 'Offline' };
+        return { color: 'danger', label: 'Member' };
     }
   };
 

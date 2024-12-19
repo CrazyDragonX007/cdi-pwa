@@ -1,7 +1,7 @@
 
 import React, {useState, useEffect} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCashRegister, faTruck, faTruckLoading, faTruckPickup, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import { faCashRegister, faTruck, faTruckLoading, faTruckPickup, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-bootstrap';
 
 import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
@@ -16,6 +16,7 @@ const apiURL = process.env.REACT_APP_BACKEND_URL;
 const vifCountAPI = `${apiURL}/crud/countVIF`
 const irfCountAPI = `${apiURL}/crud/countIRF`
 const vmfCountAPI = `${apiURL}/crud/countVMF`
+const drfCountAPI = `${apiURL}/crud/countDRF`
 
 
 
@@ -23,6 +24,7 @@ export default () => {
     const [irfCount, setIrfCount] = useState(0);
     const [vifCount, setVifCount] = useState(0);
     const [vmfCount, setVmfCount] = useState(0);
+    const [drfCount, setDrfCount] = useState(0);
 
     useEffect(() => {
         const fetchCount = async () => {
@@ -30,9 +32,11 @@ export default () => {
                 const response01 = await axios.get(irfCountAPI);
                 const response02 = await axios.get(vifCountAPI);
                 const response03 = await axios.get(vmfCountAPI);
+                const response04 = await axios.get(drfCountAPI);
                 setIrfCount(response01.data[0]['count(*)']);
                 setVifCount(response02.data[0]['count(*)']);
                 setVmfCount(response03.data[0]['count(*)']);
+                setDrfCount(response04.data[0]['count(*)']);
 
             } catch (error) {
                 console.error('Error fetching IRF count:', error);
@@ -82,9 +86,9 @@ export default () => {
             percentage={10.57}
           />
         </Col> */}
-        <Col xs={12} sm={6} xl={4} className="mb-4">
+        <Col xs={12} sm={6} xl={3} className="mb-4">
           <CounterWidget
-            category="Vehicle Inspection Submissions"
+            category="Inspection Submissions"
             title= {`${vifCount}`}
             // period="Feb 1 - Apr 1"
             // percentage={18.2}
@@ -93,7 +97,7 @@ export default () => {
           />
         </Col>
 
-        <Col xs={12} sm={6} xl={4} className="mb-4">
+        <Col xs={12} sm={6} xl={3} className="mb-4">
           <CounterWidget
             category="Vehicle Moving Submissions"
             title={`${vmfCount}`}
@@ -104,16 +108,27 @@ export default () => {
           />
         </Col>
 
-        <Col xs={12} sm={6} xl={4} className="mb-4">
+        <Col xs={12} sm={6} xl={3} className="mb-4">
         <CounterWidget
             category="Total Report Submissions"
-            title={`${irfCount}`}
+            title={`${drfCount}`}
             // period="Feb 1 - Apr 1"
             // percentage={28.4}
             icon={faChartLine}
             iconColor="shape-tertiary"
           />
         </Col>
+          <Col xs={12} sm={6} xl={3} className="mb-4">
+              <CounterWidget
+                  category="Incident Report Submissions"
+                  title={`${irfCount}`}
+                  // period="Feb 1 - Apr 1"
+                  // percentage={28.4}
+                  icon={faExclamationTriangle}
+                  iconColor="shape-tertiary"
+              />
+          </Col>
+
         {/* <Col xs={12} className="mb-4 d-none d-sm-block">
           <SalesValueWidget
             title="Sales Value"
