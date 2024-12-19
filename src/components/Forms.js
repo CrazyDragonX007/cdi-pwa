@@ -80,12 +80,12 @@ const projectList = [
 
 export const VI_Form = () => {
   const [date, setDate] = useState("");
-  const [selectedOption01, setSelectedOption01] = useState("0");
-  const [selectedOption02, setSelectedOption02] = useState("0");
-  const [selectedOption03, setSelectedOption03] = useState("0");
-  const [selectedOption04, setSelectedOption04] = useState("0");
-  const [selectedOption05, setSelectedOption05] = useState("0");
-  const [selectedOption06, setSelectedOption06] = useState("0");
+  const [selectedOption01, setSelectedOption01] = useState("");
+  const [selectedOption02, setSelectedOption02] = useState("");
+  const [selectedOption03, setSelectedOption03] = useState("");
+  const [selectedOption04, setSelectedOption04] = useState("");
+  const [selectedOption05, setSelectedOption05] = useState("");
+  const [selectedOption06, setSelectedOption06] = useState("");
   const [selectedOption07, setSelectedOption07] = useState("0");
   const [selectedOption08, setSelectedOption08] = useState("0");
     const [selectedOption09, setSelectedOption09] = useState("0");
@@ -278,8 +278,8 @@ export const VI_Form = () => {
                   name="option01"
                   id="no01"
                   label="No"
-                  value="0"
-                  checked={selectedOption01 === "0"}
+                  value="No"
+                  checked={selectedOption01 === "No"}
                   onChange={(e1) => setSelectedOption01(e1.target.value)}
                 />
                 <Form.Check
@@ -287,12 +287,12 @@ export const VI_Form = () => {
                   name="option01"
                   id="yes01"
                   label="Yes"
-                  value="1"
-                  checked={selectedOption01 === "1"}
+                  value="Yes"
+                  checked={selectedOption01 === "Yes"}
                   onChange={(e1) => setSelectedOption01(e1.target.value)}
                 />
               </Form.Group>
-              {selectedOption01 === "1" && (
+              {selectedOption01 === "Yes" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -307,8 +307,8 @@ export const VI_Form = () => {
                   name="option02"
                   id="yes02"
                   label="Yes"
-                  value="0"
-                  checked={selectedOption02 === "0"}
+                  value="Yes"
+                  checked={selectedOption02 === "Yes"}
                   onChange={(e2) => setSelectedOption02(e2.target.value)}
                 />
                 <Form.Check
@@ -316,12 +316,12 @@ export const VI_Form = () => {
                   name="option02"
                   id="no02"
                   label="No"
-                  value="1"
-                  checked={selectedOption02 === "1"}
+                  value="No"
+                  checked={selectedOption02 === "No"}
                   onChange={(e2) => setSelectedOption02(e2.target.value)}
                 />
               </Form.Group>
-              {selectedOption02 === "1" && (
+              {selectedOption02 === "No" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -338,8 +338,8 @@ export const VI_Form = () => {
                   name="option03"
                   id="yes03"
                   label="Yes"
-                  value="0"
-                  checked={selectedOption03 === "0"}
+                  value="Yes"
+                  checked={selectedOption03 === "Yes"}
                   onChange={(e3) => setSelectedOption03(e3.target.value)}
                 />
                 <Form.Check
@@ -347,12 +347,12 @@ export const VI_Form = () => {
                   name="option03"
                   id="no03"
                   label="No"
-                  value="1"
-                  checked={selectedOption03 === "1"}
+                  value="No"
+                  checked={selectedOption03 === "No"}
                   onChange={(e3) => setSelectedOption03(e3.target.value)}
                 />
               </Form.Group>
-              {selectedOption03 === "1" && (
+              {selectedOption03 === "No" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -367,8 +367,8 @@ export const VI_Form = () => {
                   name="option04"
                   id="yes04"
                   label="Yes"
-                  value="0"
-                  checked={selectedOption04 === "0"}
+                  value="Yes"
+                  checked={selectedOption04 === "Yes"}
                   onChange={(e4) => setSelectedOption04(e4.target.value)}
                 />
                 <Form.Check
@@ -376,12 +376,12 @@ export const VI_Form = () => {
                   name="option04"
                   id="no04"
                   label="No"
-                  value="1"
-                  checked={selectedOption04 === "1"}
+                  value="No"
+                  checked={selectedOption04 === "No"}
                   onChange={(e4) => setSelectedOption04(e4.target.value)}
                 />
               </Form.Group>
-              {selectedOption04 === "1" && (
+              {selectedOption04 === "No" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -398,8 +398,8 @@ export const VI_Form = () => {
                   name="option05"
                   id="yes05"
                   label="Yes"
-                  value="0"
-                  checked={selectedOption05 === "0"}
+                  value="Yes"
+                  checked={selectedOption05 === "Yes"}
                   onChange={(e5) => setSelectedOption05(e5.target.value)}
                 />
                 <Form.Check
@@ -407,12 +407,12 @@ export const VI_Form = () => {
                   name="option05"
                   id="no05"
                   label="No"
-                  value="1"
-                  checked={selectedOption05 === "1"}
+                  value="No"
+                  checked={selectedOption05 === "No"}
                   onChange={(e5) => setSelectedOption05(e5.target.value)}
                 />
               </Form.Group>
-              {selectedOption05 === "1" && (
+              {selectedOption05 === "No" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -427,8 +427,8 @@ export const VI_Form = () => {
                   name="option06"
                   id="no06"
                   label="No"
-                  value="0"
-                  checked={selectedOption06 === "0"}
+                  value="No"
+                  checked={selectedOption06 === "No"}
                   onChange={(e6) => setSelectedOption06(e6.target.value)}
                 />
                 <Form.Check
@@ -436,12 +436,12 @@ export const VI_Form = () => {
                   name="option06"
                   id="yes06"
                   label="Yes"
-                  value="1"
-                  checked={selectedOption06 === "1"}
+                  value="Yes"
+                  checked={selectedOption06 === "Yes"}
                   onChange={(e6) => setSelectedOption06(e6.target.value)}
                 />
               </Form.Group>
-              {selectedOption06 === "1" && (
+              {selectedOption06 === "Yes" && (
                 <Form.Group>
                   <Form.Label>Please Specify</Form.Label>
                   <Form.Control as="textarea" rows={3} />
@@ -1119,29 +1119,29 @@ export const DR_Form = () => {
 
 export const IR_Form = () => {
     const [dateTime, setDateTime] = useState('');
-    const [empDateTime, setempDateTime] = useState('');
+    const [empDateTime, setempDateTime] = useState(moment()); // Initialize with current date
     const [supDateTime, setsupDateTime] = useState('');
-
     const [formData, setFormData] = useState({
-        incidentType: '', // Changed from vehicleName
-        location: '', // Changed from firstName
-        name: '', // Added for person completing the report
-        peopleInvolved: '', // Changed from lastName
-        vehicle: '', // Changed from vehicleName
+        incidentType: '',
+        location: '',
+        name: '',
+        peopleInvolved: '',
+        vehicle: '',
         vehicleNo: '',
-        pickupLocation: '', // Changed from pickupJobsite
+        pickupLocation: '',
         dropoffLocation: '',
-        unsafeAct: '', // Changed from notes for unsafe act
-        description: '', // Changed from notes for description of event
-        employeeSign: '', // Added for employee signature
-        employeeSignDate: '', // Added for employee signature date
-        // supervisorSign: '', // Added for supervisor signature
-        // supervisorSignDate: '' // Added for supervisor signature date
+        unsafeAct: '',
+        description: '',
+        employeeSign: '',
+        employeeSignDate: ''
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData({
+            ...formData,
+            [name]: value
+        });
     };
 
     const handleDateTimeChange = (date) => {
@@ -1162,18 +1162,14 @@ export const IR_Form = () => {
             const response = await axios.post(createIncidentReportForm, {
                 ...formData,
                 dateTime: moment(dateTime).format("YYYY-MM-DD HH:mm:ss"),
-                employeeSignDate: moment(empDateTime).format("YYYY-MM-DD HH:mm:ss"),
-                // supervisorSignDate: moment(supDateTime).format("YYYY-MM-DD HH:mm:ss")
+                employeeSignDate: moment().format("YYYY-MM-DD HH:mm:ss")
             });
-            // console.log('Response:', response.data);
-            console.log('toast')
+
             toast.success('Form submitted successfully!');
-
             await axios.post(sendEmail, {
-                    comment: `Incident Report Form Submitted by ${formData.employeeSign}`
-                });
+                comment: `Incident Report Form Submitted by ${formData.employeeSign}`
+            });
             console.log('Email sent successfully');
-
         } catch (error) {
             console.error('Error inserting data:', error);
             toast.error('Error submitting form. Please try again.');
@@ -1182,296 +1178,178 @@ export const IR_Form = () => {
 
     return (
         <>
-        <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-
-        />
-        <Card border="light" className="mb-4 bg-white shadow-sm">
-            <Card.Body>
-                <h5 className="mb-4">Incident Report Form</h5>
-                <Form onSubmit={handleSubmit}>
-                    <Row>
-                        <Col md={4} className="mb-4">
-                            <Form.Group id="dateTime">
-                                <Form.Label>Date & Time</Form.Label>
-                                <Datetime
-                                    onChange={handleDateTimeChange}
-                                    value={dateTime}
-                                    renderInput={(props, openCalendar) => (
-                                        <InputGroup>
-                                            <InputGroup.Text>
-                                                <FontAwesomeIcon icon={faCalendarAlt} />
-                                            </InputGroup.Text>
-                                            <Form.Control
-                                                required
-                                                name="dateTime"
-                                                type="text"
-                                                value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                                                placeholder="Enter Date & Time"
-                                                onFocus={openCalendar}
-                                                onChange={() => {}}
-                                            />
-                                        </InputGroup>
-                                    )}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={4} className="mb-3">
-                            <Form.Group id="incidentType">
-                                <Form.Label>Documenting an:</Form.Label>
-                                <Form.Select
-                                    name="incidentType"
-                                    value={formData.incidentType}
-                                    onChange={handleChange}
-                                >
-                                    <option value="Lost Time/Injury">Lost Time/Injury</option>
-                                    <option value="First Aid">First Aid</option>
-                                    <option value="Incident">Incident</option>
-                                    <option value="Close Call">Close Call</option>
-                                    <option value="Observation">Observation</option>
-                                    <option value="Other">Other</option>
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                        <Col md={4} className="mb-3">
-                            <Form.Group id="location">
-                                <Form.Label>Event Location</Form.Label>
-                                <Form.Select
-                                    required
-                                    name="location"
-                                    value={formData.location}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select Location</option>
-                                    {projectList.map((project, index) => (
-                                        <option key={index} value={project}>
-                                            {project}
-                                        </option>
-                                    ))}
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={6} className="mb-3">
-                            <Form.Group id="name">
-                                <Form.Label>Person Completing Report</Form.Label>
-                                <Form.Control
-                                    required
-                                    name="name"
-                                    type="text"
-                                    placeholder="Enter your Name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={6} className="mb-3">
-                            <Form.Group id="peopleInvolved">
-                                <Form.Label>People Involved</Form.Label>
-                                <Form.Control
-                                    required
-                                    name="peopleInvolved"
-                                    type="text"
-                                    placeholder="List all the people"
-                                    value={formData.peopleInvolved}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-      {/*<Row className="align-items-center">*/}
-
-      {/*  <Col md={4} className="mb-4">*/}
-      {/*    <Form.Group id="vehicle">*/}
-      {/*      <Form.Label>Vehicle</Form.Label>*/}
-      {/*        <Form.Select*/}
-      {/*            name="vehicle"*/}
-      {/*            value={formData.vehicle}*/}
-      {/*            onChange={handleChange}*/}
-      {/*        >*/}
-      {/*            <option value="">Vehicle</option>*/}
-      {/*            <option value="Boom Lift">Boom Lift</option>*/}
-      {/*            <option value="Engine Driven Scissor Lift">Engine Driven Scissor Lift</option>*/}
-      {/*            <option value="Telehandler">Telehandler</option>*/}
-      {/*            <option value="Electric Scissor Lift">Electric Scissor Lift</option>*/}
-      {/*            <option value="Others">Others</option>*/}
-      {/*        </Form.Select>*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*    <Col md={4} className="mb-4">*/}
-      {/*    <Form.Group id="vehicleNo">*/}
-      {/*      <Form.Label>Vehicle No.</Form.Label>*/}
-      {/*      <Form.Control*/}
-      {/*        required*/}
-      {/*        name="vehicleNo"*/}
-      {/*        type="text"*/}
-      {/*        placeholder="Vehicle Number"*/}
-      {/*        value={formData.vehicleNo}*/}
-      {/*        onChange={handleChange}*/}
-      {/*      />*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*</Row>*/}
-      {/*<Row>*/}
-      {/*  <Col md={6} className="mb-3">*/}
-      {/*    <Form.Group id="pickupLocation">*/}
-      {/*      <Form.Label>Pickup Location</Form.Label>*/}
-      {/*      <Form.Control*/}
-      {/*        required*/}
-      {/*        name="pickupLocation"*/}
-      {/*        type="text"*/}
-      {/*        placeholder="Enter your home address"*/}
-      {/*        value={formData.pickupJobsite}*/}
-      {/*        onChange={handleChange}*/}
-      {/*      />*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*  <Col md={6} className="mb-3">*/}
-      {/*    <Form.Group id="dropoffLocation">*/}
-      {/*      <Form.Label>Dropoff Location</Form.Label>*/}
-      {/*      <Form.Control*/}
-      {/*        required*/}
-      {/*        name="dropoffLocation"*/}
-      {/*        type="text"*/}
-      {/*        placeholder="Enter your home address"*/}
-      {/*        value={formData.dropoffLocation}*/}
-      {/*        onChange={handleChange}*/}
-      {/*      />*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*</Row>*/}
-      <Row>
-      <Col md={6} className="mb-3">
-          <Form.Group id="unsafeAct">
-            <Form.Label>Was this event caused by an unsafe act (activity or movement) or an unsafe condition (machinery or weather) ?</Form.Label>
-            <Form.Control
-              required
-              name="unsafeAct"
-              as="textarea"
-              rows={3}
-              value={formData.unsafeAct}
-              onChange={handleChange}
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
             />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-3">
-          <Form.Group id="description">
-            <Form.Label>Description of Event (Describe sequence of events and tasks being performed)</Form.Label>
-            <Form.Control
-              required
-              name="description"
-              as="textarea"
-              rows={3}
-              value={formData.description}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-        
-      </Row>
-      <Row>
-      <Col md={6} className="mb-3">
-          <Form.Group id="employeeSign">
-            <Form.Label>Employee Signature</Form.Label>
-            <Form.Control
-              required
-              name="employeeSign"
-              type="text"
-              placeholder="Enter your Full Name"
-              value={formData.employeeSign}
-              onChange={handleChange}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6} className="mb-3">
-        <Form.Group id="employeeSignDate">
-            <Form.Label>Date & Time</Form.Label>
-            <Datetime
-              onChange={handleEmpDateTimeChange}
-              value={empDateTime}
-              renderInput={(props, openCalendar) => (
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faCalendarAlt} />
-                  </InputGroup.Text>
-                  <Form.Control
-                    required
-                    name="employeeSignDate"
-                    type="text"
-                    value={empDateTime ? moment(empDateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
-                    placeholder="Enter Date & Time"
-                    onFocus={openCalendar}
-                    onChange={() => {}}
-                  />
-                </InputGroup>
-              )}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      {/*<Row>*/}
-      
-      {/*  <Col md={6} className="mb-3">*/}
-      {/*    <Form.Group id="supervisorSign">*/}
-      {/*      <Form.Label>Supervisor Signature</Form.Label>*/}
-      {/*      <Form.Control*/}
-      {/*        required*/}
-      {/*        name="supervisorSign"*/}
-      {/*        type="text"*/}
-      {/*        placeholder="Enter your Full Name"*/}
-      {/*        value={formData.supervisorSign}*/}
-      {/*        onChange={handleChange}*/}
-      {/*      />*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*  <Col md={6} className="mb-3">*/}
-      {/*  <Form.Group id="supervisorSignDate">*/}
-      {/*      <Form.Label>Date & Time</Form.Label>*/}
-      {/*      <Datetime*/}
-      {/*        onChange={handleSupDateTimeChange}*/}
-      {/*        value={supDateTime}*/}
-      {/*        renderInput={(props, openCalendar) => (*/}
-      {/*          <InputGroup>*/}
-      {/*            <InputGroup.Text>*/}
-      {/*              <FontAwesomeIcon icon={faCalendarAlt} />*/}
-      {/*            </InputGroup.Text>*/}
-      {/*            <Form.Control*/}
-      {/*              required*/}
-      {/*              name="supervisorSignDate"*/}
-      {/*              type="text"*/}
-      {/*              value={supDateTime ? moment(supDateTime).format("MM/DD/YYYY HH:mm:ss") : ""}*/}
-      {/*              placeholder="Enter Date & Time"*/}
-      {/*              onFocus={openCalendar}*/}
-      {/*              onChange={() => {}}*/}
-      {/*            />*/}
-      {/*          </InputGroup>*/}
-      {/*        )}*/}
-      {/*      />*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*</Row>*/}
-      <div className="mt-3">
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-        
-      </div>
-    </Form>
-      </Card.Body>
-    </Card>
-
+            <Card border="light" className="mb-4 bg-white shadow-sm">
+                <Card.Body>
+                    <h5 className="mb-4">Incident Report Form</h5>
+                    <Form onSubmit={handleSubmit}>
+                        <Row>
+                            <Col md={4} className="mb-4">
+                                <Form.Group id="dateTime">
+                                    <Form.Label>Date & Time</Form.Label>
+                                    <Datetime
+                                        onChange={handleDateTimeChange}
+                                        value={dateTime}
+                                        renderInput={(props, openCalendar) => (
+                                            <InputGroup>
+                                                <InputGroup.Text>
+                                                    <FontAwesomeIcon icon={faCalendarAlt} />
+                                                </InputGroup.Text>
+                                                <Form.Control
+                                                    required
+                                                    name="dateTime"
+                                                    type="text"
+                                                    value={dateTime ? moment(dateTime).format("MM/DD/YYYY HH:mm:ss") : ""}
+                                                    placeholder="Enter Date & Time"
+                                                    onFocus={openCalendar}
+                                                    onChange={() => {}}
+                                                />
+                                            </InputGroup>
+                                        )}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={4} className="mb-3">
+                                <Form.Group id="incidentType">
+                                    <Form.Label>Documenting an:</Form.Label>
+                                    <Form.Select
+                                        name="incidentType"
+                                        value={formData.incidentType}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="Lost Time/Injury">Lost Time/Injury</option>
+                                        <option value="First Aid">First Aid</option>
+                                        <option value="Incident">Incident</option>
+                                        <option value="Close Call">Close Call</option>
+                                        <option value="Observation">Observation</option>
+                                        <option value="Other">Other</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                            <Col md={4} className="mb-3">
+                                <Form.Group id="location">
+                                    <Form.Label>Event Location</Form.Label>
+                                    <Form.Select
+                                        required
+                                        name="location"
+                                        value={formData.location}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select Location</option>
+                                        {projectList.map((project, index) => (
+                                            <option key={index} value={project}>
+                                                {project}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="name">
+                                    <Form.Label>Person Completing Report</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="name"
+                                        type="text"
+                                        placeholder="Enter your Name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="peopleInvolved">
+                                    <Form.Label>People Involved</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="peopleInvolved"
+                                        type="text"
+                                        placeholder="List all the people"
+                                        value={formData.peopleInvolved}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="unsafeAct">
+                                    <Form.Label>Was this event caused by an unsafe act (activity or movement) or an unsafe condition (machinery or weather) ?</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="unsafeAct"
+                                        as="textarea"
+                                        rows={3}
+                                        value={formData.unsafeAct}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="description">
+                                    <Form.Label>Description of Event (Describe sequence of events and tasks being performed)</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="description"
+                                        as="textarea"
+                                        rows={3}
+                                        value={formData.description}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="employeeSign">
+                                    <Form.Label>Employee Signature</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="employeeSign"
+                                        type="text"
+                                        placeholder="Enter your Full Name"
+                                        value={formData.employeeSign}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6} className="mb-3">
+                                <Form.Group id="employeeSignDate">
+                                    <Form.Label>Date & Time</Form.Label>
+                                    <Form.Control
+                                        required
+                                        name="employeeSignDate"
+                                        type="text"
+                                        value={moment().format("MM/DD/YYYY HH:mm:ss")}
+                                        readOnly
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <div className="mt-3">
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </div>
+                    </Form>
+                </Card.Body>
+            </Card>
         </>
-  );
+    );
 };
+
 
 
 export const TI_Form = () => {

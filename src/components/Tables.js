@@ -946,16 +946,16 @@ export const IRTable = () => {
               <SortableHeader column="peopleInvolved">People Involved</SortableHeader>
               <SortableHeader column="incidentType">Incident Type</SortableHeader>
               <SortableHeader column="location">Location</SortableHeader>
-              <SortableHeader column="vehicle">Vehicle</SortableHeader>
-              <SortableHeader column="vehicleNo">Vehicle No.</SortableHeader>
-              <SortableHeader column="pickupLocation">Pickup Location</SortableHeader>
-              <SortableHeader column="dropoffLocation">Dropoff Location</SortableHeader>
+              {/*<SortableHeader column="vehicle">Vehicle</SortableHeader>*/}
+              {/*<SortableHeader column="vehicleNo">Vehicle No.</SortableHeader>*/}
+              {/*<SortableHeader column="pickupLocation">Pickup Location</SortableHeader>*/}
+              {/*<SortableHeader column="dropoffLocation">Dropoff Location</SortableHeader>*/}
               <SortableHeader column="unsafeAct">Unsafe Act</SortableHeader>
               <SortableHeader column="description">Description</SortableHeader>
               <SortableHeader column="employeeSign">Employee Signature</SortableHeader>
               <SortableHeader column="employeeSignDate">Employee Sign Date</SortableHeader>
-              <SortableHeader column="supervisorSign">Supervisor Signature</SortableHeader>
-              <SortableHeader column="supervisorSignDate">Supervisor Sign Date</SortableHeader>
+              {/*<SortableHeader column="supervisorSign">Supervisor Signature</SortableHeader>*/}
+              {/*<SortableHeader column="supervisorSignDate">Supervisor Sign Date</SortableHeader>*/}
             </tr>
             </thead>
             <tbody>
@@ -966,16 +966,16 @@ export const IRTable = () => {
                   <td>{form.peopleInvolved}</td>
                   <td>{form.incidentType}</td>
                   <td>{form.location}</td>
-                  <td>{form.vehicle}</td>
-                  <td>{form.vehicleNo}</td>
-                  <td>{form.pickupLocation}</td>
-                  <td>{form.dropoffLocation}</td>
+                  {/*<td>{form.vehicle}</td>*/}
+                  {/*<td>{form.vehicleNo}</td>*/}
+                  {/*<td>{form.pickupLocation}</td>*/}
+                  {/*<td>{form.dropoffLocation}</td>*/}
                   <td>{form.unsafeAct}</td>
                   <td>{form.description}</td>
                   <td>{form.employeeSign}</td>
                   <td>{form.employeeSignDate}</td>
-                  <td>{form.supervisorSign}</td>
-                  <td>{form.supervisorSignDate}</td>
+                  {/*<td>{form.supervisorSign}</td>*/}
+                  {/*<td>{form.supervisorSignDate}</td>*/}
                 </tr>
             ))}
             </tbody>
