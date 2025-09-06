@@ -21,6 +21,8 @@ const SignUpForm = () => {
     google_uid:''
   });
 
+  const [errorMsg, setErrorMsg] = useState('');      // { changed code }
+  const [successMsg, setSuccessMsg] = useState('');
   const history = useHistory();
 
   const handleChange = (e) => {
@@ -36,23 +38,45 @@ const SignUpForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    firebase.auth().createUserWithEmailAndPassword(formData.email, formData.password).then((userCredential) => {
-          const user = userCredential.user;
-          const displayName = `${formData.firstName} ${formData.lastName}`;
-          user.updateProfile({displayName: displayName});
-          const data = formData;
-          data.google_uid = user.uid;
-          axios.post(createUser, data).then((response) => {
-            //TODO: Set user data in local storage
-            history.push('/auth/sign-in');
-          }).catch((error) => {
-            console.log(error);
-            user.delete().then((response) => {console.log(response);}).catch((error) => {console.log(error)});
-          });
-
-    }).catch((error) => {
-          console.log(error);
-        });
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      const userCredential = await firebase.auth().createUserWithEmailAndPassword(formData.email, formData.password);
+      const user = userCredential.user;
+      const displayName = `${formData.firstName} ${formData.lastName}`;
+      await user.updateProfile({displayName: displayName});
+      const data = {...formData, google_uid: user.uid};
+      try {
+        const response = await axios.post(createUser, data);
+        // success - optionally set local storage or show success
+        setSuccessMsg('Account created. Redirecting to sign in...');
+        setTimeout(()=> history.push('/auth/sign-in'), 1200);
+      } catch (backendErr) {
+        console.error('backend createUser error', backendErr);
+        setErrorMsg('Failed to create user in backend. Rolling back auth account.');
+        // attempt to delete firebase user
+        try { await user.delete(); } catch (delErr) { console.error('delete user failed', delErr); }
+      }
+    } catch (error) {
+      console.error('signup error', error);
+      let msg = error.message || 'Sign up failed';
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            msg = 'An account with this email already exists.';
+            break;
+          case 'auth/weak-password':
+            msg = 'Password is too weak. Use at least 6 characters.';
+            break;
+          case 'auth/invalid-email':
+            msg = 'Invalid email address.';
+            break;
+          default:
+            msg = error.message || msg;
+        }
+      }
+      setErrorMsg(msg);
+    }
   };
 
   return (
@@ -65,6 +89,9 @@ const SignUpForm = () => {
                 <div className="text-center text-md-center mb-4 mt-md-0">
                   <h3 className="mb-0">Create an account</h3>
                 </div>
+
+                 { errorMsg && <div className="alert alert-danger">{errorMsg}</div> }    {/* { changed code } */}
+                { successMsg && <div className="alert alert-success">{successMsg}</div> }{/* { changed code } */}
                 <Form className="mt-4" onSubmit={handleSubmit}>
                   <Form.Group id="firstName" className="mb-4">
                     <Form.Label>First Name</Form.Label>

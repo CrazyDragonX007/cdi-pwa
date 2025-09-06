@@ -7,39 +7,69 @@ import firebase from "../../helpers/firebase";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import axios from "axios";
+// ...existing code...
+
 export default () => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');           // { changed code }
+  const [successMsg, setSuccessMsg] = useState('');       // { changed code }
   const history = useHistory();
-  const login = () => {
-    firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
+
+  const login = async (e) => {                             // { changed code }
+    if (e && e.preventDefault) e.preventDefault();
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
       const url = process.env.REACT_APP_BACKEND_URL+'/crud/login';
       const params = {google_uid: userCredential.user.uid};
-      axios.post(url,params).then((response) => {
-        localStorage.setItem('user', JSON.stringify(response.data[0]));
-        localStorage.setItem('accessRole', response.data[0].accessRole);
-        history.push('/');
-      });
-    }).catch((error) => {
-      console.log(error);
-    });
-  }
+      const response = await axios.post(url,params);
+      localStorage.setItem('user', JSON.stringify(response.data[0]));
+      localStorage.setItem('accessRole', response.data[0].accessRole);
+      setSuccessMsg('Signed in — redirecting...');
+      history.push('/');
+    } catch (error) {
+      // map common firebase auth errors to friendly messages
+      let msg = 'Sign in failed';
+      console.log(error.code)
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+            msg = 'No account found for this email.';
+            break;
+          case 'auth/invalid-credential':
+            msg = 'Incorrect password. Please try again.';
+            break;
+          case 'auth/invalid-email':
+            msg = 'Invalid email address.';
+            break;
+          default:
+            // keep generic message
+            msg = 'Sign in failed';
+        }
+      }
+      setErrorMsg(msg);
+      console.error('login error', error);
+    }
+  }                                                     // { changed code }
 
   return (
     <main>
       <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <Container>
-          {/* <p className="text-center">
-            <Card.Link as={Link} to={Routes.DashboardOverview.path} className="text-gray-700">
-              <FontAwesomeIcon icon={faAngleLeft} className="me-2" /> Back to homepage
-            </Card.Link>
-          </p> */}
+          {/* ...existing code... */}
           <Row className="justify-content-center form-bg-image" style={{ backgroundImage: `url(${BgImage})` }}>
             <Col xs={12} className="d-flex align-items-center justify-content-center">
               <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                 <div className="text-center text-md-center mb-4 mt-md-0">
                   <h3 className="mb-0">Sign In</h3>
                 </div>
+
+                {/* alerts */}
+                { errorMsg && <div className="alert alert-danger">{errorMsg}</div> }    {/* { changed code } */}
+                { successMsg && <div className="alert alert-success">{successMsg}</div> }{/* { changed code } */}
+
                 <Form className="mt-4" onSubmit={login}>
                   <Form.Group id="email" className="mb-4">
                     <Form.Label>Your Email</Form.Label>
@@ -83,7 +113,7 @@ export default () => {
                       <Card.Link className="small text-end" as={Link} to={Routes.ForgotPassword.path}>Lost password?</Card.Link>
                     </div>
                   </Form.Group>
-                  <Button variant="primary" type="button" onClick={login} className="w-100">
+                  <Button variant="primary" type="submit" className="w-100">
                     Sign in
                   </Button>
                 </Form>
