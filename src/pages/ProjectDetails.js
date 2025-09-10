@@ -12,7 +12,8 @@ import {
   faPlus,
   faFile
 } from '@fortawesome/free-solid-svg-icons';
-import { Col, Row, Form, Button, ButtonGroup, Breadcrumb, InputGroup, Dropdown } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Button, ButtonGroup, Breadcrumb, InputGroup, Dropdown, ProgressBar, // { changed code }
+  Spinner  } from '@themesberg/react-bootstrap';
 import { Nav, Tab, Card, Modal } from '@themesberg/react-bootstrap';
 import {TransactionsTable, ContractsTable, DrawingsTable, FilesTable} from "../components/Tables";
 import Documentation from "../components/Documentation";
@@ -24,6 +25,22 @@ import axios from "axios";
 
 export default (props) => {
   console.log(props);
+  const [uploading, setUploading] = useState(false);
+const [uploadProgress, setUploadProgress] = useState(0);
+
+// handlers passed to form
+const handleUploadStart = () => {
+  setUploading(true);
+  setUploadProgress(0);
+};
+const handleUploadProgress = (percent) => setUploadProgress(percent);
+const handleUploadEnd = () => {
+  setUploading(false);
+  setUploadProgress(0);
+  // you already close modal with handleClose; if you want it auto-close, call it here:
+  // handleClose();
+};
+
   const [projectDetails,setProjectDetails] = useState(props?.location?.state?.project);
   const [accessRole, setAccessRole] = useState(localStorage.getItem('accessRole'));
   const [contracts,setContracts] = useState([]);
@@ -66,10 +83,27 @@ export default (props) => {
             <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose}>
               <Modal.Header>
                 <Modal.Title className="h6">Upload Contract/Drawing</Modal.Title>
+                {uploading && (
+    <div style={{ width: 220, marginLeft: 12 }}>
+      <div className="d-flex align-items-center">
+        <div style={{ flex: 1 }}>
+          <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} />
+        </div>
+        <div style={{ marginLeft: 8 }}>
+          <Spinner animation="border" size="sm" />
+        </div>
+      </div>
+    </div>
+  )}
                 <Button variant="close" aria-label="Close" onClick={handleClose} />
               </Modal.Header>
               <Modal.Body>
-                <Contract_Drawing_Form projectID={projectDetails.projectID} closeModal = {handleClose}/>
+                <Contract_Drawing_Form 
+                projectID={projectDetails.projectID}
+                closeModal={handleClose}
+                onUploadStart={handleUploadStart}
+                onUploadProgress={handleUploadProgress}
+                onUploadEnd={handleUploadEnd}/>
               </Modal.Body>
               <Modal.Footer>
                 {/* <Button variant="secondary" onClick={handleClose}>
@@ -153,10 +187,27 @@ export default (props) => {
             <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose}>
               <Modal.Header>
                 <Modal.Title className="h6">Upload File</Modal.Title>
+                {uploading && (
+    <div style={{ width: 220, marginLeft: 12 }}>
+      <div className="d-flex align-items-center">
+        <div style={{ flex: 1 }}>
+          <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} />
+        </div>
+        <div style={{ marginLeft: 8 }}>
+          <Spinner animation="border" size="sm" />
+        </div>
+      </div>
+    </div>
+  )}
                 <Button variant="close" aria-label="Close" onClick={handleClose} />
               </Modal.Header>
               <Modal.Body>
-                <Contract_Drawing_Form projectID={projectDetails.projectID} closeModal = {handleClose}/>
+                <Contract_Drawing_Form 
+                projectID={projectDetails.projectID}
+  closeModal={handleClose}
+  onUploadStart={handleUploadStart}
+  onUploadProgress={handleUploadProgress}
+  onUploadEnd={handleUploadEnd}/>
               </Modal.Body>
               <Modal.Footer>
                 {/* <Button variant="secondary" onClick={handleClose}>
@@ -240,10 +291,27 @@ export default (props) => {
             <Modal as={Modal.Dialog} centered show={showDefault} onHide={handleClose}>
               <Modal.Header>
                 <Modal.Title className="h6">Upload File</Modal.Title>
+                {uploading && (
+    <div style={{ width: 220, marginLeft: 12 }}>
+      <div className="d-flex align-items-center">
+        <div style={{ flex: 1 }}>
+          <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} />
+        </div>
+        <div style={{ marginLeft: 8 }}>
+          <Spinner animation="border" size="sm" />
+        </div>
+      </div>
+    </div>
+  )}
                 <Button variant="close" aria-label="Close" onClick={handleClose} />
               </Modal.Header>
               <Modal.Body>
-                <Contract_Drawing_Form projectID={projectDetails.projectID} closeModal = {handleClose}/>
+                <Contract_Drawing_Form 
+                projectID={projectDetails.projectID}
+  closeModal={handleClose}
+  onUploadStart={handleUploadStart}
+  onUploadProgress={handleUploadProgress}
+  onUploadEnd={handleUploadEnd}/>
               </Modal.Body>
               <Modal.Footer>
                 {/* <Button variant="secondary" onClick={handleClose}>

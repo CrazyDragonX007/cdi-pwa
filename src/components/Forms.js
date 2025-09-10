@@ -11,6 +11,7 @@ import {
   Form,
   Button,
   InputGroup,
+  Modal
 } from "@themesberg/react-bootstrap";
 
 import axios from "axios";
@@ -19,6 +20,17 @@ import {useHistory, Redirect} from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const SuccessModal = ({ show, onHide, message }) => (
+  <Modal show={show} onHide={onHide} centered>
+    <Modal.Header closeButton>
+      <Modal.Title>Success</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>{message}</Modal.Body>
+    <Modal.Footer>
+      <Button variant="primary" onClick={onHide}>OK</Button>
+    </Modal.Footer>
+  </Modal>
+);
 
 const timestamp = moment().format('MM/DD/YYYY HH:mm:ss');
 console.log(timestamp)
@@ -94,6 +106,9 @@ export const VI_Form = () => {
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [users, setUsers] = useState([]);
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const successMessageVI = 'Vehicle Inspection Form submitted successfully!';
   
     useEffect(() => {
       fetch(getUsers)
@@ -132,7 +147,7 @@ export const VI_Form = () => {
         const response = await axios.post(createVehicleInspectionForm, formData);
         // console.log('Form submitted successfully:', response.data.message);
           toast.success('Form submitted successfully!');
-
+        setShowSuccessModal(true);
           console.log('Email sent successfully');
           if (selectedOption11 === "Yes") {
               await axios.post(sendEmail, {
@@ -162,7 +177,8 @@ export const VI_Form = () => {
               pauseOnHover
 
           />
-
+          {/* success modal */}
+          <SuccessModal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} message={successMessageVI} />  {/* { changed code } */}
     <Card border="light" className="mb-4 bg-white shadow-sm">
       <Card.Body>
         <h5 className="mb-4">Daily Equipment Inspection Form</h5>
@@ -648,7 +664,8 @@ export const VM_Form = () => {
         dropoffLocation: '',
         notes: ''
     });
-
+const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const successMessageVI = 'Vehicle Moving Form submitted successfully!';
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -667,6 +684,7 @@ export const VM_Form = () => {
                 ...formData
             });
             toast.success('Form submitted successfully!');
+            setShowSuccessModal(true);
         } catch (error) {
             console.error('Error inserting data:', error);
             toast.error('Error submitting form. Please try again.');
@@ -686,6 +704,7 @@ export const VM_Form = () => {
                 draggable
                 pauseOnHover
             />
+            <SuccessModal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} message={successMessageVI} />  {/* { changed code } */}
             <Card border="light" className="mb-4 bg-white shadow-sm">
                 <Card.Body>
                     <h5 className="mb-4">Unit Moving Form</h5>
@@ -840,7 +859,9 @@ export const DR_Form = () => {
     const [userLocation, setUserLocation] = useState(null);
     const [weatherDetails, setWeatherDetails] = useState('');
     const [isFetching, setIsFetching] = useState(false);
-
+const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const successMessageVI = 'Daily Report Form submitted successfully!';
+  
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -913,6 +934,7 @@ export const DR_Form = () => {
             });
             // console.log('Response:', response.data);
             toast.success('Form submitted successfully!');
+            setShowSuccessModal(true);
         } catch (error) {
             console.error('Error inserting data:', error);
             toast.error('Error submitting form. Please try again.');
@@ -932,6 +954,8 @@ export const DR_Form = () => {
                 draggable
                 pauseOnHover
             />
+                      <SuccessModal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} message={successMessageVI} />  {/* { changed code } */}
+
             <Card border="light" className="mb-4 bg-white shadow-sm">
                 <Card.Body>
                     <h5 className="mb-4">Daily Report</h5>
@@ -1121,6 +1145,9 @@ export const IR_Form = () => {
     const [dateTime, setDateTime] = useState('');
     const [empDateTime, setempDateTime] = useState(moment()); // Initialize with current date
     const [supDateTime, setsupDateTime] = useState('');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const successMessageVI = 'Incident Report Form submitted successfully!';
+  
     const [formData, setFormData] = useState({
         incidentType: '',
         location: '',
@@ -1166,6 +1193,7 @@ export const IR_Form = () => {
             });
 
             toast.success('Form submitted successfully!');
+            setShowSuccessModal(true);
             await axios.post(sendEmail, {
                 comment: `Incident Report Form Submitted by ${formData.employeeSign}`
             });
@@ -1189,6 +1217,9 @@ export const IR_Form = () => {
                 draggable
                 pauseOnHover
             />
+          <SuccessModal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} message={successMessageVI} />  {/* { changed code } */}
+
+
             <Card border="light" className="mb-4 bg-white shadow-sm">
                 <Card.Body>
                     <h5 className="mb-4">Incident Report Form</h5>
@@ -1354,6 +1385,9 @@ export const IR_Form = () => {
 
 export const TI_Form = () => {
     const [dateTime, setDateTime] = useState('');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const successMessageVI = 'Truck Inspection Form submitted successfully!';
+  
     const [formData, setFormData] = useState({
         truckNo: '',
         mileage: '',
@@ -1404,6 +1438,7 @@ export const TI_Form = () => {
             });
             // console.log('Response:', response.data);
             toast.success('Truck inspection form submitted successfully!');
+            setShowSuccessModal(true);
             if (formData.policyAck === "Yes") {
                 await axios.post(sendEmail, {
                     comment: `Form Submitted for ${formData.truckNo}`
@@ -1531,6 +1566,8 @@ export const TI_Form = () => {
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+                      <SuccessModal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} message={successMessageVI} />  {/* { changed code } */}
+
             <Card border="light" className="mb-4 bg-white shadow-sm">
                 <Card.Body>
                     <h5 className="mb-4">Truck Inspection Form</h5>
@@ -1789,11 +1826,26 @@ export const Contract_Drawing_Form = (props) => {
         finalFormData.append('projectID',props.projectID);
         finalFormData.append(nameType, formData.name);
         finalFormData.append('file', document.getElementById('img01').files[0]);
-      const response = await axios.post(url, finalFormData);
-      console.log('Response:', response.data);
-      // history.goBack()
-        props.closeModal()
-
+        if (typeof props.onUploadStart === 'function') props.onUploadStart();
+        const config = {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          // local UI (optional) and parent callback
+          if (typeof props.onUploadProgress === 'function') props.onUploadProgress(percentCompleted);
+        }
+      }
+    };
+      const response = await axios.post(url, finalFormData, config);
+    //   console.log('Response:', response.data);
+    //   // history.goBack()
+    //     props.closeModal()
+        if (typeof props.onUploadProgress === 'function') props.onUploadProgress(100);
+            setTimeout(() => {
+            if (typeof props.onUploadEnd === 'function') props.onUploadEnd();
+            props.closeModal && props.closeModal();
+            }, 500);
     } catch (error) {
       console.error('Error inserting data:', error);
     }
