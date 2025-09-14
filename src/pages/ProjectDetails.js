@@ -87,7 +87,7 @@ const handleUploadEnd = () => {
     <div style={{ width: 220, marginLeft: 12 }}>
       <div className="d-flex align-items-center">
         <div style={{ flex: 1 }}>
-          <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} />
+          <ProgressBar now={uploadProgress} />
         </div>
         <div style={{ marginLeft: 8 }}>
           <Spinner animation="border" size="sm" />
@@ -191,7 +191,7 @@ const handleUploadEnd = () => {
     <div style={{ width: 220, marginLeft: 12 }}>
       <div className="d-flex align-items-center">
         <div style={{ flex: 1 }}>
-          <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} />
+          <ProgressBar now={uploadProgress} />
         </div>
         <div style={{ marginLeft: 8 }}>
           <Spinner animation="border" size="sm" />
@@ -295,7 +295,7 @@ const handleUploadEnd = () => {
     <div style={{ width: 220, marginLeft: 12 }}>
       <div className="d-flex align-items-center">
         <div style={{ flex: 1 }}>
-          <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} />
+          <ProgressBar now={uploadProgress} />
         </div>
         <div style={{ marginLeft: 8 }}>
           <Spinner animation="border" size="sm" />

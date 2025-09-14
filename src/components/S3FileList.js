@@ -15,6 +15,26 @@ const s3 = new AWS.S3();
 const S3FileList = ( props ) => {
   const [files, setFiles] = useState([]);
 
+  // detect iOS webview (approx): iOS device and not running in Safari
+  const isiOS = typeof navigator !== 'undefined' && /iP(ad|hone|od)/.test(navigator.userAgent);
+  const isSafari = typeof navigator !== 'undefined' && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS/.test(navigator.userAgent);
+  const isIOSWebview = isiOS && !isSafari;
+
+  const openInExternal = (url) => {
+    try {
+      // Try to open in a new tab/window
+      const newWin = window.open(url, '_blank', 'noopener,noreferrer');
+      if (newWin && newWin.focus) {
+        newWin.focus();
+        return;
+      }
+    } catch (err) {
+      // fallthrough to location change
+    }
+    // Fallback: navigate the current view which may trigger the system to open in browser
+    window.location.href = url;
+  };
+
   useEffect(() => {
     console.log(props.folderUrl)
     const listFiles = async () => {
@@ -91,9 +111,20 @@ const S3FileList = ( props ) => {
       {/*<h1>Attachments</h1>*/}
       <ul>
         {files.map((file, index) => (
-            <li key={index}>
-
-              <a href={file.fileUrl} target="_blank" rel="noopener noreferrer">{file.fileName}</a>
+            <li key={index} className="mb-2 d-flex align-items-center">
+              <span className="me-3">{file.fileName}</span>
+              {/* If we're in an iOS webview a dedicated open button is helpful; otherwise regular anchor works */}
+              {isIOSWebview ? (
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-primary"
+                  onClick={(e) => { e.preventDefault(); openInExternal(file.fileUrl); }}
+                >
+                  Open in Browser
+                </button>
+              ) : (
+                <a href={file.fileUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-link">Open</a>
+              )}
             </li>
         ))}
       </ul>
