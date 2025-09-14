@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import AWS from 'aws-sdk';
+import { Modal, Button, Spinner } from '@themesberg/react-bootstrap';
 
 require('dotenv').config();
 
@@ -33,6 +34,79 @@ const S3FileList = ( props ) => {
     }
     // Fallback: navigate the current view which may trigger the system to open in browser
     window.location.href = url;
+  };
+
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewName, setPreviewName] = useState('');
+  const [previewLoading, setPreviewLoading] = useState(false);
+
+  const handleCopyLink = async (url) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(url);
+        // optional: provide user feedback via alert or toast in your app
+        alert('Link copied to clipboard');
+      } catch (err) {
+        console.error('Copy failed', err);
+        alert('Unable to copy link');
+      }
+    } else {
+      // fallback
+      const tmp = document.createElement('textarea');
+      tmp.value = url;
+      document.body.appendChild(tmp);
+      tmp.select();
+      try { document.execCommand('copy'); alert('Link copied to clipboard'); } catch(e){ alert('Unable to copy link'); }
+      document.body.removeChild(tmp);
+    }
+  };
+
+  const handlePreview = async (file) => {
+    // fetch file as blob and show inside modal so user can close it
+    setPreviewLoading(true);
+    setPreviewName(file.fileName || 'Preview');
+    try {
+      const res = await fetch(file.fileUrl, { mode: 'cors' });
+      if (!res.ok) throw new Error('Failed to fetch file');
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setPreviewUrl(blobUrl);
+      setShowPreviewModal(true);
+    } catch (err) {
+      console.error('Preview failed', err);
+      alert('Unable to preview file. You can try "Open in Browser" or "Copy link".');
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const handleClosePreview = () => {
+    if (previewUrl) {
+      try { URL.revokeObjectURL(previewUrl); } catch(e){}
+    }
+    setPreviewUrl(null);
+    setShowPreviewModal(false);
+    setPreviewName('');
+  };
+
+  const handleDownload = async (file) => {
+    try {
+      const res = await fetch(file.fileUrl, { mode: 'cors' });
+      if (!res.ok) throw new Error('Failed to fetch file');
+      const blob = await res.blob();
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = file.fileName || 'download';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    } catch (err) {
+      console.error('Download failed', err);
+      alert('Unable to download file. Try "Open in Browser" or "Copy link".');
+    }
   };
 
   useEffect(() => {
@@ -112,9 +186,25 @@ const S3FileList = ( props ) => {
       <ul>
         {files.map((file, index) => (
             <li key={index} className="mb-2 d-flex align-items-center">
-              <span className="me-3">{file.fileName}</span>
-              {/* If we're in an iOS webview a dedicated open button is helpful; otherwise regular anchor works */}
-              {isIOSWebview ? (
+              {/* Show filename as a clean hyperlink (no full URL displayed) */}
+              <a
+                href={file.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="me-3 btn btn-sm btn-link"
+                onClick={(e) => {
+                  if (isIOSWebview) {
+                    // prevent default anchor navigation inside webview and try to open externally
+                    e.preventDefault();
+                    openInExternal(file.fileUrl);
+                  }
+                  // otherwise let the anchor open in a new tab
+                }}
+              >
+                {file.fileName}
+              </a>
+              {/* If we're in an iOS webview, also provide an explicit Open button for clarity */}
+              {isIOSWebview && (
                 <button
                   type="button"
                   className="btn btn-sm btn-outline-primary"
@@ -122,8 +212,6 @@ const S3FileList = ( props ) => {
                 >
                   Open in Browser
                 </button>
-              ) : (
-                <a href={file.fileUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-link">Open</a>
               )}
             </li>
         ))}
