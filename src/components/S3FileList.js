@@ -39,6 +39,8 @@ const S3FileList = ( props ) => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [previewName, setPreviewName] = useState('');
+  const [previewMime, setPreviewMime] = useState('');
+  const [previewFile, setPreviewFile] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
 
   const handleCopyLink = async (url) => {
@@ -66,10 +68,12 @@ const S3FileList = ( props ) => {
     // fetch file as blob and show inside modal so user can close it
     setPreviewLoading(true);
     setPreviewName(file.fileName || 'Preview');
+    setPreviewFile(file);
     try {
       const res = await fetch(file.fileUrl, { mode: 'cors' });
       if (!res.ok) throw new Error('Failed to fetch file');
       const blob = await res.blob();
+      setPreviewMime(blob.type || '');
       const blobUrl = URL.createObjectURL(blob);
       setPreviewUrl(blobUrl);
       setShowPreviewModal(true);
@@ -88,6 +92,8 @@ const S3FileList = ( props ) => {
     setPreviewUrl(null);
     setShowPreviewModal(false);
     setPreviewName('');
+  setPreviewMime('');
+  setPreviewFile(null);
   };
 
   const handleDownload = async (file) => {
@@ -216,6 +222,46 @@ const S3FileList = ( props ) => {
             </li>
         ))}
       </ul>
+      {/* Preview modal — lets users view and close the file inside the app */}
+      <Modal show={showPreviewModal} onHide={handleClosePreview} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{previewName}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {previewLoading && (
+            <div className="text-center py-4"><Spinner animation="border" /></div>
+          )}
+
+          {!previewLoading && previewUrl && previewMime.startsWith('image/') && (
+            <img src={previewUrl} alt={previewName} style={{width: '100%'}} />
+          )}
+
+          {!previewLoading && previewUrl && previewMime === 'application/pdf' && (
+            <iframe src={previewUrl} title={previewName} style={{width: '100%', height: '70vh', border: 'none'}} />
+          )}
+
+          {!previewLoading && previewUrl && !previewMime.startsWith('image/') && previewMime !== 'application/pdf' && (
+            <div>
+              <p>Preview not available for this file type.</p>
+              <p className="small text-muted">Use the buttons below to download or open in your browser.</p>
+            </div>
+          )}
+
+          {!previewLoading && !previewUrl && (
+            <div className="text-center text-muted">No preview available</div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClosePreview}>Close</Button>
+          {previewFile && (
+            <>
+              <Button variant="outline-primary" onClick={() => handleDownload(previewFile)}>Download</Button>
+              <Button variant="outline-secondary" onClick={() => handleCopyLink(previewFile.fileUrl)}>Copy link</Button>
+              <Button variant="primary" onClick={() => openInExternal(previewFile.fileUrl)}>Open in Browser</Button>
+            </>
+          )}
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
