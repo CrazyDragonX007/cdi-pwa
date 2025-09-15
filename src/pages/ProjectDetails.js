@@ -235,7 +235,7 @@ const handleUploadEnd = () => {
                       {/*  </Nav.Link>*/}
                       {/*</Nav.Item>*/}
                       <Nav.Item>
-                        <Nav.Link eventKey="user_experience" className="mb-sm-3 mb-md-0">
+                        <Nav.Link eventKey="drawings" className="mb-sm-3 mb-md-0">
                           <FontAwesomeIcon icon={faPalette} className="me-2" /> Drawings
                         </Nav.Link>
                       </Nav.Item>
@@ -247,18 +247,15 @@ const handleUploadEnd = () => {
                     </Nav>
                     <Tab.Content>
 
-                      <Tab.Pane eventKey="code_friendly" className="py-4">
+                      <Tab.Pane eventKey="drawings" className="py-4">
                         {/*<ContractsTable />*/}
-                        //TODO: Add project's contracts here
-                      </Tab.Pane>
-                      <Tab.Pane eventKey="user_experience" className="py-4">
-                        {/*<DrawingsTable />*/}
-                        //TODO: Add project's drawings here
+                        <DrawingsTable projectID={projectDetails.projectID}/>
                       </Tab.Pane>
                       <Tab.Pane eventKey="files" className="py-4">
                         {/*<DrawingsTable />*/}
-                        //TODO: Add project's drawings here
+                        <FilesTable projectID={projectDetails.projectID}/>
                       </Tab.Pane>
+                      
                     </Tab.Content>
                   </Col>
                 </Row>
@@ -333,36 +330,22 @@ const handleUploadEnd = () => {
                   <Col lg={12}>
                     <Nav fill variant="pills" className="flex-column flex-sm-row">
 
+                      
                       <Nav.Item>
-                        <Nav.Link eventKey="code_friendly" className="mb-sm-3 mb-md-0">
-                          <FontAwesomeIcon icon={faBookReader} className="me-2" /> Contracts
-                        </Nav.Link>
-                      </Nav.Item>
-                      <Nav.Item>
-                        <Nav.Link eventKey="user_experience" className="mb-sm-3 mb-md-0">
+                        <Nav.Link eventKey="drawings" className="mb-sm-3 mb-md-0">
                           <FontAwesomeIcon icon={faPalette} className="me-2" /> Drawings
                         </Nav.Link>
                       </Nav.Item>
-                      <Nav.Item>
-                        <Nav.Link eventKey="files" className="mb-sm-3 mb-md-0">
-                          <FontAwesomeIcon icon={faFile} className="me-2" /> Files
-                        </Nav.Link>
-                      </Nav.Item>
+                      
                     </Nav>
                     <Tab.Content>
 
-                      {/*<Tab.Pane eventKey="code_friendly" className="py-4">*/}
-                      {/*  /!*<ContractsTable />*!/*/}
-                      {/*  //TODO: Add project's contracts here*/}
-                      {/*</Tab.Pane>*/}
-                      <Tab.Pane eventKey="user_experience" className="py-4">
-                        {/*<DrawingsTable />*/}
-                        //TODO: Add project's drawings here
+                      
+                      <Tab.Pane eventKey="drawings" className="py-4">
+                        <DrawingsTable projectID={projectDetails.projectID}/>
+                  
                       </Tab.Pane>
-                      {/*<Tab.Pane eventKey="files" className="py-4">*/}
-                      {/*  /!*<DrawingsTable />*!/*/}
-                      {/*  //TODO: Add project's drawings here*/}
-                      {/*</Tab.Pane>*/}
+                     
                     </Tab.Content>
                   </Col>
                 </Row>
