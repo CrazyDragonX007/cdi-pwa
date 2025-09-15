@@ -1899,7 +1899,7 @@ export const FilesTable = (props) => {
           </Modal.Body>
           <Modal.Footer>
             {selectedFile && (
-              <>
+              
                 <Button 
                   variant="primary" 
                   href={selectedFile.fileUrl} 
@@ -1908,15 +1908,8 @@ export const FilesTable = (props) => {
                 >
                   Open in New Tab
                 </Button>
-                <Button 
-                  variant="success" 
-                  href={selectedFile.fileUrl} 
-                  download={selectedFile.miscFileName}
-                  className="ms-2"
-                >
-                  Download File
-                </Button>
-              </>
+                
+              
             )}
             <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
               Close
