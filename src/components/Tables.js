@@ -35,6 +35,7 @@ const getDailyReports = `${apiURL}/crud/getDailyReports`
 const getProjects = `${apiURL}/crud/getProjects`
 const getContracts = `${apiURL}/crud/getContracts`
 const getDrawings = `${apiURL}/crud/getDrawings`
+const getMiscFiles = `${apiURL}/crud/getMiscellaneousFiles`
 const getIncidentReportForm = `${apiURL}/crud/getIncidentReportForm`
 const getTruckInspection = `${apiURL}/crud/getTruckInspectionForm`
 
@@ -1401,6 +1402,9 @@ export const ProjectsTable = () => {
 
 export const ContractsTable = (props) => {
   const [contracts, setContracts] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const projectId = props.projectID
 
   useEffect(() => {
@@ -1423,6 +1427,69 @@ export const ContractsTable = (props) => {
     fetchData();
   }, []);
 
+  const handleFilePreview = (contract) => {
+    setSelectedFile(contract);
+    setPreviewType('pdf'); // Start with PDF
+    setShowModal(true);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedFile(null);
+    setPreviewType('pdf');
+  };
+
+  const renderFilePreview = () => {
+    if (!selectedFile) return null;
+
+    const fileName = selectedFile.contractName;
+    const fileUrl = selectedFile.fileUrl;
+
+    if (previewType === 'pdf') {
+      return (
+        <iframe
+          src={fileUrl}
+          style={{ width: '100%', height: '70vh', border: 'none' }}
+          title={fileName}
+          onError={() => setPreviewType('image')}
+        />
+      );
+    }
+
+    if (previewType === 'image') {
+      return (
+        <img 
+          src={fileUrl} 
+          alt={fileName}
+          style={{ 
+            maxWidth: '100%', 
+            maxHeight: '70vh', 
+            objectFit: 'contain'
+          }}
+          onError={() => setPreviewType('excel')}
+        />
+      );
+    }
+
+    // Excel/Document fallback
+    return (
+      <div 
+        className="text-center p-4"
+        style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          height: '70vh'
+        }}
+      >
+        <h5>Excel/Document File</h5>
+        <p>This file cannot be previewed directly in the browser.</p>
+        <p>Click "Open in New Tab" below to download and view the file.</p>
+      </div>
+    );
+  };
+
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
@@ -1442,7 +1509,17 @@ export const ContractsTable = (props) => {
               <tr key={index}>
                 <td>{contract.contractID}</td>
                 <td>{contract.contractName}</td>
-                <td><a target= "_blank" href = {contract.fileUrl}>{contract.fileUrl}</a></td>
+                <td>
+                  <Button
+                    variant="light"
+                    size="sm"
+                    onClick={() => handleFilePreview(contract)}
+                    style={{ lineHeight: '0.5', padding: '10px' }}
+                  >
+                    <FontAwesomeIcon icon={faEye} className="me-2" />
+                    Preview
+                  </Button>
+                </td>
                
               </tr>
             ))}
@@ -1465,12 +1542,42 @@ export const ContractsTable = (props) => {
           </small>
         </Card.Footer>
       </Card.Body>
+
+      <Modal as={Modal.Dialog} centered show={showModal} onHide={handleClose} size='xl'>
+        <Modal.Header>
+          <Modal.Title className="h6">
+            {selectedFile ? selectedFile.contractName : 'File Preview'}
+          </Modal.Title>
+          <Button variant="close" aria-label="Close" onClick={handleClose}/>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          {renderFilePreview()}
+        </Modal.Body>
+        <Modal.Footer>
+          {selectedFile && (
+            <Button 
+              variant="primary" 
+              href={selectedFile.fileUrl} 
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open in New Tab
+            </Button>
+          )}
+          <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Card>
   );
 };
 
 export const DrawingsTable = (props) => {
   const [drawings, setDrawings] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const projectId = props.projectID
 
   useEffect(() => {
@@ -1492,6 +1599,69 @@ export const DrawingsTable = (props) => {
     fetchData();
   }, []);
 
+  const handleFilePreview = (drawing) => {
+    setSelectedFile(drawing);
+    setPreviewType('pdf'); // Start with PDF
+    setShowModal(true);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedFile(null);
+    setPreviewType('pdf');
+  };
+
+  const renderFilePreview = () => {
+    if (!selectedFile) return null;
+
+    const fileName = selectedFile.drawingName;
+    const fileUrl = selectedFile.fileUrl;
+
+    if (previewType === 'pdf') {
+      return (
+        <iframe
+          src={fileUrl}
+          style={{ width: '100%', height: '70vh', border: 'none' }}
+          title={fileName}
+          onError={() => setPreviewType('image')}
+        />
+      );
+    }
+
+    if (previewType === 'image') {
+      return (
+        <img 
+          src={fileUrl} 
+          alt={fileName}
+          style={{ 
+            maxWidth: '100%', 
+            maxHeight: '70vh', 
+            objectFit: 'contain'
+          }}
+          onError={() => setPreviewType('excel')}
+        />
+      );
+    }
+
+    // Excel/Document fallback
+    return (
+      <div 
+        className="text-center p-4"
+        style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          height: '70vh'
+        }}
+      >
+        <h5>Excel/Document File</h5>
+        <p>This file cannot be previewed directly in the browser.</p>
+        <p>Click "Open in New Tab" below to download and view the file.</p>
+      </div>
+    );
+  };
+
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
@@ -1511,7 +1681,17 @@ export const DrawingsTable = (props) => {
               <tr key={index}>
                 <td>{drawing.drawingID}</td>
                 <td>{drawing.drawingName}</td>
-                <td><a target= "_blank" href={drawing.fileUrl}>{drawing.fileUrl}</a></td>
+                <td>
+                  <Button
+                    variant="light"
+                    size="sm"
+                    onClick={() => handleFilePreview(drawing)}
+                    style={{ lineHeight: '0.5', padding: '10px' }}
+                  >
+                    <FontAwesomeIcon icon={faEye} className="me-2" />
+                    Preview
+                  </Button>
+                </td>
 
               </tr>
             ))}
@@ -1534,23 +1714,53 @@ export const DrawingsTable = (props) => {
           </small>
         </Card.Footer>
       </Card.Body>
+
+      <Modal as={Modal.Dialog} centered show={showModal} onHide={handleClose} size='xl'>
+        <Modal.Header>
+          <Modal.Title className="h6">
+            {selectedFile ? selectedFile.drawingName : 'File Preview'}
+          </Modal.Title>
+          <Button variant="close" aria-label="Close" onClick={handleClose}/>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          {renderFilePreview()}
+        </Modal.Body>
+        <Modal.Footer>
+          {selectedFile && (
+            <Button 
+              variant="primary" 
+              href={selectedFile.fileUrl} 
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open in New Tab
+            </Button>
+          )}
+          <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Card>
   );
 };
 
 export const FilesTable = (props) => {
-  const [drawings, setDrawings] = useState([]);
+  const [files, setFiles] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const projectId = props.projectID
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(getDrawings, {
+        const response = await axios.get(getMiscFiles, {
           params: {
             projectID: projectId
           }
         });
-        setDrawings(response.data);
+        setFiles(response.data);
         console.log(response.data)
 
       } catch (error) {
@@ -1560,6 +1770,69 @@ export const FilesTable = (props) => {
 
     fetchData();
   }, []);
+
+  const handleFilePreview = (drawing) => {
+    setSelectedFile(drawing);
+    setPreviewType('pdf'); // Start with PDF
+    setShowModal(true);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedFile(null);
+    setPreviewType('pdf');
+  };
+
+  const renderFilePreview = () => {
+    if (!selectedFile) return null;
+
+    const fileName = selectedFile.drawingName;
+    const fileUrl = selectedFile.fileUrl;
+
+    if (previewType === 'pdf') {
+      return (
+        <iframe
+          src={fileUrl}
+          style={{ width: '100%', height: '70vh', border: 'none' }}
+          title={fileName}
+          onError={() => setPreviewType('image')}
+        />
+      );
+    }
+
+    if (previewType === 'image') {
+      return (
+        <img 
+          src={fileUrl} 
+          alt={fileName}
+          style={{ 
+            maxWidth: '100%', 
+            maxHeight: '70vh', 
+            objectFit: 'contain'
+          }}
+          onError={() => setPreviewType('excel')}
+        />
+      );
+    }
+
+    // Excel/Document fallback
+    return (
+      <div 
+        className="text-center p-4"
+        style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          height: '70vh'
+        }}
+      >
+        <h5>Excel/Document File</h5>
+        <p>This file cannot be previewed directly in the browser.</p>
+        <p>Click "Open in New Tab" below to download and view the file.</p>
+      </div>
+    );
+  };
 
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
@@ -1576,11 +1849,21 @@ export const FilesTable = (props) => {
             </tr>
             </thead>
             <tbody>
-            {drawings.map((drawing, index) => (
+            {files.map((file, index) => (
                 <tr key={index}>
-                  <td>{drawing.drawingID}</td>
-                  <td>{drawing.drawingName}</td>
-                  <td><a target= "_blank" href={drawing.fileUrl}>{drawing.fileUrl}</a></td>
+                  <td>{file.miscFileID}</td>
+                  <td>{file.miscFileName}</td>
+                  <td>
+                    <Button
+                      variant="light"
+                      size="sm"
+                      onClick={() => handleFilePreview(file)}
+                      style={{ lineHeight: '0.5', padding: '10px' }}
+                    >
+                      <FontAwesomeIcon icon={faEye} className="me-2" />
+                      Preview
+                    </Button>
+                  </td>
 
                 </tr>
             ))}
@@ -1599,10 +1882,37 @@ export const FilesTable = (props) => {
               </Pagination>
             </Nav>
             <small className="fw-bold">
-              Showing <b>{drawings.length}</b> out of <b>25</b> entries
+              Showing <b>{files.length}</b> out of <b>25</b> entries
             </small>
           </Card.Footer>
         </Card.Body>
+
+        <Modal as={Modal.Dialog} centered show={showModal} onHide={handleClose} size='xl'>
+          <Modal.Header>
+            <Modal.Title className="h6">
+              {selectedFile ? selectedFile.miscFileName : 'File Preview'}
+            </Modal.Title>
+            <Button variant="close" aria-label="Close" onClick={handleClose}/>
+          </Modal.Header>
+          <Modal.Body className="text-center">
+            {renderFilePreview()}
+          </Modal.Body>
+          <Modal.Footer>
+            {selectedFile && (
+              <Button 
+                variant="primary" 
+                href={selectedFile.fileUrl} 
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open in New Tab
+              </Button>
+            )}
+            <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Card>
   );
 };
