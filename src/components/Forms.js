@@ -75,6 +75,7 @@ require('dotenv').config();
   const weatherAPI = `${apiURL}/crud/weather`
   const createIncidentReportForm =  `${apiURL}/crud/createIncidentReportForm`
   const createTruckInspectionForm = `${apiURL}/crud/createTruckInspectionForm`
+  const getGoogleSheetsProjects = `${apiURL}/crud/getGoogleSheetsProjects`
 
 const projectList = [
     "Prairie Chapel Church - 20414 Hwy. 65, Urbana, MO - 65767",
@@ -653,6 +654,8 @@ export const VI_Form = () => {
 
 export const VM_Form = () => {
     const [dateTime, setDateTime] = useState('');
+    const [googleSheetsProjects, setGoogleSheetsProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         userID: 1,
         firstName: '',
@@ -666,6 +669,30 @@ export const VM_Form = () => {
     });
 const [showSuccessModal, setShowSuccessModal] = useState(false);
   const successMessageVI = 'Vehicle Moving Form submitted successfully!';
+
+    // Fetch Google Sheets projects on component mount
+    useEffect(() => {
+        const fetchGoogleSheetsProjects = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(getGoogleSheetsProjects);
+                // Filter projects with 'open' status
+                const openProjects = response.data.filter(project => 
+                    project.status && project.status.toLowerCase() === 'open'
+                );
+                setGoogleSheetsProjects(openProjects);
+            } catch (error) {
+                console.error('Error fetching Google Sheets projects:', error);
+                // Fallback to original projectList if API fails
+                setGoogleSheetsProjects(projectList.map(project => ({ name: project })));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGoogleSheetsProjects();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -796,11 +823,14 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
                                         name="pickupJobsite"
                                         value={formData.pickupJobsite}
                                         onChange={handleChange}
+                                        disabled={loading}
                                     >
-                                        <option value="">Select Pickup Location</option>
-                                        {projectList.map((project, index) => (
-                                            <option key={index} value={project}>
-                                                {project}
+                                        <option value="">
+                                            {loading ? "Loading projects..." : "Select Pickup Location"}
+                                        </option>
+                                        {googleSheetsProjects.map((project, index) => (
+                                            <option key={index} value={project.name || project}>
+                                                {project.name || project}
                                             </option>
                                         ))}
                                     </Form.Select>
@@ -814,11 +844,14 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
                                         name="dropoffLocation"
                                         value={formData.dropoffLocation}
                                         onChange={handleChange}
+                                        disabled={loading}
                                     >
-                                        <option value="">Select Dropoff Location</option>
-                                        {projectList.map((project, index) => (
-                                            <option key={index} value={project}>
-                                                {project}
+                                        <option value="">
+                                            {loading ? "Loading projects..." : "Select Dropoff Location"}
+                                        </option>
+                                        {googleSheetsProjects.map((project, index) => (
+                                            <option key={index} value={project.name || project}>
+                                                {project.name || project}
                                             </option>
                                         ))}
                                     </Form.Select>
