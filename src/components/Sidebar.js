@@ -294,7 +294,7 @@ export default (props = {}) => {
                 />
               </CollapsableNavItem> */}
 
-                  <CollapsableNavItem
+                  {/* <CollapsableNavItem
                       eventKey="examples/"
                       title="Auth"
                       icon={faFileAlt}
@@ -304,7 +304,7 @@ export default (props = {}) => {
                     <NavItem
                         title="Forgot password"
                         link={Routes.ForgotPassword.path}
-                    />
+                    /> */}
                     {/* <NavItem
                   title="Reset password"
                   link={Routes.ResetPassword.path}
@@ -315,7 +315,7 @@ export default (props = {}) => {
                   title="500 Server Error"
                   link={Routes.ServerError.path}
                 /> */}
-                  </CollapsableNavItem>
+                  {/* </CollapsableNavItem> */}
 
                   {/* <NavItem
                 external
@@ -574,7 +574,7 @@ export default (props = {}) => {
                 />
               </CollapsableNavItem> */}
 
-                  <CollapsableNavItem
+                  {/* <CollapsableNavItem
                       eventKey="examples/"
                       title="Auth"
                       icon={faFileAlt}
@@ -585,17 +585,8 @@ export default (props = {}) => {
                         title="Forgot password"
                         link={Routes.ForgotPassword.path}
                     />
-                    {/* <NavItem
-                  title="Reset password"
-                  link={Routes.ResetPassword.path}
-                /> */}
-                    {/* <NavItem title="Lock" link={Routes.Lock.path} />
-                <NavItem title="404 Not Found" link={Routes.NotFound.path} />
-                <NavItem
-                  title="500 Server Error"
-                  link={Routes.ServerError.path}
-                /> */}
-                  </CollapsableNavItem>
+                    
+                  </CollapsableNavItem> */}
 
                   {/* <NavItem
                 external
@@ -796,7 +787,7 @@ export default (props = {}) => {
                   />
 
 
-                  <CollapsableNavItem
+                  {/* <CollapsableNavItem
                       eventKey="examples/"
                       title="Auth"
                       icon={faFileAlt}
@@ -808,7 +799,7 @@ export default (props = {}) => {
                         link={Routes.ForgotPassword.path}
                     />
 
-                  </CollapsableNavItem>
+                  </CollapsableNavItem> */}
 
 
 
