@@ -107,15 +107,39 @@ export const VI_Form = () => {
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [users, setUsers] = useState([]);
+  const [googleSheetsProjects, setGoogleSheetsProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const successMessageVI = 'Vehicle Inspection Form submitted successfully!';
   
     useEffect(() => {
+      // Fetch users
       fetch(getUsers)
         .then((response) => response.json())
         .then((data) => setUsers(data))
-        .catch((error) => console.error('Error fetching data:', error));
+        .catch((error) => console.error('Error fetching users:', error));
+
+      // Fetch Google Sheets projects
+      const fetchGoogleSheetsProjects = async () => {
+        try {
+          setLoading(true);
+          const response = await axios.get(getGoogleSheetsProjects);
+          // Filter projects with 'open' status
+          const openProjects = response.data.filter(project => 
+            project.status && project.status.toLowerCase() === 'open'
+          );
+          setGoogleSheetsProjects(openProjects);
+        } catch (error) {
+          console.error('Error fetching Google Sheets projects:', error);
+          // Fallback to original projectList if API fails
+          setGoogleSheetsProjects(projectList.map(project => ({ name: project })));
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchGoogleSheetsProjects();
     }, []); 
 
     const handleSubmit = async (e) => {
@@ -251,10 +275,17 @@ export const VI_Form = () => {
               <Col md={3} className="mb-3">
                   <Form.Group id="projectName">
                       <Form.Label>Project Name</Form.Label>
-                      <Form.Select defaultValue={projectList[0]} name="projectName">
-                          {projectList.map((projectName, index) => (
-                              <option key={index} value={projectName}>
-                                  {projectName}
+                      <Form.Select 
+                          defaultValue="" 
+                          name="projectName"
+                          disabled={loading}
+                      >
+                          <option value="">
+                              {loading ? "Loading projects..." : "Select Project"}
+                          </option>
+                          {googleSheetsProjects.map((project, index) => (
+                              <option key={index} value={project.name || project}>
+                                  {project.name || project}
                               </option>
                           ))}
                       </Form.Select>
@@ -892,36 +923,84 @@ export const DR_Form = () => {
     const [userLocation, setUserLocation] = useState(null);
     const [weatherDetails, setWeatherDetails] = useState('');
     const [isFetching, setIsFetching] = useState(false);
+    const [googleSheetsProjects, setGoogleSheetsProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
 const [showSuccessModal, setShowSuccessModal] = useState(false);
   const successMessageVI = 'Daily Report Form submitted successfully!';
   
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                setUserLocation({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                });
-            },
-            (error) => {
-                console.log(error);
+        // Get user location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const location = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                    };
+                    setUserLocation(location);
+                    console.log('Location fetched:', location);
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    // You might want to set a default location or show an error message
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+
+        // Fetch Google Sheets projects
+        const fetchGoogleSheetsProjects = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(getGoogleSheetsProjects);
+                // Filter projects with 'open' status
+                const openProjects = response.data.filter(project => 
+                    project.status && project.status.toLowerCase() === 'open'
+                );
+                setGoogleSheetsProjects(openProjects);
+            } catch (error) {
+                console.error('Error fetching Google Sheets projects:', error);
+                // Fallback to original projectList if API fails
+                setGoogleSheetsProjects(projectList.map(project => ({ name: project })));
+            } finally {
+                setLoading(false);
             }
-        );
+        };
+
+        fetchGoogleSheetsProjects();
     }, []);
 
-    let userLat = userLocation ? userLocation.latitude : null;
-    let userLong = userLocation ? userLocation.longitude : null;
+    // Monitor location changes
+    useEffect(() => {
+        if (userLocation) {
+            console.log('Location updated:', userLocation);
+        }
+    }, [userLocation]);
 
     const handleFetchWeather = async () => {
         if (isFetching) return;
+        
+        // Check if location is available
+        if (!userLocation || !userLocation.latitude || !userLocation.longitude) {
+            console.error('Location not available. Please allow location access.');
+            alert('Location not available. Please allow location access and try again.');
+            return;
+        }
+
         setIsFetching(true);
         try {
+            const userLat = userLocation.latitude;
+            const userLong = userLocation.longitude;
+            console.log(`Fetching weather for lat: ${userLat}, lon: ${userLong}`);
+            
             const response = await axios.get(`${weatherAPI}?lat=${userLat}&lon=${userLong}`);
             setWeatherData(response.data);
             setWeatherDetails(response.data.weather[0].description);
-            console.log(weatherDetails);
+            console.log('Weather fetched:', response.data.weather[0].description);
         } catch (error) {
             console.error('Error fetching weather data:', error);
+            alert('Error fetching weather data. Please try again.');
         } finally {
             setIsFetching(false);
         }
@@ -1098,11 +1177,14 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
                                         name="projectName"
                                         value={formData.projectName}
                                         onChange={handleChange}
+                                        disabled={loading}
                                     >
-                                        <option value="">Select Project</option>
-                                        {projectList.map((project, index) => (
-                                            <option key={index} value={project}>
-                                                {project}
+                                        <option value="">
+                                            {loading ? "Loading projects..." : "Select Project"}
+                                        </option>
+                                        {googleSheetsProjects.map((project, index) => (
+                                            <option key={index} value={project.name || project}>
+                                                {project.name || project}
                                             </option>
                                         ))}
                                     </Form.Select>
@@ -1178,6 +1260,8 @@ export const IR_Form = () => {
     const [dateTime, setDateTime] = useState('');
     const [empDateTime, setempDateTime] = useState(moment()); // Initialize with current date
     const [supDateTime, setsupDateTime] = useState('');
+    const [googleSheetsProjects, setGoogleSheetsProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
   const successMessageVI = 'Incident Report Form submitted successfully!';
   
@@ -1195,6 +1279,29 @@ export const IR_Form = () => {
         employeeSign: '',
         employeeSignDate: ''
     });
+
+    // Fetch Google Sheets projects on component mount
+    useEffect(() => {
+        const fetchGoogleSheetsProjects = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(getGoogleSheetsProjects);
+                // Filter projects with 'open' status
+                const openProjects = response.data.filter(project => 
+                    project.status && project.status.toLowerCase() === 'open'
+                );
+                setGoogleSheetsProjects(openProjects);
+            } catch (error) {
+                console.error('Error fetching Google Sheets projects:', error);
+                // Fallback to original projectList if API fails
+                setGoogleSheetsProjects(projectList.map(project => ({ name: project })));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGoogleSheetsProjects();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -1308,11 +1415,14 @@ export const IR_Form = () => {
                                         name="location"
                                         value={formData.location}
                                         onChange={handleChange}
+                                        disabled={loading}
                                     >
-                                        <option value="">Select Location</option>
-                                        {projectList.map((project, index) => (
-                                            <option key={index} value={project}>
-                                                {project}
+                                        <option value="">
+                                            {loading ? "Loading locations..." : "Select Location"}
+                                        </option>
+                                        {googleSheetsProjects.map((project, index) => (
+                                            <option key={index} value={project.name || project}>
+                                                {project.name || project}
                                             </option>
                                         ))}
                                     </Form.Select>
