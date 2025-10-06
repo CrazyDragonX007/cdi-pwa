@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye, faImage, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup, Modal } from '@themesberg/react-bootstrap';
 import {Link, Redirect, useHistory, useLocation} from 'react-router-dom';
 
@@ -1447,27 +1447,133 @@ export const ContractsTable = (props) => {
 
     if (previewType === 'pdf') {
       return (
-        <iframe
-          src={fileUrl}
-          style={{ width: '100%', height: '70vh', border: 'none' }}
-          title={fileName}
-          onError={() => setPreviewType('image')}
-        />
+        <div style={{ position: 'relative', height: '70vh' }}>
+          <iframe
+            src={fileUrl}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              border: 'none',
+              borderRadius: '8px'
+            }}
+            title={fileName}
+            onError={() => setPreviewType('image')}
+          />
+          {/* Mobile Controls Overlay */}
+          <div 
+            className="d-block d-md-none"
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}
+          >
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => window.open(fileUrl, '_blank')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faExternalLinkAlt} />
+            </Button>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => setPreviewType('image')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faImage} />
+            </Button>
+          </div>
+        </div>
       );
     }
 
     if (previewType === 'image') {
       return (
-        <img 
-          src={fileUrl} 
-          alt={fileName}
-          style={{ 
-            maxWidth: '100%', 
-            maxHeight: '70vh', 
-            objectFit: 'contain'
-          }}
-          onError={() => setPreviewType('excel')}
-        />
+        <div style={{ position: 'relative', height: '70vh', overflow: 'hidden' }}>
+          <img 
+            src={fileUrl} 
+            alt={fileName}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'contain',
+              cursor: 'zoom-in',
+              transition: 'transform 0.3s ease'
+            }}
+            onError={() => setPreviewType('excel')}
+            onClick={(e) => {
+              if (e.target.style.transform === 'scale(1.5)') {
+                e.target.style.transform = 'scale(1)';
+                e.target.style.cursor = 'zoom-in';
+              } else {
+                e.target.style.transform = 'scale(1.5)';
+                e.target.style.cursor = 'zoom-out';
+              }
+            }}
+          />
+          {/* Mobile Controls Overlay */}
+          <div 
+            className="d-block d-md-none"
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}
+          >
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => window.open(fileUrl, '_blank')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faExternalLinkAlt} />
+            </Button>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => setPreviewType('pdf')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf} />
+            </Button>
+          </div>
+        </div>
       );
     }
 
@@ -1543,28 +1649,62 @@ export const ContractsTable = (props) => {
         </Card.Footer>
       </Card.Body>
 
-      <Modal as={Modal.Dialog} centered show={showModal} onHide={handleClose} size='xl'>
+      <Modal 
+        as={Modal.Dialog} 
+        centered 
+        show={showModal} 
+        onHide={handleClose} 
+        size='xl'
+        style={{ 
+          maxWidth: '95vw',
+          margin: '10px auto'
+        }}
+      >
         <Modal.Header>
           <Modal.Title className="h6">
             {selectedFile ? selectedFile.contractName : 'File Preview'}
           </Modal.Title>
           <Button variant="close" aria-label="Close" onClick={handleClose}/>
         </Modal.Header>
-        <Modal.Body className="text-center">
+        <Modal.Body 
+          className="text-center"
+          style={{ 
+            padding: window.innerWidth <= 768 ? '10px' : '20px',
+            overflow: 'auto'
+          }}
+        >
           {renderFilePreview()}
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer 
+          style={{ 
+            padding: window.innerWidth <= 768 ? '10px' : '15px',
+            flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+            gap: window.innerWidth <= 768 ? '10px' : '0'
+          }}
+        >
           {selectedFile && (
             <Button 
               variant="primary" 
               href={selectedFile.fileUrl} 
               target="_blank"
               rel="noopener noreferrer"
+              style={{ 
+                width: window.innerWidth <= 768 ? '100%' : 'auto',
+                fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+              }}
             >
               Open in New Tab
             </Button>
           )}
-          <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+          <Button 
+            variant="link" 
+            className="text-gray ms-auto" 
+            onClick={handleClose}
+            style={{ 
+              width: window.innerWidth <= 768 ? '100%' : 'auto',
+              fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+            }}
+          >
             Close
           </Button>
         </Modal.Footer>
@@ -1619,27 +1759,133 @@ export const DrawingsTable = (props) => {
 
     if (previewType === 'pdf') {
       return (
-        <iframe
-          src={fileUrl}
-          style={{ width: '100%', height: '70vh', border: 'none' }}
-          title={fileName}
-          onError={() => setPreviewType('image')}
-        />
+        <div style={{ position: 'relative', height: '70vh' }}>
+          <iframe
+            src={fileUrl}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              border: 'none',
+              borderRadius: '8px'
+            }}
+            title={fileName}
+            onError={() => setPreviewType('image')}
+          />
+          {/* Mobile Controls Overlay */}
+          <div 
+            className="d-block d-md-none"
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}
+          >
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => window.open(fileUrl, '_blank')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faExternalLinkAlt} />
+            </Button>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => setPreviewType('image')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faImage} />
+            </Button>
+          </div>
+        </div>
       );
     }
 
     if (previewType === 'image') {
       return (
-        <img 
-          src={fileUrl} 
-          alt={fileName}
-          style={{ 
-            maxWidth: '100%', 
-            maxHeight: '70vh', 
-            objectFit: 'contain'
-          }}
-          onError={() => setPreviewType('excel')}
-        />
+        <div style={{ position: 'relative', height: '70vh', overflow: 'hidden' }}>
+          <img 
+            src={fileUrl} 
+            alt={fileName}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'contain',
+              cursor: 'zoom-in',
+              transition: 'transform 0.3s ease'
+            }}
+            onError={() => setPreviewType('excel')}
+            onClick={(e) => {
+              if (e.target.style.transform === 'scale(1.5)') {
+                e.target.style.transform = 'scale(1)';
+                e.target.style.cursor = 'zoom-in';
+              } else {
+                e.target.style.transform = 'scale(1.5)';
+                e.target.style.cursor = 'zoom-out';
+              }
+            }}
+          />
+          {/* Mobile Controls Overlay */}
+          <div 
+            className="d-block d-md-none"
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}
+          >
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => window.open(fileUrl, '_blank')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faExternalLinkAlt} />
+            </Button>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => setPreviewType('pdf')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf} />
+            </Button>
+          </div>
+        </div>
       );
     }
 
@@ -1715,28 +1961,62 @@ export const DrawingsTable = (props) => {
         </Card.Footer>
       </Card.Body>
 
-      <Modal as={Modal.Dialog} centered show={showModal} onHide={handleClose} size='xl'>
+      <Modal 
+        as={Modal.Dialog} 
+        centered 
+        show={showModal} 
+        onHide={handleClose} 
+        size='xl'
+        style={{ 
+          maxWidth: '95vw',
+          margin: '10px auto'
+        }}
+      >
         <Modal.Header>
           <Modal.Title className="h6">
             {selectedFile ? selectedFile.drawingName : 'File Preview'}
           </Modal.Title>
           <Button variant="close" aria-label="Close" onClick={handleClose}/>
         </Modal.Header>
-        <Modal.Body className="text-center">
+        <Modal.Body 
+          className="text-center"
+          style={{ 
+            padding: window.innerWidth <= 768 ? '10px' : '20px',
+            overflow: 'auto'
+          }}
+        >
           {renderFilePreview()}
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer 
+          style={{ 
+            padding: window.innerWidth <= 768 ? '10px' : '15px',
+            flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+            gap: window.innerWidth <= 768 ? '10px' : '0'
+          }}
+        >
           {selectedFile && (
             <Button 
               variant="primary" 
               href={selectedFile.fileUrl} 
               target="_blank"
               rel="noopener noreferrer"
+              style={{ 
+                width: window.innerWidth <= 768 ? '100%' : 'auto',
+                fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+              }}
             >
               Open in New Tab
             </Button>
           )}
-          <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
+          <Button 
+            variant="link" 
+            className="text-gray ms-auto" 
+            onClick={handleClose}
+            style={{ 
+              width: window.innerWidth <= 768 ? '100%' : 'auto',
+              fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+            }}
+          >
             Close
           </Button>
         </Modal.Footer>
@@ -1786,32 +2066,138 @@ export const FilesTable = (props) => {
   const renderFilePreview = () => {
     if (!selectedFile) return null;
 
-    const fileName = selectedFile.drawingName;
+    const fileName = selectedFile.miscFileName;
     const fileUrl = selectedFile.fileUrl;
 
     if (previewType === 'pdf') {
       return (
-        <iframe
-          src={fileUrl}
-          style={{ width: '100%', height: '70vh', border: 'none' }}
-          title={fileName}
-          onError={() => setPreviewType('image')}
-        />
+        <div style={{ position: 'relative', height: '70vh' }}>
+          <iframe
+            src={fileUrl}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              border: 'none',
+              borderRadius: '8px'
+            }}
+            title={fileName}
+            onError={() => setPreviewType('image')}
+          />
+          {/* Mobile Controls Overlay */}
+          <div 
+            className="d-block d-md-none"
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}
+          >
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => window.open(fileUrl, '_blank')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faExternalLinkAlt} />
+            </Button>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => setPreviewType('image')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faImage} />
+            </Button>
+          </div>
+        </div>
       );
     }
 
     if (previewType === 'image') {
       return (
-        <img 
-          src={fileUrl} 
-          alt={fileName}
-          style={{ 
-            maxWidth: '100%', 
-            maxHeight: '70vh', 
-            objectFit: 'contain'
-          }}
-          onError={() => setPreviewType('excel')}
-        />
+        <div style={{ position: 'relative', height: '70vh', overflow: 'hidden' }}>
+          <img 
+            src={fileUrl} 
+            alt={fileName}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'contain',
+              cursor: 'zoom-in',
+              transition: 'transform 0.3s ease'
+            }}
+            onError={() => setPreviewType('excel')}
+            onClick={(e) => {
+              if (e.target.style.transform === 'scale(1.5)') {
+                e.target.style.transform = 'scale(1)';
+                e.target.style.cursor = 'zoom-in';
+              } else {
+                e.target.style.transform = 'scale(1.5)';
+                e.target.style.cursor = 'zoom-out';
+              }
+            }}
+          />
+          {/* Mobile Controls Overlay */}
+          <div 
+            className="d-block d-md-none"
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}
+          >
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => window.open(fileUrl, '_blank')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faExternalLinkAlt} />
+            </Button>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={() => setPreviewType('pdf')}
+              style={{ 
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf} />
+            </Button>
+          </div>
+        </div>
       );
     }
 
@@ -1837,7 +2223,7 @@ export const FilesTable = (props) => {
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
         <Card.Body className="pt-0">
-          <h5 style={{ padding: '10px', marginTop: '10px' }}>Drawings</h5>
+          <h5 style={{ padding: '10px', marginTop: '10px' }}>Files</h5>
           <Table hover className="user-table align-items-center">
             <thead>
             <tr>
@@ -1887,7 +2273,17 @@ export const FilesTable = (props) => {
           </Card.Footer>
         </Card.Body>
 
-        <Modal as={Modal.Dialog} centered show={showModal} onHide={handleClose} size='xl'>
+        <Modal 
+          as={Modal.Dialog} 
+          centered 
+          show={showModal} 
+          onHide={handleClose} 
+          size='xl'
+          style={{ 
+            maxWidth: '95vw',
+            margin: '10px auto'
+          }}
+        >
           <Modal.Header>
             <Modal.Title className="h6">
               {selectedFile ? selectedFile.miscFileName : 'File Preview'}
