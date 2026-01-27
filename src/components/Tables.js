@@ -1487,7 +1487,7 @@ export const ContractsTable = (props) => {
                 position: 'absolute',
                 top: '10px',
                 left: '10px',
-                zIndex: 1000,
+                zIndex: 9999,
                 borderRadius: '50%',
                 width: '50px',
                 height: '50px',
@@ -1495,7 +1495,8 @@ export const ContractsTable = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                pointerEvents: 'auto'
               }}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -1510,32 +1511,30 @@ export const ContractsTable = (props) => {
               right: '10px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px'
+              gap: '8px',
+              zIndex: 9998
             }}
           >
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={(e) => {
-                e.preventDefault();
-                if (inWebView) {
-                  // In WebView, prevent navigation away
-                  alert('File opened. Use the back button to return.');
-                } else {
+            {!inWebView && (
+              <Button
+                variant="dark"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
                   window.open(fileUrl, '_blank');
-                }
-              }}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </Button>
+                }}
+                style={{ 
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <FontAwesomeIcon icon={faExternalLinkAlt} />
+              </Button>
+            )}
             <Button
               variant="dark"
               size="sm"
@@ -1590,7 +1589,7 @@ export const ContractsTable = (props) => {
                 position: 'absolute',
                 top: '10px',
                 left: '10px',
-                zIndex: 1000,
+                zIndex: 9999,
                 borderRadius: '50%',
                 width: '50px',
                 height: '50px',
@@ -1598,7 +1597,8 @@ export const ContractsTable = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                pointerEvents: 'auto'
               }}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -1613,31 +1613,30 @@ export const ContractsTable = (props) => {
               right: '10px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px'
+              gap: '8px',
+              zIndex: 9998
             }}
           >
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={(e) => {
-                e.preventDefault();
-                if (inWebView) {
-                  alert('File opened. Use the back button to return.');
-                } else {
+            {!inWebView && (
+              <Button
+                variant="dark"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
                   window.open(fileUrl, '_blank');
-                }
-              }}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </Button>
+                }}
+                style={{ 
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <FontAwesomeIcon icon={faExternalLinkAlt} />
+              </Button>
+            )}
             <Button
               variant="dark"
               size="sm"
@@ -1681,7 +1680,7 @@ export const ContractsTable = (props) => {
               position: 'absolute',
               top: '10px',
               left: '10px',
-              zIndex: 1000,
+              zIndex: 9999,
               borderRadius: '50%',
               width: '50px',
               height: '50px',
@@ -1689,7 +1688,8 @@ export const ContractsTable = (props) => {
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              pointerEvents: 'auto'
             }}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
@@ -1697,7 +1697,8 @@ export const ContractsTable = (props) => {
         )}
         <h5>Excel/Document File</h5>
         <p>This file cannot be previewed directly in the browser.</p>
-        <p>Click "Open in New Tab" below to download and view the file.</p>
+        {!inWebView && <p>Click "Open in New Tab" below to download and view the file.</p>}
+        {inWebView && <p>Use the back button to return to the app.</p>}
       </div>
     );
   };
@@ -1788,18 +1789,12 @@ export const ContractsTable = (props) => {
             gap: window.innerWidth <= 768 ? '10px' : '0'
           }}
         >
-          {selectedFile && (
+          {selectedFile && !isWebView() && (
             <Button 
               variant="primary" 
               href={selectedFile.fileUrl} 
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => {
-                if (isWebView()) {
-                  e.preventDefault();
-                  alert('In WebView, use the back button to return to the app.');
-                }
-              }}
               style={{ 
                 width: window.innerWidth <= 768 ? '100%' : 'auto',
                 fontSize: window.innerWidth <= 768 ? '14px' : '16px'
@@ -1895,7 +1890,7 @@ export const DrawingsTable = (props) => {
                 position: 'absolute',
                 top: '10px',
                 left: '10px',
-                zIndex: 1000,
+                zIndex: 9999,
                 borderRadius: '50%',
                 width: '50px',
                 height: '50px',
@@ -1903,7 +1898,8 @@ export const DrawingsTable = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                pointerEvents: 'auto'
               }}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -1918,32 +1914,30 @@ export const DrawingsTable = (props) => {
               right: '10px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px'
+              gap: '8px',
+              zIndex: 9998
             }}
           >
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={(e) => {
-                e.preventDefault();
-                if (inWebView) {
-                  // In WebView, prevent navigation away
-                  alert('File opened. Use the back button to return.');
-                } else {
+            {!inWebView && (
+              <Button
+                variant="dark"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
                   window.open(fileUrl, '_blank');
-                }
-              }}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </Button>
+                }}
+                style={{ 
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <FontAwesomeIcon icon={faExternalLinkAlt} />
+              </Button>
+            )}
             <Button
               variant="dark"
               size="sm"
@@ -1998,7 +1992,7 @@ export const DrawingsTable = (props) => {
                 position: 'absolute',
                 top: '10px',
                 left: '10px',
-                zIndex: 1000,
+                zIndex: 9999,
                 borderRadius: '50%',
                 width: '50px',
                 height: '50px',
@@ -2006,7 +2000,8 @@ export const DrawingsTable = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                pointerEvents: 'auto'
               }}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -2021,31 +2016,30 @@ export const DrawingsTable = (props) => {
               right: '10px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px'
+              gap: '8px',
+              zIndex: 9998
             }}
           >
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={(e) => {
-                e.preventDefault();
-                if (inWebView) {
-                  alert('File opened. Use the back button to return.');
-                } else {
+            {!inWebView && (
+              <Button
+                variant="dark"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
                   window.open(fileUrl, '_blank');
-                }
-              }}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </Button>
+                }}
+                style={{ 
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <FontAwesomeIcon icon={faExternalLinkAlt} />
+              </Button>
+            )}
             <Button
               variant="dark"
               size="sm"
@@ -2089,7 +2083,7 @@ export const DrawingsTable = (props) => {
               position: 'absolute',
               top: '10px',
               left: '10px',
-              zIndex: 1000,
+              zIndex: 9999,
               borderRadius: '50%',
               width: '50px',
               height: '50px',
@@ -2097,7 +2091,8 @@ export const DrawingsTable = (props) => {
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              pointerEvents: 'auto'
             }}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
@@ -2105,7 +2100,8 @@ export const DrawingsTable = (props) => {
         )}
         <h5>Excel/Document File</h5>
         <p>This file cannot be previewed directly in the browser.</p>
-        <p>Click "Open in New Tab" below to download and view the file.</p>
+        {!inWebView && <p>Click "Open in New Tab" below to download and view the file.</p>}
+        {inWebView && <p>Use the back button to return to the app.</p>}
       </div>
     );
   };
@@ -2196,18 +2192,12 @@ export const DrawingsTable = (props) => {
             gap: window.innerWidth <= 768 ? '10px' : '0'
           }}
         >
-          {selectedFile && (
+          {selectedFile && !isWebView() && (
             <Button 
               variant="primary" 
               href={selectedFile.fileUrl} 
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => {
-                if (isWebView()) {
-                  e.preventDefault();
-                  alert('In WebView, use the back button to return to the app.');
-                }
-              }}
               style={{ 
                 width: window.innerWidth <= 768 ? '100%' : 'auto',
                 fontSize: window.innerWidth <= 768 ? '14px' : '16px'
@@ -2303,7 +2293,7 @@ export const FilesTable = (props) => {
                 position: 'absolute',
                 top: '10px',
                 left: '10px',
-                zIndex: 1000,
+                zIndex: 9999,
                 borderRadius: '50%',
                 width: '50px',
                 height: '50px',
@@ -2311,7 +2301,8 @@ export const FilesTable = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                pointerEvents: 'auto'
               }}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -2326,32 +2317,30 @@ export const FilesTable = (props) => {
               right: '10px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px'
+              gap: '8px',
+              zIndex: 9998
             }}
           >
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={(e) => {
-                e.preventDefault();
-                if (inWebView) {
-                  // In WebView, prevent navigation away
-                  alert('File opened. Use the back button to return.');
-                } else {
+            {!inWebView && (
+              <Button
+                variant="dark"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
                   window.open(fileUrl, '_blank');
-                }
-              }}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </Button>
+                }}
+                style={{ 
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <FontAwesomeIcon icon={faExternalLinkAlt} />
+              </Button>
+            )}
             <Button
               variant="dark"
               size="sm"
@@ -2406,7 +2395,7 @@ export const FilesTable = (props) => {
                 position: 'absolute',
                 top: '10px',
                 left: '10px',
-                zIndex: 1000,
+                zIndex: 9999,
                 borderRadius: '50%',
                 width: '50px',
                 height: '50px',
@@ -2414,7 +2403,8 @@ export const FilesTable = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                pointerEvents: 'auto'
               }}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -2429,31 +2419,30 @@ export const FilesTable = (props) => {
               right: '10px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px'
+              gap: '8px',
+              zIndex: 9998
             }}
           >
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={(e) => {
-                e.preventDefault();
-                if (inWebView) {
-                  alert('File opened. Use the back button to return.');
-                } else {
+            {!inWebView && (
+              <Button
+                variant="dark"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
                   window.open(fileUrl, '_blank');
-                }
-              }}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </Button>
+                }}
+                style={{ 
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <FontAwesomeIcon icon={faExternalLinkAlt} />
+              </Button>
+            )}
             <Button
               variant="dark"
               size="sm"
@@ -2497,7 +2486,7 @@ export const FilesTable = (props) => {
               position: 'absolute',
               top: '10px',
               left: '10px',
-              zIndex: 1000,
+              zIndex: 9999,
               borderRadius: '50%',
               width: '50px',
               height: '50px',
@@ -2505,7 +2494,8 @@ export const FilesTable = (props) => {
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              pointerEvents: 'auto'
             }}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
@@ -2513,7 +2503,8 @@ export const FilesTable = (props) => {
         )}
         <h5>Excel/Document File</h5>
         <p>This file cannot be previewed directly in the browser.</p>
-        <p>Click "Open in New Tab" below to download and view the file.</p>
+        {!inWebView && <p>Click "Open in New Tab" below to download and view the file.</p>}
+        {inWebView && <p>Use the back button to return to the app.</p>}
       </div>
     );
   };
@@ -2592,18 +2583,12 @@ export const FilesTable = (props) => {
             {renderFilePreview()}
           </Modal.Body>
           <Modal.Footer>
-            {selectedFile && (
+            {selectedFile && !isWebView() && (
               <Button 
                 variant="primary" 
                 href={selectedFile.fileUrl} 
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => {
-                  if (isWebView()) {
-                    e.preventDefault();
-                    alert('In WebView, use the back button to return to the app.');
-                  }
-                }}
               >
                 Open in New Tab
               </Button>
