@@ -40,6 +40,7 @@
     "dotenv": "^16.4.5",
     "firebase": "^10.9.0",
     "moment-timezone": "^0.5.31",
+    "pdfjs-dist": "^5.4.530",
     "react": "^16.13.1",
     "react-chartist": "^0.14.4",
     "react-copy-to-clipboard": "^5.0.3",
@@ -48,6 +49,7 @@
     "react-dom": "^16.13.1",
     "react-github-btn": "^1.2.0",
     "react-live": "^2.2.3",
+    "react-pdf": "^10.3.0",
     "react-router-dom": "^5.2.0",
     "react-router-hash-link": "^2.3.1",
     "react-scripts": "4.0",
@@ -56,9 +58,10 @@
     "sass": "^1.71.1",
     "simplebar-react": "^2.3.0",
     "yarn": "^1.22.22"
-  },"resolutions": {
-  "caniuse-lite": "1.0.30001632"
-},
+  },
+  "resolutions": {
+    "caniuse-lite": "1.0.30001632"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

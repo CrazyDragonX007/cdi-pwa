@@ -1,10 +1,9 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faArrowLeft, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye, faImage, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faArrowLeft, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye, faImage, faFilePdf, faDownload, faPrint, faSearchMinus, faSearchPlus, faChevronLeft, faChevronRight, faFile } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup, Modal } from '@themesberg/react-bootstrap';
 import {Link, Redirect, useHistory, useLocation} from 'react-router-dom';
-
 import { Routes } from "../routes";
 import { pageVisits, pageTraffic, pageRanking } from "../data/tables";
 import transactions from "../data/transactions";
@@ -13,6 +12,459 @@ import S3FileList from "./S3FileList";
 import axios from 'axios'; 
 import moment from 'moment';
 import ExportCSV from "./ExportToCSV";
+
+// PDF.js is loaded via CDN in index.html - access via global window.pdfjsLib
+const getPdfjsLib = () => {
+  if (typeof window !== 'undefined') {
+    // PDF.js from CDN can be available as window.pdfjsLib or window.pdfjs
+    return window.pdfjsLib || window.pdfjs || null;
+  }
+  return null;
+};
+
+// Set up PDF.js worker (will be called when PDF.js is loaded)
+const setupPdfjsWorker = () => {
+  const pdfLib = getPdfjsLib();
+  if (pdfLib && pdfLib.GlobalWorkerOptions) {
+    pdfLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfLib.version}/pdf.worker.min.js`;
+  }
+};
+
+// Try to set up worker immediately, and also on window load
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'complete') {
+    setupPdfjsWorker();
+  } else {
+    window.addEventListener('load', setupPdfjsWorker);
+  }
+}
+
+// PDF Viewer Component with Controls using PDF.js directly
+const PDFViewer = ({ fileUrl, fileName }) => {
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [scale, setScale] = useState(1.0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showThumbnails, setShowThumbnails] = useState(true);
+  const [useFallback, setUseFallback] = useState(false);
+  const [pdfDoc, setPdfDoc] = useState(null);
+  const canvasRef = React.useRef(null);
+  const thumbnailRefs = React.useRef({});
+
+  useEffect(() => {
+    // Wait for PDF.js to be available
+    const checkAndLoad = () => {
+      const pdfLib = getPdfjsLib();
+      if (pdfLib) {
+        setupPdfjsWorker();
+        loadPDF();
+      } else {
+        // Retry after a short delay if PDF.js isn't loaded yet
+        setTimeout(checkAndLoad, 100);
+      }
+    };
+    
+    checkAndLoad();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fileUrl]);
+
+  const loadPDF = async () => {
+    const pdfLib = getPdfjsLib();
+    if (!pdfLib) {
+      console.error('PDF.js not loaded');
+      setUseFallback(true);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      const loadingTask = pdfLib.getDocument({
+        url: fileUrl,
+        httpHeaders: {},
+        withCredentials: false,
+      });
+      const pdf = await loadingTask.promise;
+      setPdfDoc(pdf);
+      setNumPages(pdf.numPages);
+      setLoading(false);
+    } catch (err) {
+      console.error('PDF.js load error:', err);
+      setError(err);
+      setUseFallback(true);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (pdfDoc && canvasRef.current) {
+      renderPage(pageNumber);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pdfDoc, pageNumber, scale]);
+
+  const renderPage = async (pageNum) => {
+    if (!pdfDoc || !canvasRef.current) return;
+    
+    try {
+      const page = await pdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale });
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+      
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+      };
+      
+      await page.render(renderContext).promise;
+    } catch (err) {
+      console.error('Error rendering page:', err);
+    }
+  };
+
+  const renderThumbnail = async (pageNum, canvasElement) => {
+    if (!pdfDoc || !canvasElement) return;
+    
+    const pdfLib = getPdfjsLib();
+    if (!pdfLib) return;
+    
+    try {
+      const page = await pdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 0.3 });
+      const context = canvasElement.getContext('2d');
+      
+      canvasElement.height = viewport.height;
+      canvasElement.width = viewport.width;
+      
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+      };
+      
+      await page.render(renderContext).promise;
+    } catch (err) {
+      console.error('Error rendering thumbnail:', err);
+    }
+  };
+
+  const goToPrevPage = () => {
+    setPageNumber(prev => Math.max(1, prev - 1));
+  };
+
+  const goToNextPage = () => {
+    setPageNumber(prev => Math.min(numPages, prev + 1));
+  };
+
+  const zoomIn = () => {
+    setScale(prev => Math.min(3.0, prev + 0.25));
+  };
+
+  const zoomOut = () => {
+    setScale(prev => Math.max(0.5, prev - 0.25));
+  };
+
+  const fitToWidth = () => {
+    setScale(1.0);
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileName || 'document.pdf';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handlePrint = () => {
+    window.open(fileUrl, '_blank');
+    setTimeout(() => {
+      window.print();
+    }, 250);
+  };
+
+  // Fallback to iframe if PDF.js fails (e.g., CORS issues)
+  if (useFallback) {
+    return (
+      <div style={{ position: 'relative', height: '100%', width: '100%', backgroundColor: '#525252' }}>
+        <iframe
+          src={fileUrl}
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+            border: 'none'
+          }}
+          title={fileName}
+        />
+      </div>
+    );
+  }
+
+  if (error && !useFallback) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        height: '100%',
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <p style={{ color: '#dc3545', marginBottom: '10px' }}>Error loading PDF</p>
+        <p style={{ fontSize: '14px', color: '#6c757d' }}>Please try again or use the back button to return.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'flex', height: '100%', width: '100%', backgroundColor: '#525252' }}>
+      {/* Thumbnails Sidebar */}
+      {showThumbnails && numPages && (
+        <div style={{
+          width: '200px',
+          backgroundColor: '#2d2d2d',
+          overflowY: 'auto',
+          padding: '10px',
+          borderRight: '1px solid #444'
+        }}>
+          <div style={{ color: '#fff', fontSize: '12px', fontWeight: 'bold', marginBottom: '10px', padding: '5px' }}>
+            Pages
+          </div>
+          {Array.from(new Array(numPages), (el, index) => {
+            const pageNum = index + 1;
+            return (
+              <div
+                key={`page_${pageNum}`}
+                onClick={() => setPageNumber(pageNum)}
+                style={{
+                  marginBottom: '10px',
+                  cursor: 'pointer',
+                  border: pageNumber === pageNum ? '2px solid #dc3545' : '2px solid transparent',
+                  borderRadius: '4px',
+                  padding: '2px',
+                  backgroundColor: pageNumber === pageNum ? '#3d3d3d' : 'transparent'
+                }}
+              >
+                <div style={{ 
+                  fontSize: '11px', 
+                  color: '#fff', 
+                  textAlign: 'center', 
+                  marginBottom: '5px',
+                  fontWeight: pageNumber === pageNum ? 'bold' : 'normal'
+                }}>
+                  {pageNum}
+                </div>
+                <div style={{ width: '100%', height: '150px', overflow: 'hidden', borderRadius: '2px', backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <canvas
+                    ref={(el) => {
+                      if (el && !thumbnailRefs.current[pageNum]) {
+                        thumbnailRefs.current[pageNum] = el;
+                        renderThumbnail(pageNum, el);
+                      }
+                    }}
+                    style={{ maxWidth: '100%', maxHeight: '100%' }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Main Viewer Area */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {/* Toolbar */}
+        <div style={{
+          backgroundColor: '#1a1a1a',
+          padding: '10px 15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          borderBottom: '1px solid #444',
+          flexWrap: 'wrap'
+        }}>
+          {/* Toggle Thumbnails */}
+          <Button
+            variant="dark"
+            size="sm"
+            onClick={() => setShowThumbnails(!showThumbnails)}
+            style={{
+              backgroundColor: '#2d2d2d',
+              border: 'none',
+              color: '#fff',
+              padding: '5px 10px'
+            }}
+          >
+            <FontAwesomeIcon icon={faFile} />
+          </Button>
+
+          {/* Page Navigation */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={goToPrevPage}
+              disabled={pageNumber <= 1}
+              style={{
+                backgroundColor: '#2d2d2d',
+                border: 'none',
+                color: '#fff',
+                padding: '5px 10px'
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </Button>
+            <span style={{ color: '#fff', fontSize: '14px', minWidth: '60px', textAlign: 'center' }}>
+              {pageNumber} / {numPages || '--'}
+            </span>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={goToNextPage}
+              disabled={pageNumber >= numPages}
+              style={{
+                backgroundColor: '#2d2d2d',
+                border: 'none',
+                color: '#fff',
+                padding: '5px 10px'
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronRight} />
+            </Button>
+          </div>
+
+          {/* Zoom Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginLeft: '10px' }}>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={zoomOut}
+              disabled={scale <= 0.5}
+              style={{
+                backgroundColor: '#2d2d2d',
+                border: 'none',
+                color: '#fff',
+                padding: '5px 10px'
+              }}
+            >
+              <FontAwesomeIcon icon={faSearchMinus} />
+            </Button>
+            <span style={{ color: '#fff', fontSize: '14px', minWidth: '50px', textAlign: 'center' }}>
+              {Math.round(scale * 100)}%
+            </span>
+            <Button
+              variant="dark"
+              size="sm"
+              onClick={zoomIn}
+              disabled={scale >= 3.0}
+              style={{
+                backgroundColor: '#2d2d2d',
+                border: 'none',
+                color: '#fff',
+                padding: '5px 10px'
+              }}
+            >
+              <FontAwesomeIcon icon={faSearchPlus} />
+            </Button>
+          </div>
+
+          {/* Fit to Width */}
+          <Button
+            variant="dark"
+            size="sm"
+            onClick={fitToWidth}
+            style={{
+              backgroundColor: '#2d2d2d',
+              border: 'none',
+              color: '#fff',
+              padding: '5px 10px',
+              marginLeft: '10px'
+            }}
+          >
+            Fit
+          </Button>
+
+          {/* Spacer */}
+          <div style={{ flex: 1 }} />
+
+          {/* Download */}
+          <Button
+            variant="dark"
+            size="sm"
+            onClick={handleDownload}
+            style={{
+              backgroundColor: '#2d2d2d',
+              border: 'none',
+              color: '#fff',
+              padding: '5px 10px'
+            }}
+            title="Download"
+          >
+            <FontAwesomeIcon icon={faDownload} />
+          </Button>
+
+          {/* Print */}
+          <Button
+            variant="dark"
+            size="sm"
+            onClick={handlePrint}
+            style={{
+              backgroundColor: '#2d2d2d',
+              border: 'none',
+              color: '#fff',
+              padding: '5px 10px'
+            }}
+            title="Print"
+          >
+            <FontAwesomeIcon icon={faPrint} />
+          </Button>
+        </div>
+
+        {/* PDF Document Viewer */}
+        <div style={{
+          flex: 1,
+          overflow: 'auto',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          padding: '20px',
+          backgroundColor: '#525252'
+        }}>
+          {loading && (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+              color: '#fff'
+            }}>
+              <div style={{ marginBottom: '10px' }}>Loading PDF...</div>
+            </div>
+          )}
+          {!loading && pdfDoc && (
+            <canvas
+              ref={canvasRef}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+              }}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ValueChange = ({ value, suffix }) => {
   const valueIcon = value < 0 ? faAngleDown : faAngleUp;
@@ -1463,17 +1915,7 @@ export const ContractsTable = (props) => {
     if (previewType === 'pdf') {
       return (
         <div style={{ position: 'relative', height: '100%', width: '100%' }}>
-          <iframe
-            src={fileUrl}
-            style={{ 
-              width: '100%', 
-              height: '100%', 
-              border: 'none',
-              borderRadius: '8px'
-            }}
-            title={fileName}
-            onError={() => setPreviewType('image')}
-          />
+          <PDFViewer fileUrl={fileUrl} fileName={fileName} />
         </div>
       );
     }
@@ -1528,42 +1970,74 @@ export const ContractsTable = (props) => {
   // If a file is selected, show the file viewer inline
   if (selectedFile) {
     return (
-      <Card border="light" className="table-wrapper table-responsive shadow-sm">
-        <Card.Body className="pt-0" style={{ position: 'relative', minHeight: '80vh' }}>
-          {/* Back Button - Always visible */}
+      <div style={{ 
+        width: '100%', 
+        height: window.innerHeight ? `${window.innerHeight}px` : '100vh',
+        display: 'flex', 
+        flexDirection: 'column', 
+        backgroundColor: '#fff',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Fixed Header Bar - Always visible at top */}
+        <div style={{ 
+          position: 'relative',
+          zIndex: 10000, 
+          backgroundColor: '#fff',
+          borderBottom: '2px solid #e3e6f0',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          padding: '15px 20px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          flexShrink: 0,
+          minHeight: '70px',
+          width: '100%'
+        }}>
           <Button
             variant="danger"
             size="lg"
-            onClick={handleClose}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleClose();
+            }}
             style={{
-              position: 'absolute',
-              top: '15px',
-              left: '15px',
-              zIndex: 9999,
               borderRadius: '50%',
-              width: '50px',
-              height: '50px',
+              width: '60px',
+              height: '60px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold'
+              boxShadow: '0 4px 12px rgba(220, 53, 69, 0.4)',
+              fontWeight: 'bold',
+              flexShrink: 0,
+              border: 'none',
+              backgroundColor: '#dc3545',
+              color: '#fff',
+              fontSize: '20px',
+              cursor: 'pointer'
             }}
           >
-            <FontAwesomeIcon icon={faArrowLeft} />
+            <FontAwesomeIcon icon={faArrowLeft} size="lg" />
           </Button>
-          
-          {/* File Title */}
-          <div style={{ padding: '15px', paddingLeft: '75px', borderBottom: '1px solid #e3e6f0' }}>
-            <h5 style={{ margin: 0 }}>{selectedFile.contractName}</h5>
-          </div>
+          <h5 style={{ margin: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '18px', fontWeight: '600' }}>
+            {selectedFile.contractName}
+          </h5>
+        </div>
 
-          {/* File Preview */}
-          <div style={{ padding: '10px', height: 'calc(80vh - 100px)', width: '100%' }}>
-            {renderFilePreview()}
-          </div>
-        </Card.Body>
-      </Card>
+        {/* File Preview - Takes remaining space */}
+        <div style={{ 
+          flex: 1, 
+          width: '100%', 
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundColor: '#f8f9fa',
+          minHeight: 0
+        }}>
+          {renderFilePreview()}
+        </div>
+      </div>
     );
   }
 
@@ -1669,17 +2143,7 @@ export const DrawingsTable = (props) => {
     if (previewType === 'pdf') {
       return (
         <div style={{ position: 'relative', height: '100%', width: '100%' }}>
-          <iframe
-            src={fileUrl}
-            style={{ 
-              width: '100%', 
-              height: '100%', 
-              border: 'none',
-              borderRadius: '8px'
-            }}
-            title={fileName}
-            onError={() => setPreviewType('image')}
-          />
+          <PDFViewer fileUrl={fileUrl} fileName={fileName} />
         </div>
       );
     }
@@ -1734,42 +2198,64 @@ export const DrawingsTable = (props) => {
   // If a file is selected, show the file viewer inline
   if (selectedFile) {
     return (
-      <Card border="light" className="table-wrapper table-responsive shadow-sm">
-        <Card.Body className="pt-0" style={{ position: 'relative', minHeight: '80vh' }}>
-          {/* Back Button - Always visible */}
+      <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#fff' }}>
+        {/* Fixed Header Bar - Always visible at top */}
+        <div style={{ 
+          position: 'relative',
+          zIndex: 10000, 
+          backgroundColor: '#fff',
+          borderBottom: '2px solid #e3e6f0',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          padding: '15px 20px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          flexShrink: 0
+        }}>
           <Button
             variant="danger"
             size="lg"
-            onClick={handleClose}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleClose();
+            }}
             style={{
-              position: 'absolute',
-              top: '15px',
-              left: '15px',
-              zIndex: 9999,
               borderRadius: '50%',
-              width: '50px',
-              height: '50px',
+              width: '60px',
+              height: '60px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold'
+              boxShadow: '0 4px 12px rgba(220, 53, 69, 0.4)',
+              fontWeight: 'bold',
+              flexShrink: 0,
+              border: 'none',
+              backgroundColor: '#dc3545',
+              color: '#fff',
+              fontSize: '20px',
+              cursor: 'pointer'
             }}
           >
-            <FontAwesomeIcon icon={faArrowLeft} />
+            <FontAwesomeIcon icon={faArrowLeft} size="lg" />
           </Button>
-          
-          {/* File Title */}
-          <div style={{ padding: '15px', paddingLeft: '75px', borderBottom: '1px solid #e3e6f0' }}>
-            <h5 style={{ margin: 0 }}>{selectedFile.drawingName}</h5>
-          </div>
+          <h5 style={{ margin: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '18px', fontWeight: '600' }}>
+            {selectedFile.drawingName}
+          </h5>
+        </div>
 
-          {/* File Preview */}
-          <div style={{ padding: '10px', height: 'calc(80vh - 100px)', width: '100%' }}>
-            {renderFilePreview()}
-          </div>
-        </Card.Body>
-      </Card>
+        {/* File Preview - Takes remaining space */}
+        <div style={{ 
+          flex: 1, 
+          width: '100%', 
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundColor: '#f8f9fa',
+          minHeight: 0
+        }}>
+          {renderFilePreview()}
+        </div>
+      </div>
     );
   }
 
@@ -1875,17 +2361,7 @@ export const FilesTable = (props) => {
     if (previewType === 'pdf') {
       return (
         <div style={{ position: 'relative', height: '100%', width: '100%' }}>
-          <iframe
-            src={fileUrl}
-            style={{ 
-              width: '100%', 
-              height: '100%', 
-              border: 'none',
-              borderRadius: '8px'
-            }}
-            title={fileName}
-            onError={() => setPreviewType('image')}
-          />
+          <PDFViewer fileUrl={fileUrl} fileName={fileName} />
         </div>
       );
     }
@@ -1940,42 +2416,64 @@ export const FilesTable = (props) => {
   // If a file is selected, show the file viewer inline
   if (selectedFile) {
     return (
-      <Card border="light" className="table-wrapper table-responsive shadow-sm">
-        <Card.Body className="pt-0" style={{ position: 'relative', minHeight: '80vh' }}>
-          {/* Back Button - Always visible */}
+      <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#fff' }}>
+        {/* Fixed Header Bar - Always visible at top */}
+        <div style={{ 
+          position: 'relative',
+          zIndex: 10000, 
+          backgroundColor: '#fff',
+          borderBottom: '2px solid #e3e6f0',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          padding: '15px 20px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          flexShrink: 0
+        }}>
           <Button
             variant="danger"
             size="lg"
-            onClick={handleClose}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleClose();
+            }}
             style={{
-              position: 'absolute',
-              top: '15px',
-              left: '15px',
-              zIndex: 9999,
               borderRadius: '50%',
-              width: '50px',
-              height: '50px',
+              width: '60px',
+              height: '60px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold'
+              boxShadow: '0 4px 12px rgba(220, 53, 69, 0.4)',
+              fontWeight: 'bold',
+              flexShrink: 0,
+              border: 'none',
+              backgroundColor: '#dc3545',
+              color: '#fff',
+              fontSize: '20px',
+              cursor: 'pointer'
             }}
           >
-            <FontAwesomeIcon icon={faArrowLeft} />
+            <FontAwesomeIcon icon={faArrowLeft} size="lg" />
           </Button>
-          
-          {/* File Title */}
-          <div style={{ padding: '15px', paddingLeft: '75px', borderBottom: '1px solid #e3e6f0' }}>
-            <h5 style={{ margin: 0 }}>{selectedFile.miscFileName}</h5>
-          </div>
+          <h5 style={{ margin: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '18px', fontWeight: '600' }}>
+            {selectedFile.miscFileName}
+          </h5>
+        </div>
 
-          {/* File Preview */}
-          <div style={{ padding: '10px', height: 'calc(80vh - 100px)', width: '100%' }}>
-            {renderFilePreview()}
-          </div>
-        </Card.Body>
-      </Card>
+        {/* File Preview - Takes remaining space */}
+        <div style={{ 
+          flex: 1, 
+          width: '100%', 
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundColor: '#f8f9fa',
+          minHeight: 0
+        }}>
+          {renderFilePreview()}
+        </div>
+      </div>
     );
   }
 
