@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye, faImage, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faArrowLeft, faEdit, faEllipsisH, faExternalLinkAlt, faTrashAlt, faEye, faImage, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Nav, Card, Image, Button, Table, Dropdown, ProgressBar, Pagination, ButtonGroup, Modal } from '@themesberg/react-bootstrap';
 import {Link, Redirect, useHistory, useLocation} from 'react-router-dom';
 
@@ -38,6 +38,23 @@ const getDrawings = `${apiURL}/crud/getDrawings`
 const getMiscFiles = `${apiURL}/crud/getMiscellaneousFiles`
 const getIncidentReportForm = `${apiURL}/crud/getIncidentReportForm`
 const getTruckInspection = `${apiURL}/crud/getTruckInspectionForm`
+
+// Helper function to detect if running in React Native WebView
+const isWebView = () => {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  // Detect iOS WebView
+  const isiOS = /iP(ad|hone|od)/.test(ua);
+  const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS/.test(ua);
+  const isIOSWebview = isiOS && !isSafari;
+  // Detect Android WebView
+  const isAndroid = /Android/.test(ua);
+  const isChrome = /Chrome/.test(ua) && /Android/.test(ua);
+  const isAndroidWebview = isAndroid && !isChrome;
+  // Detect React Native WebView (common user agent patterns)
+  const isReactNative = /ReactNative/.test(ua) || /wv/.test(ua);
+  return isIOSWebview || isAndroidWebview || isReactNative;
+};
 
 export const PageVisitsTable = () => {
   const TableRow = (props) => {
@@ -1444,6 +1461,7 @@ export const ContractsTable = (props) => {
 
     const fileName = selectedFile.contractName;
     const fileUrl = selectedFile.fileUrl;
+    const inWebView = isWebView();
 
     if (previewType === 'pdf') {
       return (
@@ -1459,9 +1477,33 @@ export const ContractsTable = (props) => {
             title={fileName}
             onError={() => setPreviewType('image')}
           />
-          {/* Mobile Controls Overlay */}
+          {/* Always-visible Back Button for WebView */}
+          {inWebView && (
+            <Button
+              variant="danger"
+              size="lg"
+              onClick={handleClose}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                left: '10px',
+                zIndex: 1000,
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                fontWeight: 'bold'
+              }}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Button>
+          )}
+          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
           <div 
-            className="d-block d-md-none"
+            className={inWebView ? "d-block" : "d-block d-md-none"}
             style={{
               position: 'absolute',
               top: '10px',
@@ -1474,7 +1516,15 @@ export const ContractsTable = (props) => {
             <Button
               variant="dark"
               size="sm"
-              onClick={() => window.open(fileUrl, '_blank')}
+              onClick={(e) => {
+                e.preventDefault();
+                if (inWebView) {
+                  // In WebView, prevent navigation away
+                  alert('File opened. Use the back button to return.');
+                } else {
+                  window.open(fileUrl, '_blank');
+                }
+              }}
               style={{ 
                 borderRadius: '50%',
                 width: '40px',
@@ -1530,9 +1580,33 @@ export const ContractsTable = (props) => {
               }
             }}
           />
-          {/* Mobile Controls Overlay */}
+          {/* Always-visible Back Button for WebView */}
+          {inWebView && (
+            <Button
+              variant="danger"
+              size="lg"
+              onClick={handleClose}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                left: '10px',
+                zIndex: 1000,
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                fontWeight: 'bold'
+              }}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Button>
+          )}
+          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
           <div 
-            className="d-block d-md-none"
+            className={inWebView ? "d-block" : "d-block d-md-none"}
             style={{
               position: 'absolute',
               top: '10px',
@@ -1545,7 +1619,14 @@ export const ContractsTable = (props) => {
             <Button
               variant="dark"
               size="sm"
-              onClick={() => window.open(fileUrl, '_blank')}
+              onClick={(e) => {
+                e.preventDefault();
+                if (inWebView) {
+                  alert('File opened. Use the back button to return.');
+                } else {
+                  window.open(fileUrl, '_blank');
+                }
+              }}
               style={{ 
                 borderRadius: '50%',
                 width: '40px',
@@ -1586,9 +1667,34 @@ export const ContractsTable = (props) => {
           flexDirection: 'column', 
           justifyContent: 'center', 
           alignItems: 'center',
-          height: '70vh'
+          height: '70vh',
+          position: 'relative'
         }}
       >
+        {/* Always-visible Back Button for WebView */}
+        {inWebView && (
+          <Button
+            variant="danger"
+            size="lg"
+            onClick={handleClose}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              left: '10px',
+              zIndex: 1000,
+              borderRadius: '50%',
+              width: '50px',
+              height: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              fontWeight: 'bold'
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </Button>
+        )}
         <h5>Excel/Document File</h5>
         <p>This file cannot be previewed directly in the browser.</p>
         <p>Click "Open in New Tab" below to download and view the file.</p>
@@ -1688,6 +1794,12 @@ export const ContractsTable = (props) => {
               href={selectedFile.fileUrl} 
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                if (isWebView()) {
+                  e.preventDefault();
+                  alert('In WebView, use the back button to return to the app.');
+                }
+              }}
               style={{ 
                 width: window.innerWidth <= 768 ? '100%' : 'auto',
                 fontSize: window.innerWidth <= 768 ? '14px' : '16px'
@@ -1697,15 +1809,16 @@ export const ContractsTable = (props) => {
             </Button>
           )}
           <Button 
-            variant="link" 
-            className="text-gray ms-auto" 
+            variant={isWebView() ? "danger" : "link"}
+            className={isWebView() ? "" : "text-gray ms-auto"}
             onClick={handleClose}
             style={{ 
               width: window.innerWidth <= 768 ? '100%' : 'auto',
-              fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+              fontSize: window.innerWidth <= 768 ? '14px' : '16px',
+              fontWeight: isWebView() ? 'bold' : 'normal'
             }}
           >
-            Close
+            {isWebView() ? '← Back to App' : 'Close'}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -1756,6 +1869,7 @@ export const DrawingsTable = (props) => {
 
     const fileName = selectedFile.drawingName;
     const fileUrl = selectedFile.fileUrl;
+    const inWebView = isWebView();
 
     if (previewType === 'pdf') {
       return (
@@ -1771,9 +1885,33 @@ export const DrawingsTable = (props) => {
             title={fileName}
             onError={() => setPreviewType('image')}
           />
-          {/* Mobile Controls Overlay */}
+          {/* Always-visible Back Button for WebView */}
+          {inWebView && (
+            <Button
+              variant="danger"
+              size="lg"
+              onClick={handleClose}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                left: '10px',
+                zIndex: 1000,
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                fontWeight: 'bold'
+              }}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Button>
+          )}
+          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
           <div 
-            className="d-block d-md-none"
+            className={inWebView ? "d-block" : "d-block d-md-none"}
             style={{
               position: 'absolute',
               top: '10px',
@@ -1786,7 +1924,15 @@ export const DrawingsTable = (props) => {
             <Button
               variant="dark"
               size="sm"
-              onClick={() => window.open(fileUrl, '_blank')}
+              onClick={(e) => {
+                e.preventDefault();
+                if (inWebView) {
+                  // In WebView, prevent navigation away
+                  alert('File opened. Use the back button to return.');
+                } else {
+                  window.open(fileUrl, '_blank');
+                }
+              }}
               style={{ 
                 borderRadius: '50%',
                 width: '40px',
@@ -1842,9 +1988,33 @@ export const DrawingsTable = (props) => {
               }
             }}
           />
-          {/* Mobile Controls Overlay */}
+          {/* Always-visible Back Button for WebView */}
+          {inWebView && (
+            <Button
+              variant="danger"
+              size="lg"
+              onClick={handleClose}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                left: '10px',
+                zIndex: 1000,
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                fontWeight: 'bold'
+              }}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Button>
+          )}
+          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
           <div 
-            className="d-block d-md-none"
+            className={inWebView ? "d-block" : "d-block d-md-none"}
             style={{
               position: 'absolute',
               top: '10px',
@@ -1857,7 +2027,14 @@ export const DrawingsTable = (props) => {
             <Button
               variant="dark"
               size="sm"
-              onClick={() => window.open(fileUrl, '_blank')}
+              onClick={(e) => {
+                e.preventDefault();
+                if (inWebView) {
+                  alert('File opened. Use the back button to return.');
+                } else {
+                  window.open(fileUrl, '_blank');
+                }
+              }}
               style={{ 
                 borderRadius: '50%',
                 width: '40px',
@@ -1898,9 +2075,34 @@ export const DrawingsTable = (props) => {
           flexDirection: 'column', 
           justifyContent: 'center', 
           alignItems: 'center',
-          height: '70vh'
+          height: '70vh',
+          position: 'relative'
         }}
       >
+        {/* Always-visible Back Button for WebView */}
+        {inWebView && (
+          <Button
+            variant="danger"
+            size="lg"
+            onClick={handleClose}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              left: '10px',
+              zIndex: 1000,
+              borderRadius: '50%',
+              width: '50px',
+              height: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              fontWeight: 'bold'
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </Button>
+        )}
         <h5>Excel/Document File</h5>
         <p>This file cannot be previewed directly in the browser.</p>
         <p>Click "Open in New Tab" below to download and view the file.</p>
@@ -2000,6 +2202,12 @@ export const DrawingsTable = (props) => {
               href={selectedFile.fileUrl} 
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                if (isWebView()) {
+                  e.preventDefault();
+                  alert('In WebView, use the back button to return to the app.');
+                }
+              }}
               style={{ 
                 width: window.innerWidth <= 768 ? '100%' : 'auto',
                 fontSize: window.innerWidth <= 768 ? '14px' : '16px'
@@ -2009,15 +2217,16 @@ export const DrawingsTable = (props) => {
             </Button>
           )}
           <Button 
-            variant="link" 
-            className="text-gray ms-auto" 
+            variant={isWebView() ? "danger" : "link"}
+            className={isWebView() ? "" : "text-gray ms-auto"}
             onClick={handleClose}
             style={{ 
               width: window.innerWidth <= 768 ? '100%' : 'auto',
-              fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+              fontSize: window.innerWidth <= 768 ? '14px' : '16px',
+              fontWeight: isWebView() ? 'bold' : 'normal'
             }}
           >
-            Close
+            {isWebView() ? '← Back to App' : 'Close'}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -2068,6 +2277,7 @@ export const FilesTable = (props) => {
 
     const fileName = selectedFile.miscFileName;
     const fileUrl = selectedFile.fileUrl;
+    const inWebView = isWebView();
 
     if (previewType === 'pdf') {
       return (
@@ -2083,9 +2293,33 @@ export const FilesTable = (props) => {
             title={fileName}
             onError={() => setPreviewType('image')}
           />
-          {/* Mobile Controls Overlay */}
+          {/* Always-visible Back Button for WebView */}
+          {inWebView && (
+            <Button
+              variant="danger"
+              size="lg"
+              onClick={handleClose}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                left: '10px',
+                zIndex: 1000,
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                fontWeight: 'bold'
+              }}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Button>
+          )}
+          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
           <div 
-            className="d-block d-md-none"
+            className={inWebView ? "d-block" : "d-block d-md-none"}
             style={{
               position: 'absolute',
               top: '10px',
@@ -2098,7 +2332,15 @@ export const FilesTable = (props) => {
             <Button
               variant="dark"
               size="sm"
-              onClick={() => window.open(fileUrl, '_blank')}
+              onClick={(e) => {
+                e.preventDefault();
+                if (inWebView) {
+                  // In WebView, prevent navigation away
+                  alert('File opened. Use the back button to return.');
+                } else {
+                  window.open(fileUrl, '_blank');
+                }
+              }}
               style={{ 
                 borderRadius: '50%',
                 width: '40px',
@@ -2154,9 +2396,33 @@ export const FilesTable = (props) => {
               }
             }}
           />
-          {/* Mobile Controls Overlay */}
+          {/* Always-visible Back Button for WebView */}
+          {inWebView && (
+            <Button
+              variant="danger"
+              size="lg"
+              onClick={handleClose}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                left: '10px',
+                zIndex: 1000,
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                fontWeight: 'bold'
+              }}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Button>
+          )}
+          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
           <div 
-            className="d-block d-md-none"
+            className={inWebView ? "d-block" : "d-block d-md-none"}
             style={{
               position: 'absolute',
               top: '10px',
@@ -2169,7 +2435,14 @@ export const FilesTable = (props) => {
             <Button
               variant="dark"
               size="sm"
-              onClick={() => window.open(fileUrl, '_blank')}
+              onClick={(e) => {
+                e.preventDefault();
+                if (inWebView) {
+                  alert('File opened. Use the back button to return.');
+                } else {
+                  window.open(fileUrl, '_blank');
+                }
+              }}
               style={{ 
                 borderRadius: '50%',
                 width: '40px',
@@ -2210,9 +2483,34 @@ export const FilesTable = (props) => {
           flexDirection: 'column', 
           justifyContent: 'center', 
           alignItems: 'center',
-          height: '70vh'
+          height: '70vh',
+          position: 'relative'
         }}
       >
+        {/* Always-visible Back Button for WebView */}
+        {inWebView && (
+          <Button
+            variant="danger"
+            size="lg"
+            onClick={handleClose}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              left: '10px',
+              zIndex: 1000,
+              borderRadius: '50%',
+              width: '50px',
+              height: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              fontWeight: 'bold'
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </Button>
+        )}
         <h5>Excel/Document File</h5>
         <p>This file cannot be previewed directly in the browser.</p>
         <p>Click "Open in New Tab" below to download and view the file.</p>
@@ -2295,20 +2593,30 @@ export const FilesTable = (props) => {
           </Modal.Body>
           <Modal.Footer>
             {selectedFile && (
-              
-                <Button 
-                  variant="primary" 
-                  href={selectedFile.fileUrl} 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Open in New Tab
-                </Button>
-                
-              
+              <Button 
+                variant="primary" 
+                href={selectedFile.fileUrl} 
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  if (isWebView()) {
+                    e.preventDefault();
+                    alert('In WebView, use the back button to return to the app.');
+                  }
+                }}
+              >
+                Open in New Tab
+              </Button>
             )}
-            <Button variant="link" className="text-gray ms-auto" onClick={handleClose}>
-              Close
+            <Button 
+              variant={isWebView() ? "danger" : "link"}
+              className={isWebView() ? "" : "text-gray ms-auto"}
+              onClick={handleClose}
+              style={{
+                fontWeight: isWebView() ? 'bold' : 'normal'
+              }}
+            >
+              {isWebView() ? '← Back to App' : 'Close'}
             </Button>
           </Modal.Footer>
         </Modal>
