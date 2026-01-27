@@ -1419,10 +1419,10 @@ export const ProjectsTable = () => {
 
 export const ContractsTable = (props) => {
   const [contracts, setContracts] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const projectId = props.projectID
+  const inWebView = isWebView();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1447,11 +1447,9 @@ export const ContractsTable = (props) => {
   const handleFilePreview = (contract) => {
     setSelectedFile(contract);
     setPreviewType('pdf'); // Start with PDF
-    setShowModal(true);
   };
 
   const handleClose = () => {
-    setShowModal(false);
     setSelectedFile(null);
     setPreviewType('pdf');
   };
@@ -1461,11 +1459,10 @@ export const ContractsTable = (props) => {
 
     const fileName = selectedFile.contractName;
     const fileUrl = selectedFile.fileUrl;
-    const inWebView = isWebView();
 
     if (previewType === 'pdf') {
       return (
-        <div style={{ position: 'relative', height: '70vh' }}>
+        <div style={{ position: 'relative', height: '100%', width: '100%' }}>
           <iframe
             src={fileUrl}
             style={{ 
@@ -1477,96 +1474,21 @@ export const ContractsTable = (props) => {
             title={fileName}
             onError={() => setPreviewType('image')}
           />
-          {/* Always-visible Back Button for WebView */}
-          {inWebView && (
-            <Button
-              variant="danger"
-              size="lg"
-              onClick={handleClose}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                zIndex: 9999,
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold',
-                pointerEvents: 'auto'
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </Button>
-          )}
-          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
-          <div 
-            className={inWebView ? "d-block" : "d-block d-md-none"}
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              zIndex: 9998
-            }}
-          >
-            {!inWebView && (
-              <Button
-                variant="dark"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open(fileUrl, '_blank');
-                }}
-                style={{ 
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </Button>
-            )}
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={() => setPreviewType('image')}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faImage} />
-            </Button>
-          </div>
         </div>
       );
     }
 
     if (previewType === 'image') {
       return (
-        <div style={{ position: 'relative', height: '70vh', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <img 
             src={fileUrl} 
             alt={fileName}
             style={{ 
-              width: '100%', 
-              height: '100%', 
+              maxWidth: '100%', 
+              maxHeight: '100%', 
               objectFit: 'contain',
-              cursor: 'zoom-in',
-              transition: 'transform 0.3s ease'
+              cursor: 'zoom-in'
             }}
             onError={() => setPreviewType('excel')}
             onClick={(e) => {
@@ -1579,80 +1501,6 @@ export const ContractsTable = (props) => {
               }
             }}
           />
-          {/* Always-visible Back Button for WebView */}
-          {inWebView && (
-            <Button
-              variant="danger"
-              size="lg"
-              onClick={handleClose}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                zIndex: 9999,
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold',
-                pointerEvents: 'auto'
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </Button>
-          )}
-          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
-          <div 
-            className={inWebView ? "d-block" : "d-block d-md-none"}
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              zIndex: 9998
-            }}
-          >
-            {!inWebView && (
-              <Button
-                variant="dark"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open(fileUrl, '_blank');
-                }}
-                style={{ 
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </Button>
-            )}
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={() => setPreviewType('pdf')}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf} />
-            </Button>
-          </div>
         </div>
       );
     }
@@ -1666,20 +1514,31 @@ export const ContractsTable = (props) => {
           flexDirection: 'column', 
           justifyContent: 'center', 
           alignItems: 'center',
-          height: '70vh',
-          position: 'relative'
+          height: '100%',
+          width: '100%'
         }}
       >
-        {/* Always-visible Back Button for WebView */}
-        {inWebView && (
+        <h5>Excel/Document File</h5>
+        <p>This file cannot be previewed directly in the browser.</p>
+        <p>Use the back button to return to the list.</p>
+      </div>
+    );
+  };
+
+  // If a file is selected, show the file viewer inline
+  if (selectedFile) {
+    return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0" style={{ position: 'relative', minHeight: '80vh' }}>
+          {/* Back Button - Always visible */}
           <Button
             variant="danger"
             size="lg"
             onClick={handleClose}
             style={{
               position: 'absolute',
-              top: '10px',
-              left: '10px',
+              top: '15px',
+              left: '15px',
               zIndex: 9999,
               borderRadius: '50%',
               width: '50px',
@@ -1688,21 +1547,27 @@ export const ContractsTable = (props) => {
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold',
-              pointerEvents: 'auto'
+              fontWeight: 'bold'
             }}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
           </Button>
-        )}
-        <h5>Excel/Document File</h5>
-        <p>This file cannot be previewed directly in the browser.</p>
-        {!inWebView && <p>Click "Open in New Tab" below to download and view the file.</p>}
-        {inWebView && <p>Use the back button to return to the app.</p>}
-      </div>
-    );
-  };
+          
+          {/* File Title */}
+          <div style={{ padding: '15px', paddingLeft: '75px', borderBottom: '1px solid #e3e6f0' }}>
+            <h5 style={{ margin: 0 }}>{selectedFile.contractName}</h5>
+          </div>
 
+          {/* File Preview */}
+          <div style={{ padding: '10px', height: 'calc(80vh - 100px)', width: '100%' }}>
+            {renderFilePreview()}
+          </div>
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  // Otherwise, show the table
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
@@ -1755,78 +1620,16 @@ export const ContractsTable = (props) => {
           </small>
         </Card.Footer>
       </Card.Body>
-
-      <Modal 
-        as={Modal.Dialog} 
-        centered 
-        show={showModal} 
-        onHide={handleClose} 
-        size='xl'
-        style={{ 
-          maxWidth: '95vw',
-          margin: '10px auto'
-        }}
-      >
-        <Modal.Header>
-          <Modal.Title className="h6">
-            {selectedFile ? selectedFile.contractName : 'File Preview'}
-          </Modal.Title>
-          <Button variant="close" aria-label="Close" onClick={handleClose}/>
-        </Modal.Header>
-        <Modal.Body 
-          className="text-center"
-          style={{ 
-            padding: window.innerWidth <= 768 ? '10px' : '20px',
-            overflow: 'auto'
-          }}
-        >
-          {renderFilePreview()}
-        </Modal.Body>
-        <Modal.Footer 
-          style={{ 
-            padding: window.innerWidth <= 768 ? '10px' : '15px',
-            flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
-            gap: window.innerWidth <= 768 ? '10px' : '0'
-          }}
-        >
-          {selectedFile && !isWebView() && (
-            <Button 
-              variant="primary" 
-              href={selectedFile.fileUrl} 
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ 
-                width: window.innerWidth <= 768 ? '100%' : 'auto',
-                fontSize: window.innerWidth <= 768 ? '14px' : '16px'
-              }}
-            >
-              Open in New Tab
-            </Button>
-          )}
-          <Button 
-            variant={isWebView() ? "danger" : "link"}
-            className={isWebView() ? "" : "text-gray ms-auto"}
-            onClick={handleClose}
-            style={{ 
-              width: window.innerWidth <= 768 ? '100%' : 'auto',
-              fontSize: window.innerWidth <= 768 ? '14px' : '16px',
-              fontWeight: isWebView() ? 'bold' : 'normal'
-            }}
-          >
-            {isWebView() ? '← Back to App' : 'Close'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </Card>
   );
 };
 
 export const DrawingsTable = (props) => {
   const [drawings, setDrawings] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const projectId = props.projectID
+  const inWebView = isWebView();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1850,11 +1653,9 @@ export const DrawingsTable = (props) => {
   const handleFilePreview = (drawing) => {
     setSelectedFile(drawing);
     setPreviewType('pdf'); // Start with PDF
-    setShowModal(true);
   };
 
   const handleClose = () => {
-    setShowModal(false);
     setSelectedFile(null);
     setPreviewType('pdf');
   };
@@ -1864,11 +1665,10 @@ export const DrawingsTable = (props) => {
 
     const fileName = selectedFile.drawingName;
     const fileUrl = selectedFile.fileUrl;
-    const inWebView = isWebView();
 
     if (previewType === 'pdf') {
       return (
-        <div style={{ position: 'relative', height: '70vh' }}>
+        <div style={{ position: 'relative', height: '100%', width: '100%' }}>
           <iframe
             src={fileUrl}
             style={{ 
@@ -1880,96 +1680,21 @@ export const DrawingsTable = (props) => {
             title={fileName}
             onError={() => setPreviewType('image')}
           />
-          {/* Always-visible Back Button for WebView */}
-          {inWebView && (
-            <Button
-              variant="danger"
-              size="lg"
-              onClick={handleClose}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                zIndex: 9999,
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold',
-                pointerEvents: 'auto'
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </Button>
-          )}
-          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
-          <div 
-            className={inWebView ? "d-block" : "d-block d-md-none"}
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              zIndex: 9998
-            }}
-          >
-            {!inWebView && (
-              <Button
-                variant="dark"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open(fileUrl, '_blank');
-                }}
-                style={{ 
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </Button>
-            )}
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={() => setPreviewType('image')}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faImage} />
-            </Button>
-          </div>
         </div>
       );
     }
 
     if (previewType === 'image') {
       return (
-        <div style={{ position: 'relative', height: '70vh', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <img 
             src={fileUrl} 
             alt={fileName}
             style={{ 
-              width: '100%', 
-              height: '100%', 
+              maxWidth: '100%', 
+              maxHeight: '100%', 
               objectFit: 'contain',
-              cursor: 'zoom-in',
-              transition: 'transform 0.3s ease'
+              cursor: 'zoom-in'
             }}
             onError={() => setPreviewType('excel')}
             onClick={(e) => {
@@ -1982,80 +1707,6 @@ export const DrawingsTable = (props) => {
               }
             }}
           />
-          {/* Always-visible Back Button for WebView */}
-          {inWebView && (
-            <Button
-              variant="danger"
-              size="lg"
-              onClick={handleClose}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                zIndex: 9999,
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold',
-                pointerEvents: 'auto'
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </Button>
-          )}
-          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
-          <div 
-            className={inWebView ? "d-block" : "d-block d-md-none"}
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              zIndex: 9998
-            }}
-          >
-            {!inWebView && (
-              <Button
-                variant="dark"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open(fileUrl, '_blank');
-                }}
-                style={{ 
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </Button>
-            )}
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={() => setPreviewType('pdf')}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf} />
-            </Button>
-          </div>
         </div>
       );
     }
@@ -2069,20 +1720,31 @@ export const DrawingsTable = (props) => {
           flexDirection: 'column', 
           justifyContent: 'center', 
           alignItems: 'center',
-          height: '70vh',
-          position: 'relative'
+          height: '100%',
+          width: '100%'
         }}
       >
-        {/* Always-visible Back Button for WebView */}
-        {inWebView && (
+        <h5>Excel/Document File</h5>
+        <p>This file cannot be previewed directly in the browser.</p>
+        <p>Use the back button to return to the list.</p>
+      </div>
+    );
+  };
+
+  // If a file is selected, show the file viewer inline
+  if (selectedFile) {
+    return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0" style={{ position: 'relative', minHeight: '80vh' }}>
+          {/* Back Button - Always visible */}
           <Button
             variant="danger"
             size="lg"
             onClick={handleClose}
             style={{
               position: 'absolute',
-              top: '10px',
-              left: '10px',
+              top: '15px',
+              left: '15px',
               zIndex: 9999,
               borderRadius: '50%',
               width: '50px',
@@ -2091,21 +1753,27 @@ export const DrawingsTable = (props) => {
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold',
-              pointerEvents: 'auto'
+              fontWeight: 'bold'
             }}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
           </Button>
-        )}
-        <h5>Excel/Document File</h5>
-        <p>This file cannot be previewed directly in the browser.</p>
-        {!inWebView && <p>Click "Open in New Tab" below to download and view the file.</p>}
-        {inWebView && <p>Use the back button to return to the app.</p>}
-      </div>
-    );
-  };
+          
+          {/* File Title */}
+          <div style={{ padding: '15px', paddingLeft: '75px', borderBottom: '1px solid #e3e6f0' }}>
+            <h5 style={{ margin: 0 }}>{selectedFile.drawingName}</h5>
+          </div>
 
+          {/* File Preview */}
+          <div style={{ padding: '10px', height: 'calc(80vh - 100px)', width: '100%' }}>
+            {renderFilePreview()}
+          </div>
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  // Otherwise, show the table
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
@@ -2158,78 +1826,16 @@ export const DrawingsTable = (props) => {
           </small>
         </Card.Footer>
       </Card.Body>
-
-      <Modal 
-        as={Modal.Dialog} 
-        centered 
-        show={showModal} 
-        onHide={handleClose} 
-        size='xl'
-        style={{ 
-          maxWidth: '95vw',
-          margin: '10px auto'
-        }}
-      >
-        <Modal.Header>
-          <Modal.Title className="h6">
-            {selectedFile ? selectedFile.drawingName : 'File Preview'}
-          </Modal.Title>
-          <Button variant="close" aria-label="Close" onClick={handleClose}/>
-        </Modal.Header>
-        <Modal.Body 
-          className="text-center"
-          style={{ 
-            padding: window.innerWidth <= 768 ? '10px' : '20px',
-            overflow: 'auto'
-          }}
-        >
-          {renderFilePreview()}
-        </Modal.Body>
-        <Modal.Footer 
-          style={{ 
-            padding: window.innerWidth <= 768 ? '10px' : '15px',
-            flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
-            gap: window.innerWidth <= 768 ? '10px' : '0'
-          }}
-        >
-          {selectedFile && !isWebView() && (
-            <Button 
-              variant="primary" 
-              href={selectedFile.fileUrl} 
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ 
-                width: window.innerWidth <= 768 ? '100%' : 'auto',
-                fontSize: window.innerWidth <= 768 ? '14px' : '16px'
-              }}
-            >
-              Open in New Tab
-            </Button>
-          )}
-          <Button 
-            variant={isWebView() ? "danger" : "link"}
-            className={isWebView() ? "" : "text-gray ms-auto"}
-            onClick={handleClose}
-            style={{ 
-              width: window.innerWidth <= 768 ? '100%' : 'auto',
-              fontSize: window.innerWidth <= 768 ? '14px' : '16px',
-              fontWeight: isWebView() ? 'bold' : 'normal'
-            }}
-          >
-            {isWebView() ? '← Back to App' : 'Close'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </Card>
   );
 };
 
 export const FilesTable = (props) => {
   const [files, setFiles] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const projectId = props.projectID
+  const inWebView = isWebView();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -2253,11 +1859,9 @@ export const FilesTable = (props) => {
   const handleFilePreview = (drawing) => {
     setSelectedFile(drawing);
     setPreviewType('pdf'); // Start with PDF
-    setShowModal(true);
   };
 
   const handleClose = () => {
-    setShowModal(false);
     setSelectedFile(null);
     setPreviewType('pdf');
   };
@@ -2267,11 +1871,10 @@ export const FilesTable = (props) => {
 
     const fileName = selectedFile.miscFileName;
     const fileUrl = selectedFile.fileUrl;
-    const inWebView = isWebView();
 
     if (previewType === 'pdf') {
       return (
-        <div style={{ position: 'relative', height: '70vh' }}>
+        <div style={{ position: 'relative', height: '100%', width: '100%' }}>
           <iframe
             src={fileUrl}
             style={{ 
@@ -2283,96 +1886,21 @@ export const FilesTable = (props) => {
             title={fileName}
             onError={() => setPreviewType('image')}
           />
-          {/* Always-visible Back Button for WebView */}
-          {inWebView && (
-            <Button
-              variant="danger"
-              size="lg"
-              onClick={handleClose}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                zIndex: 9999,
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold',
-                pointerEvents: 'auto'
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </Button>
-          )}
-          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
-          <div 
-            className={inWebView ? "d-block" : "d-block d-md-none"}
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              zIndex: 9998
-            }}
-          >
-            {!inWebView && (
-              <Button
-                variant="dark"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open(fileUrl, '_blank');
-                }}
-                style={{ 
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </Button>
-            )}
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={() => setPreviewType('image')}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faImage} />
-            </Button>
-          </div>
         </div>
       );
     }
 
     if (previewType === 'image') {
       return (
-        <div style={{ position: 'relative', height: '70vh', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <img 
             src={fileUrl} 
             alt={fileName}
             style={{ 
-              width: '100%', 
-              height: '100%', 
+              maxWidth: '100%', 
+              maxHeight: '100%', 
               objectFit: 'contain',
-              cursor: 'zoom-in',
-              transition: 'transform 0.3s ease'
+              cursor: 'zoom-in'
             }}
             onError={() => setPreviewType('excel')}
             onClick={(e) => {
@@ -2385,80 +1913,6 @@ export const FilesTable = (props) => {
               }
             }}
           />
-          {/* Always-visible Back Button for WebView */}
-          {inWebView && (
-            <Button
-              variant="danger"
-              size="lg"
-              onClick={handleClose}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                zIndex: 9999,
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                fontWeight: 'bold',
-                pointerEvents: 'auto'
-              }}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </Button>
-          )}
-          {/* Controls Overlay - Always visible in WebView, mobile-only otherwise */}
-          <div 
-            className={inWebView ? "d-block" : "d-block d-md-none"}
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              zIndex: 9998
-            }}
-          >
-            {!inWebView && (
-              <Button
-                variant="dark"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open(fileUrl, '_blank');
-                }}
-                style={{ 
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </Button>
-            )}
-            <Button
-              variant="dark"
-              size="sm"
-              onClick={() => setPreviewType('pdf')}
-              style={{ 
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf} />
-            </Button>
-          </div>
         </div>
       );
     }
@@ -2472,20 +1926,31 @@ export const FilesTable = (props) => {
           flexDirection: 'column', 
           justifyContent: 'center', 
           alignItems: 'center',
-          height: '70vh',
-          position: 'relative'
+          height: '100%',
+          width: '100%'
         }}
       >
-        {/* Always-visible Back Button for WebView */}
-        {inWebView && (
+        <h5>Excel/Document File</h5>
+        <p>This file cannot be previewed directly in the browser.</p>
+        <p>Use the back button to return to the list.</p>
+      </div>
+    );
+  };
+
+  // If a file is selected, show the file viewer inline
+  if (selectedFile) {
+    return (
+      <Card border="light" className="table-wrapper table-responsive shadow-sm">
+        <Card.Body className="pt-0" style={{ position: 'relative', minHeight: '80vh' }}>
+          {/* Back Button - Always visible */}
           <Button
             variant="danger"
             size="lg"
             onClick={handleClose}
             style={{
               position: 'absolute',
-              top: '10px',
-              left: '10px',
+              top: '15px',
+              left: '15px',
               zIndex: 9999,
               borderRadius: '50%',
               width: '50px',
@@ -2494,21 +1959,27 @@ export const FilesTable = (props) => {
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-              fontWeight: 'bold',
-              pointerEvents: 'auto'
+              fontWeight: 'bold'
             }}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
           </Button>
-        )}
-        <h5>Excel/Document File</h5>
-        <p>This file cannot be previewed directly in the browser.</p>
-        {!inWebView && <p>Click "Open in New Tab" below to download and view the file.</p>}
-        {inWebView && <p>Use the back button to return to the app.</p>}
-      </div>
-    );
-  };
+          
+          {/* File Title */}
+          <div style={{ padding: '15px', paddingLeft: '75px', borderBottom: '1px solid #e3e6f0' }}>
+            <h5 style={{ margin: 0 }}>{selectedFile.miscFileName}</h5>
+          </div>
 
+          {/* File Preview */}
+          <div style={{ padding: '10px', height: 'calc(80vh - 100px)', width: '100%' }}>
+            {renderFilePreview()}
+          </div>
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  // Otherwise, show the table
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
         <Card.Body className="pt-0">
@@ -2561,50 +2032,6 @@ export const FilesTable = (props) => {
             </small>
           </Card.Footer>
         </Card.Body>
-
-        <Modal 
-          as={Modal.Dialog} 
-          centered 
-          show={showModal} 
-          onHide={handleClose} 
-          size='xl'
-          style={{ 
-            maxWidth: '95vw',
-            margin: '10px auto'
-          }}
-        >
-          <Modal.Header>
-            <Modal.Title className="h6">
-              {selectedFile ? selectedFile.miscFileName : 'File Preview'}
-            </Modal.Title>
-            <Button variant="close" aria-label="Close" onClick={handleClose}/>
-          </Modal.Header>
-          <Modal.Body className="text-center">
-            {renderFilePreview()}
-          </Modal.Body>
-          <Modal.Footer>
-            {selectedFile && !isWebView() && (
-              <Button 
-                variant="primary" 
-                href={selectedFile.fileUrl} 
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Open in New Tab
-              </Button>
-            )}
-            <Button 
-              variant={isWebView() ? "danger" : "link"}
-              className={isWebView() ? "" : "text-gray ms-auto"}
-              onClick={handleClose}
-              style={{
-                fontWeight: isWebView() ? 'bold' : 'normal'
-              }}
-            >
-              {isWebView() ? '← Back to App' : 'Close'}
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </Card>
   );
 };
