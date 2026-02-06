@@ -490,6 +490,9 @@ const getDrawings = `${apiURL}/crud/getDrawings`
 const getMiscFiles = `${apiURL}/crud/getMiscellaneousFiles`
 const getIncidentReportForm = `${apiURL}/crud/getIncidentReportForm`
 const getTruckInspection = `${apiURL}/crud/getTruckInspectionForm`
+const deleteContractUrl = `${apiURL}/crud/deleteContract`
+const deleteDrawingUrl = `${apiURL}/crud/deleteDrawing`
+const deleteMiscFileUrl = `${apiURL}/crud/deleteMiscellaneousFile`
 
 // Helper function to detect if running in React Native WebView
 const isWebView = () => {
@@ -1873,28 +1876,45 @@ export const ContractsTable = (props) => {
   const [contracts, setContracts] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
+  const [deletingId, setDeletingId] = useState(null);
   const projectId = props.projectID
   const inWebView = isWebView();
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(getContracts, {
+        params: {
+          projectID: projectId
+        }
+      });
+      setContracts(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getContracts, {
-          params: {
-            projectID: projectId
-          }
-        });
-
-        setContracts(response.data);
-        console.log(response.data)
-  
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [projectId]);
+
+  const handleDeleteContract = async (contract) => {
+    const id = contract.id ?? contract.contractId ?? contract.contract_id ?? contract.contractID;
+    if (id == null || id === '') {
+      alert('Cannot delete: record id not found. Ensure the list API returns an id for each contract.');
+      return;
+    }
+    if (!window.confirm(`Delete contract "${contract.contractName}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(deleteContractUrl, { data: { id } });
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting contract:', error);
+      alert(error.response?.data?.error || 'Failed to delete contract.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const handleFilePreview = (contract) => {
     setSelectedFile(contract);
@@ -2052,13 +2072,12 @@ export const ContractsTable = (props) => {
               <th className="border-bottom">#</th>
               <th className="border-bottom">Contract Name</th>
               <th className="border-bottom">File</th>
-              
-              
+              <th className="border-bottom">Actions</th>
             </tr>
           </thead>
           <tbody>
             {contracts.map((contract, index) => (
-              <tr key={index}>
+              <tr key={contract.id != null ? contract.id : index}>
                 <td>{contract.contractID}</td>
                 <td>{contract.contractName}</td>
                 <td>
@@ -2072,7 +2091,23 @@ export const ContractsTable = (props) => {
                     Preview
                   </Button>
                 </td>
-               
+                <td>
+                  <Button
+                    type="button"
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDeleteContract(contract);
+                    }}
+                    disabled={deletingId === (contract.id ?? contract.contractID)}
+                    style={{ lineHeight: '0.5', padding: '10px' }}
+                    title="Delete"
+                  >
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                  </Button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -2102,27 +2137,45 @@ export const DrawingsTable = (props) => {
   const [drawings, setDrawings] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
+  const [deletingId, setDeletingId] = useState(null);
   const projectId = props.projectID
   const inWebView = isWebView();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getDrawings, {
-          params: {
-            projectID: projectId
-          }
-        });
-        setDrawings(response.data);
-        console.log(response.data)
-  
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(getDrawings, {
+        params: {
+          projectID: projectId
+        }
+      });
+      setDrawings(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [projectId]);
+
+  const handleDeleteDrawing = async (drawing) => {
+    const id = drawing.id ?? drawing.drawingId ?? drawing.drawing_id ?? drawing.drawingID;
+    if (id == null || id === '') {
+      alert('Cannot delete: record id not found. Ensure the list API returns an id for each drawing.');
+      return;
+    }
+    if (!window.confirm(`Delete drawing "${drawing.drawingName}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(deleteDrawingUrl, { data: { id } });
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting drawing:', error);
+      alert(error.response?.data?.error || 'Failed to delete drawing.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const handleFilePreview = (drawing) => {
     setSelectedFile(drawing);
@@ -2270,13 +2323,12 @@ export const DrawingsTable = (props) => {
               <th className="border-bottom">#</th>
               <th className="border-bottom">Drawing Name</th>
               <th className="border-bottom">File</th>
-              
-              
+              <th className="border-bottom">Actions</th>
             </tr>
           </thead>
           <tbody>
             {drawings.map((drawing, index) => (
-              <tr key={index}>
+              <tr key={drawing.id != null ? drawing.id : index}>
                 <td>{drawing.drawingID}</td>
                 <td>{drawing.drawingName}</td>
                 <td>
@@ -2290,7 +2342,23 @@ export const DrawingsTable = (props) => {
                     Preview
                   </Button>
                 </td>
-
+                <td>
+                  <Button
+                    type="button"
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDeleteDrawing(drawing);
+                    }}
+                    disabled={deletingId === (drawing.id ?? drawing.drawingID)}
+                    style={{ lineHeight: '0.5', padding: '10px' }}
+                    title="Delete"
+                  >
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                  </Button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -2320,27 +2388,45 @@ export const FilesTable = (props) => {
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
+  const [deletingId, setDeletingId] = useState(null);
   const projectId = props.projectID
   const inWebView = isWebView();
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(getMiscFiles, {
+        params: {
+          projectID: projectId
+        }
+      });
+      setFiles(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getMiscFiles, {
-          params: {
-            projectID: projectId
-          }
-        });
-        setFiles(response.data);
-        console.log(response.data)
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [projectId]);
+
+  const handleDeleteFile = async (file) => {
+    const id = file.id ?? file.miscFileId ?? file.misc_file_id ?? file.miscFileID;
+    if (id == null || id === '') {
+      alert('Cannot delete: record id not found. Ensure the list API returns an id for each file.');
+      return;
+    }
+    if (!window.confirm(`Delete file "${file.miscFileName}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(deleteMiscFileUrl, { data: { id } });
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      alert(error.response?.data?.error || 'Failed to delete file.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const handleFilePreview = (drawing) => {
     setSelectedFile(drawing);
@@ -2486,15 +2572,14 @@ export const FilesTable = (props) => {
             <thead>
             <tr>
               <th className="border-bottom">#</th>
-              <th className="border-bottom">Drawing Name</th>
+              <th className="border-bottom">File Name</th>
               <th className="border-bottom">File</th>
-
-
+              <th className="border-bottom">Actions</th>
             </tr>
             </thead>
             <tbody>
             {files.map((file, index) => (
-                <tr key={index}>
+                <tr key={file.id != null ? file.id : index}>
                   <td>{file.miscFileID}</td>
                   <td>{file.miscFileName}</td>
                   <td>
@@ -2508,7 +2593,23 @@ export const FilesTable = (props) => {
                       Preview
                     </Button>
                   </td>
-
+                  <td>
+                    <Button
+                      type="button"
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteFile(file);
+                      }}
+                      disabled={deletingId === (file.id ?? file.miscFileID)}
+                      style={{ lineHeight: '0.5', padding: '10px' }}
+                      title="Delete"
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </Button>
+                  </td>
                 </tr>
             ))}
             </tbody>
