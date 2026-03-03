@@ -493,6 +493,12 @@ const getTruckInspection = `${apiURL}/crud/getTruckInspectionForm`
 const deleteContractUrl = `${apiURL}/crud/deleteContract`
 const deleteDrawingUrl = `${apiURL}/crud/deleteDrawing`
 const deleteMiscFileUrl = `${apiURL}/crud/deleteMiscellaneousFile`
+const deleteDailyReportUrl = `${apiURL}/crud/deleteDailyReport`
+const deleteIncidentReportFormUrl = `${apiURL}/crud/deleteIncidentReport`
+const deleteTruckInspectionFormUrl = `${apiURL}/crud/deleteTruckInspection`
+const deleteVehicleMovingFormUrl = `${apiURL}/crud/deleteVehicleMovingForm`
+const deleteVehicleInspectionFormUrl = `${apiURL}/crud/deleteVehicleInspection`
+
 
 // Helper function to detect if running in React Native WebView
 const isWebView = () => {
@@ -684,6 +690,7 @@ export const VIFTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [formsPerPage] = useState(10);
   const [showDefault, setShowDefault] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   // New state for sorting
   const [sortConfig, setSortConfig] = useState({
@@ -758,21 +765,40 @@ export const VIFTable = () => {
       </th>
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getVehicleInspectionFormUrl);
-        let d = response.data.reverse();
-        setForms(d);
-        setHeaders(Object.keys(d[0]));
-        setTotalForms(d.length);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(getVehicleInspectionFormUrl);
+      let d = response.data.reverse();
+      setForms(d);
+      setHeaders(Object.keys(d[0] || {}));
+      setTotalForms(d.length);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDeleteVehicleInspectionForm = async (form) => {
+    const id = form.formID ?? form.id;
+    if (id == null || id === '') {
+      alert('Cannot delete: record id not found.');
+      return;
+    }
+    if (!window.confirm('Delete this equipment inspection form? This cannot be undone.')) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(deleteVehicleInspectionFormUrl, { data: { id } });
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting equipment inspection form:', error);
+      alert(error.response?.data?.error || 'Failed to delete equipment inspection form.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const formatDateTime = (dateTime) => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
@@ -822,6 +848,7 @@ export const VIFTable = () => {
               <SortableHeader column="parkBrakeCondition">Park Brake Condition</SortableHeader>
               <th className="border-bottom">Image Object</th>
               <SortableHeader column="notes">Notes</SortableHeader>
+              <th className="border-bottom">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -853,6 +880,23 @@ export const VIFTable = () => {
                     </Button>
                   </td>
                   <td>{form.notes}</td>
+                  <td>
+                    <Button
+                      type="button"
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteVehicleInspectionForm(form);
+                      }}
+                      disabled={deletingId === (form.formID ?? form.id)}
+                      style={{ lineHeight: '0.5', padding: '10px' }}
+                      title="Delete"
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </Button>
+                  </td>
                 </tr>
             ))}
             </tbody>
@@ -913,6 +957,7 @@ export const VMFTable = () => {
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [formsPerPage] = useState(10);
+  const [deletingId, setDeletingId] = useState(null);
 
   // New state for sorting
   const [sortConfig, setSortConfig] = useState({
@@ -986,21 +1031,40 @@ export const VMFTable = () => {
       </th>
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getVehicleMovingFormUrl);
-        let d = response.data.reverse();
-        setForms(d);
-        setHeaders(Object.keys(d[0]));
-        setTotalForms(d.length);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(getVehicleMovingFormUrl);
+      let d = response.data.reverse();
+      setForms(d);
+      setHeaders(Object.keys(d[0] || {}));
+      setTotalForms(d.length);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDeleteVehicleMovingForm = async (form) => {
+    const id = form.formID ?? form.id;
+    if (id == null || id === '') {
+      alert('Cannot delete: record id not found.');
+      return;
+    }
+    if (!window.confirm('Delete this equipment moving form? This cannot be undone.')) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(deleteVehicleMovingFormUrl, { data: { id } });
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting equipment moving form:', error);
+      alert(error.response?.data?.error || 'Failed to delete equipment moving form.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const formatDateTime = (dateTime) => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
@@ -1043,6 +1107,7 @@ export const VMFTable = () => {
               <SortableHeader column="pickupJobsite">Pickup Jobsite</SortableHeader>
               <SortableHeader column="dropoffLocation">Dropoff Location</SortableHeader>
               <SortableHeader column="notes">Notes</SortableHeader>
+              <th className="border-bottom">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -1059,6 +1124,23 @@ export const VMFTable = () => {
                   <td>{form.pickupJobsite}</td>
                   <td>{form.dropoffLocation}</td>
                   <td>{form.notes}</td>
+                  <td>
+                    <Button
+                      type="button"
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteVehicleMovingForm(form);
+                      }}
+                      disabled={deletingId === (form.formID ?? form.id)}
+                      style={{ lineHeight: '0.5', padding: '10px' }}
+                      title="Delete"
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </Button>
+                  </td>
                 </tr>
             ))}
             </tbody>
@@ -1104,6 +1186,7 @@ export const DRTable = () => {
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [formsPerPage] = useState(10);
+  const [deletingId, setDeletingId] = useState(null);
 
   // New state for sorting
   const [sortConfig, setSortConfig] = useState({
@@ -1170,21 +1253,40 @@ export const DRTable = () => {
       </th>
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getDailyReports);
-        let d = response.data.reverse();
-        setForms(d);
-        setHeaders(Object.keys(d[0]));
-        setTotalForms(d.length);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(getDailyReports);
+      let d = response.data.reverse();
+      setForms(d);
+      setHeaders(Object.keys(d[0] || {}));
+      setTotalForms(d.length);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDeleteDailyReport = async (form) => {
+    const id = form.reportID ?? form.id;
+    if (id == null || id === '') {
+      alert('Cannot delete: record id not found.');
+      return;
+    }
+    if (!window.confirm('Delete this daily report? This cannot be undone.')) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(deleteDailyReportUrl, { data: { id } });
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting daily report:', error);
+      alert(error.response?.data?.error || 'Failed to delete daily report.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const formatDateTime = (dateTime) => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
@@ -1224,6 +1326,7 @@ export const DRTable = () => {
               <SortableHeader column="workPerformed">Work Performed</SortableHeader>
               <SortableHeader column="weatherDetails">Weather Details</SortableHeader>
               <SortableHeader column="notes">Notes</SortableHeader>
+              <th className="border-bottom">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -1238,6 +1341,23 @@ export const DRTable = () => {
                   <td>{form.workPerformed}</td>
                   <td>{form.weatherDetails}</td>
                   <td>{form.notes}</td>
+                  <td>
+                    <Button
+                      type="button"
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteDailyReport(form);
+                      }}
+                      disabled={deletingId === (form.reportID ?? form.id)}
+                      style={{ lineHeight: '0.5', padding: '10px' }}
+                      title="Delete"
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </Button>
+                  </td>
                 </tr>
             ))}
             </tbody>
@@ -1283,6 +1403,7 @@ export const IRTable = () => {
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [formsPerPage] = useState(10);
+  const [deletingId, setDeletingId] = useState(null);
 
   // New state for sorting
   const [sortConfig, setSortConfig] = useState({
@@ -1347,21 +1468,40 @@ export const IRTable = () => {
       </th>
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getIncidentReportForm);
-        let d = response.data.reverse();
-        setForms(d);
-        setHeaders(Object.keys(d[0]));
-        setTotalForms(d.length);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(getIncidentReportForm);
+      let d = response.data.reverse();
+      setForms(d);
+      setHeaders(Object.keys(d[0] || {}));
+      setTotalForms(d.length);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDeleteIncidentReport = async (form) => {
+    const id = form.id ?? form.incidentReportID ?? form.reportID;
+    if (id == null || id === '') {
+      alert('Cannot delete: record id not found.');
+      return;
+    }
+    if (!window.confirm('Delete this incident report? This cannot be undone.')) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(deleteIncidentReportFormUrl, { data: { id } });
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting incident report:', error);
+      alert(error.response?.data?.error || 'Failed to delete incident report.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const formatDateTime = (dateTime) => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
@@ -1429,6 +1569,7 @@ export const IRTable = () => {
               <SortableHeader column="employeeSignDate">Employee Sign Date</SortableHeader>
               {/*<SortableHeader column="supervisorSign">Supervisor Signature</SortableHeader>*/}
               {/*<SortableHeader column="supervisorSignDate">Supervisor Sign Date</SortableHeader>*/}
+              <th className="border-bottom">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -1449,6 +1590,23 @@ export const IRTable = () => {
                   <td>{form.employeeSignDate}</td>
                   {/*<td>{form.supervisorSign}</td>*/}
                   {/*<td>{form.supervisorSignDate}</td>*/}
+                  <td>
+                    <Button
+                      type="button"
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteIncidentReport(form);
+                      }}
+                      disabled={deletingId === (form.id ?? form.incidentReportID ?? form.reportID)}
+                      style={{ lineHeight: '0.5', padding: '10px' }}
+                      title="Delete"
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </Button>
+                  </td>
                 </tr>
             ))}
             </tbody>
@@ -1494,6 +1652,7 @@ export const TITable = () => {
   const [headers, setHeaders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [formsPerPage] = useState(10);
+  const [deletingId, setDeletingId] = useState(null);
 
   // New state for sorting
   const [sortConfig, setSortConfig] = useState({
@@ -1560,21 +1719,40 @@ export const TITable = () => {
       </th>
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(getTruckInspection);
-        let d = response.data.reverse();
-        setForms(d);
-        setHeaders(Object.keys(d[0]));
-        setTotalForms(d.length);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(getTruckInspection);
+      let d = response.data.reverse();
+      setForms(d);
+      setHeaders(Object.keys(d[0] || {}));
+      setTotalForms(d.length);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDeleteTruckInspection = async (form) => {
+    const id = form.inspectionID ?? form.id;
+    if (id == null || id === '') {
+      alert('Cannot delete: record id not found.');
+      return;
+    }
+    if (!window.confirm('Delete this truck inspection? This cannot be undone.')) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(deleteTruckInspectionFormUrl, { data: { id } });
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting truck inspection:', error);
+      alert(error.response?.data?.error || 'Failed to delete truck inspection.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const formatDateTime = (dateTime) => {
     return moment(dateTime).format('MM/DD/YYYY hh:mm A');
@@ -1635,6 +1813,7 @@ export const TITable = () => {
               <th className="border-bottom">Policy Ack</th>
               <th className="border-bottom">Sign Name</th>
               <th className="border-bottom">Notes</th>
+              <th className="border-bottom">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -1670,6 +1849,23 @@ export const TITable = () => {
                   <td>{form.policyAck}</td>
                   <td>{form.signName}</td>
                   <td>{form.notes}</td>
+                  <td>
+                    <Button
+                      type="button"
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteTruckInspection(form);
+                      }}
+                      disabled={deletingId === (form.inspectionID ?? form.id)}
+                      style={{ lineHeight: '0.5', padding: '10px' }}
+                      title="Delete"
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </Button>
+                  </td>
                 </tr>
             ))}
             </tbody>
