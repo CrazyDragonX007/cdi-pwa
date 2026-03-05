@@ -77,6 +77,9 @@ require('dotenv').config();
   const createTruckInspectionForm = `${apiURL}/crud/createTruckInspectionForm`
   const getGoogleSheetsProjects = `${apiURL}/crud/getGoogleSheetsProjects`
 
+// Breakpoint for "mobile view" (match common Bootstrap / responsive breakpoint).
+const MOBILE_VIEW_MAX_WIDTH = 768;
+
 // Detect if running inside a WebView (e.g. React Native WebView, in-app browser).
 // In WebView, choosing "Take Photo" from the file picker often crashes the app;
 // users should use "Photo Library" or "Browse" instead.
@@ -125,9 +128,19 @@ export const VI_Form = () => {
   const [users, setUsers] = useState([]);
   const [googleSheetsProjects, setGoogleSheetsProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isMobileView, setIsMobileView] = useState(
+    typeof window !== 'undefined' && window.innerWidth <= MOBILE_VIEW_MAX_WIDTH
+  );
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const successMessageVI = 'Vehicle Inspection Form submitted successfully!';
+
+  useEffect(() => {
+    const checkMobileView = () => setIsMobileView(window.innerWidth <= MOBILE_VIEW_MAX_WIDTH);
+    checkMobileView();
+    window.addEventListener('resize', checkMobileView);
+    return () => window.removeEventListener('resize', checkMobileView);
+  }, []);
   
     useEffect(() => {
       // Fetch users
@@ -632,7 +645,7 @@ export const VI_Form = () => {
                 <Form.Group id="uploadImageObjectVI">
                     <Form.Label>Upload Attachments</Form.Label>
                     <br/>
-                    {isWebView() && (
+                    {isMobileView && !isWebView() && (
                       <div className="small text-warning mb-2" role="alert">
                         In the app, use <strong>Photo Library</strong> or <strong>Browse</strong> to add a photo. Using &quot;Take Photo&quot; may close the app.
                       </div>
