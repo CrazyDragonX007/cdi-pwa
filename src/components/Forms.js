@@ -77,6 +77,22 @@ require('dotenv').config();
   const createTruckInspectionForm = `${apiURL}/crud/createTruckInspectionForm`
   const getGoogleSheetsProjects = `${apiURL}/crud/getGoogleSheetsProjects`
 
+// Detect if running inside a WebView (e.g. React Native WebView, in-app browser).
+// In WebView, choosing "Take Photo" from the file picker often crashes the app;
+// users should use "Photo Library" or "Browse" instead.
+const isWebView = () => {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+  const isIOS = /iP(ad|hone|od)/.test(ua);
+  const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS/.test(ua);
+  const isIOSWebView = isIOS && !isSafari;
+  const isAndroid = /Android/.test(ua);
+  const isChrome = /Chrome\/[.0-9]*/.test(ua) && /Android/.test(ua);
+  const isAndroidWebView = isAndroid && !isChrome;
+  const isReactNative = /ReactNative/.test(ua) || /\bwv\b/.test(ua);
+  return isIOSWebView || isAndroidWebView || isReactNative;
+};
+
 const projectList = [
     "Prairie Chapel Church - 20414 Hwy. 65, Urbana, MO - 65767",
     "UPS Warehouse - 4455 W success Pl, Springfield, Mo - 65803",
@@ -616,7 +632,12 @@ export const VI_Form = () => {
                 <Form.Group id="uploadImageObjectVI">
                     <Form.Label>Upload Attachments</Form.Label>
                     <br/>
-                    <input type="file" id="img01" multiple/>
+                    {isWebView() && (
+                      <div className="small text-warning mb-2" role="alert">
+                        In the app, use <strong>Photo Library</strong> or <strong>Browse</strong> to add a photo. Using &quot;Take Photo&quot; may close the app.
+                      </div>
+                    )}
+                    <input type="file" id="img01" multiple accept="image/*"/>
                     <div className="d-md-block text-start">
                         {/*<div className="fw-normal text-dark mb-1">Choose Image</div>*/}
                         <div className="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
