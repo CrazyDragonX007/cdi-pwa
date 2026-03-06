@@ -651,7 +651,7 @@ export const VI_Form = () => {
           <Row>
             <Col md={6} className="mb-3">
                 <Form.Group id="uploadImageObjectVI">
-                    <Form.Label>Upload Attachments</Form.Label>
+                    <Form.Label>Upload Attachments: Do not click "Take Photo" from the file picker. Use "Photo Library" or "Choose Files" instead.</Form.Label>
                     <div
                       {...getRootProps()}
                       style={{
@@ -984,26 +984,6 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
   const successMessageVI = 'Daily Report Form submitted successfully!';
   
     useEffect(() => {
-        // Get user location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const location = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                    };
-                    setUserLocation(location);
-                    console.log('Location fetched:', location);
-                },
-                (error) => {
-                    console.error('Error getting location:', error);
-                    // You might want to set a default location or show an error message
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported by this browser.');
-        }
-
         // Fetch Google Sheets projects
         const fetchGoogleSheetsProjects = async () => {
             try {
@@ -1026,39 +1006,46 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
         fetchGoogleSheetsProjects();
     }, []);
 
-    // Monitor location changes
-    useEffect(() => {
-        if (userLocation) {
-            console.log('Location updated:', userLocation);
-        }
-    }, [userLocation]);
-
-    const handleFetchWeather = async () => {
+    const handleFetchWeather = () => {
         if (isFetching) return;
-        
-        // Check if location is available
-        if (!userLocation || !userLocation.latitude || !userLocation.longitude) {
-            console.error('Location not available. Please allow location access.');
-            alert('Location not available. Please allow location access and try again.');
+
+        if (!navigator.geolocation) {
+            alert('Location is not supported by your browser.');
             return;
         }
 
         setIsFetching(true);
-        try {
-            const userLat = userLocation.latitude;
-            const userLong = userLocation.longitude;
-            console.log(`Fetching weather for lat: ${userLat}, lon: ${userLong}`);
-            
-            const response = await axios.get(`${weatherAPI}?lat=${userLat}&lon=${userLong}`);
-            setWeatherData(response.data);
-            setWeatherDetails(response.data.weather[0].description);
-            console.log('Weather fetched:', response.data.weather[0].description);
-        } catch (error) {
-            console.error('Error fetching weather data:', error);
-            alert('Error fetching weather data. Please try again.');
-        } finally {
-            setIsFetching(false);
-        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const userLat = position.coords.latitude;
+                const userLong = position.coords.longitude;
+                setUserLocation({ latitude: userLat, longitude: userLong });
+                try {
+                    const response = await axios.get(`${weatherAPI}?lat=${userLat}&lon=${userLong}`);
+                    setWeatherData(response.data);
+                    setWeatherDetails(response.data.weather[0].description);
+                } catch (error) {
+                    console.error('Error fetching weather data:', error);
+                    alert('Error fetching weather data. Please try again.');
+                } finally {
+                    setIsFetching(false);
+                }
+            },
+            (error) => {
+                setIsFetching(false);
+                if (error.code === error.PERMISSION_DENIED) {
+                    alert('Location access was denied. Please allow location to fetch weather data.');
+                } else if (error.code === error.POSITION_UNAVAILABLE) {
+                    alert('Location is unavailable. Please try again.');
+                } else if (error.code === error.TIMEOUT) {
+                    alert('Location request timed out. Please try again.');
+                } else {
+                    alert('Unable to get location. Please allow location access and try again.');
+                }
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
     };
 
     const [formData, setFormData] = useState({
@@ -1258,9 +1245,9 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
                             {/*        />*/}
                             {/*    </Form.Group>*/}
                             {/*</Col>*/}
-                            <Col md={4} className="mb-4">
+                            <Col md={8} className="mb-4">
                                 <Form.Group id="uploadImageObjectDR">
-                                    <Form.Label>Upload Attachments</Form.Label>
+                                    <Form.Label>Upload Attachments: Do not click "Take Photo" from the file picker. Use "Photo Library" or "Choose Files" instead.</Form.Label>
                                     <br/>
                                     <input type="file" id="imgDR" multiple/>
                                     <div className="d-md-block text-start">
