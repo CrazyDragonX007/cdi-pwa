@@ -1006,25 +1006,63 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
         fetchGoogleSheetsProjects();
     }, []);
 
+    const fetchWeatherWithCoords = async (latitude, longitude) => {
+        const response = await axios.get(`${weatherAPI}?lat=${latitude}&lon=${longitude}`);
+        setWeatherData(response.data);
+        setWeatherDetails(response.data.weather[0].description);
+        setUserLocation({ latitude, longitude });
+    };
+
+    const fetchLocationByIp = async () => {
+        const res = await axios.get('https://ipapi.co/json/', { timeout: 5000 });
+        const { latitude, longitude } = res.data;
+        if (latitude != null && longitude != null) return { latitude, longitude };
+        throw new Error('IP location unavailable');
+    };
+
     const handleFetchWeather = () => {
         if (isFetching) return;
 
+        setIsFetching(true);
+
+        const tryIpFallback = async () => {
+            try {
+                const { latitude, longitude } = await fetchLocationByIp();
+                await fetchWeatherWithCoords(latitude, longitude);
+            } catch (err) {
+                console.error('IP fallback failed:', err);
+                alert('Could not get location. Please check your connection and try again.');
+            } finally {
+                setIsFetching(false);
+            }
+        };
+
+        const clearSafeguard = () => clearTimeout(safeguardTimer);
+
+        // If geolocation never responds (e.g. WebView), try IP-based location after 5s
+        const safeguardTimer = setTimeout(() => {
+            setIsFetching((prev) => {
+                if (prev) {
+                    clearSafeguard();
+                    tryIpFallback();
+                    return true; // keep true until tryIpFallback does finally(setIsFetching(false))
+                }
+                return prev;
+            });
+        }, 5000);
+
         if (!navigator.geolocation) {
-            alert('Location is not supported by your browser.');
+            tryIpFallback();
             return;
         }
 
-        setIsFetching(true);
-
         navigator.geolocation.getCurrentPosition(
             async (position) => {
+                clearSafeguard();
                 const userLat = position.coords.latitude;
                 const userLong = position.coords.longitude;
-                setUserLocation({ latitude: userLat, longitude: userLong });
                 try {
-                    const response = await axios.get(`${weatherAPI}?lat=${userLat}&lon=${userLong}`);
-                    setWeatherData(response.data);
-                    setWeatherDetails(response.data.weather[0].description);
+                    await fetchWeatherWithCoords(userLat, userLong);
                 } catch (error) {
                     console.error('Error fetching weather data:', error);
                     alert('Error fetching weather data. Please try again.');
@@ -1032,19 +1070,12 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
                     setIsFetching(false);
                 }
             },
-            (error) => {
-                setIsFetching(false);
-                if (error.code === error.PERMISSION_DENIED) {
-                    alert('Location access was denied. Please allow location to fetch weather data.');
-                } else if (error.code === error.POSITION_UNAVAILABLE) {
-                    alert('Location is unavailable. Please try again.');
-                } else if (error.code === error.TIMEOUT) {
-                    alert('Location request timed out. Please try again.');
-                } else {
-                    alert('Unable to get location. Please allow location access and try again.');
-                }
+            async () => {
+                clearSafeguard();
+                // Geolocation failed (denied, timeout, etc.) – use IP-based location so it works in WebView
+                await tryIpFallback();
             },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            { enableHighAccuracy: false, timeout: 4000, maximumAge: 60000 }
         );
     };
 
