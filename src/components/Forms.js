@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import Contracts from "../pages/ProjectDetails";
 import {useHistory, Redirect} from "react-router-dom";
+import { useDropzone } from 'react-dropzone';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -131,6 +132,13 @@ export const VI_Form = () => {
   const [isMobileView, setIsMobileView] = useState(
     typeof window !== 'undefined' && window.innerWidth <= MOBILE_VIEW_MAX_WIDTH
   );
+  const [acceptedFiles, setAcceptedFiles] = useState([]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: { 'image/*': [] },
+    multiple: true,
+    onDrop: (files) => setAcceptedFiles(files),
+  });
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const successMessageVI = 'Vehicle Inspection Form submitted successfully!';
@@ -189,9 +197,8 @@ export const VI_Form = () => {
         formData.append('parkBrakeCondition', selectedOption08);
         formData.append('notes', e.target.notes.value);
         formData.append('notifyTeam', selectedOption11);
-      const files = document.getElementById('img01').files;
-        for (let i = 0; i < files.length; i++) {
-            formData.append('file', files[i]);
+        for (let i = 0; i < acceptedFiles.length; i++) {
+          formData.append('file', acceptedFiles[i]);
         }
       try {
             const truckNumber = e.target.vehicleNo.value;
@@ -202,6 +209,7 @@ export const VI_Form = () => {
         // console.log('Form submitted successfully:', response.data.message);
           toast.success('Form submitted successfully!');
         setShowSuccessModal(true);
+        setAcceptedFiles([]);
           console.log('Email sent successfully');
           if (selectedOption11 === "Yes") {
               await axios.post(sendEmail, {
@@ -644,17 +652,30 @@ export const VI_Form = () => {
             <Col md={6} className="mb-3">
                 <Form.Group id="uploadImageObjectVI">
                     <Form.Label>Upload Attachments</Form.Label>
-                    <br/>
-                    {isMobileView && !isWebView() && (
-                      <div className="small text-warning mb-2" role="alert">
-                        In the app, use <strong>Photo Library</strong> or <strong>Browse</strong> to add a photo. Using &quot;Take Photo&quot; may close the app.
+                    <div
+                      {...getRootProps()}
+                      style={{
+                        border: '2px dashed #ccc',
+                        borderRadius: '8px',
+                        padding: '20px',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        background: isDragActive ? '#f0f8ff' : '#fafafa',
+                      }}
+                    >
+                      <input {...getInputProps()} />
+                      {isDragActive ? (
+                        <p>Drop images here...</p>
+                      ) : (
+                        <p>Drag & drop images here, or click to select</p>
+                      )}
+                      <div className="text-gray small mt-1">JPG, GIF or PNG. Max size of 800K</div>
+                    </div>
+                    {acceptedFiles.length > 0 && (
+                      <div className="small mt-2 text-muted">
+                        {acceptedFiles.length} file(s) selected
                       </div>
                     )}
-                    <input type="file" id="img01" multiple accept="image/*"/>
-                    <div className="d-md-block text-start">
-                        {/*<div className="fw-normal text-dark mb-1">Choose Image</div>*/}
-                        <div className="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
-                    </div>
                 </Form.Group>
             </Col>
               <Col md={6} className="mb-3">
