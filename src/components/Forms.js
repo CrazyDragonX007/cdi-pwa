@@ -119,11 +119,11 @@ export const VI_Form = () => {
   const [selectedOption04, setSelectedOption04] = useState("");
   const [selectedOption05, setSelectedOption05] = useState("");
   const [selectedOption06, setSelectedOption06] = useState("");
-  const [selectedOption07, setSelectedOption07] = useState("0");
-  const [selectedOption08, setSelectedOption08] = useState("0");
-    const [selectedOption09, setSelectedOption09] = useState("0");
-    const [selectedOption10, setSelectedOption10] = useState("0");
-    const [selectedOption11, setSelectedOption11] = useState("0");
+  const [selectedOption07, setSelectedOption07] = useState("");
+  const [selectedOption08, setSelectedOption08] = useState("");
+    const [selectedOption09, setSelectedOption09] = useState("");
+    const [selectedOption10, setSelectedOption10] = useState("");
+    const [selectedOption11, setSelectedOption11] = useState("");
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [users, setUsers] = useState([]);
@@ -188,13 +188,15 @@ export const VI_Form = () => {
         formData.append('vehicleNo', e.target.vehicleNo.value);
         formData.append('inspectedBy', e.target.inspectedBy.value);
         formData.append('physicalDamage', selectedOption01);
-        formData.append('leakStatus', selectedOption02);
-        formData.append('lhaCondition', selectedOption03);
-        formData.append('safetyDevicesCondition', selectedOption04);
-        formData.append('up_lowEmergencyControls', selectedOption05);
-        formData.append('oilCapacity', selectedOption06);
-        formData.append('safetyWarningDecalsCondition', selectedOption07);
+        formData.append('safetyDevicesCondition', selectedOption02);
+        formData.append('cleanStatus', selectedOption03);
+        formData.append('oilStatus', selectedOption04);
+        formData.append('lhaCondition', selectedOption05);
+        formData.append('leakStatus', selectedOption06);
+        formData.append('oilCapacity', selectedOption07);
+        formData.append('safetyWarningDecalsCondition', selectedOption10);
         formData.append('parkBrakeCondition', selectedOption08);
+        formData.append('up_lowEmergencyControls', selectedOption09);
         formData.append('notes', e.target.notes.value);
         formData.append('notifyTeam', selectedOption11);
         for (let i = 0; i < acceptedFiles.length; i++) {
@@ -247,34 +249,7 @@ export const VI_Form = () => {
         <Form onSubmit={handleSubmit}>
 
           <Row className="align-items-center">
-            {/*<Col md={3} className="mb-3">*/}
-            {/*  <Form.Group id="dateTime">*/}
-            {/*    <Form.Label>Date & Time</Form.Label>*/}
-            {/*    <Datetime*/}
-
-            {/*      onChange={setDate}*/}
-            {/*      renderInput={(props, openCalendar) => (*/}
-            {/*        <InputGroup>*/}
-            {/*          <InputGroup.Text>*/}
-            {/*            <FontAwesomeIcon icon={faCalendarAlt} />*/}
-            {/*          </InputGroup.Text>*/}
-            {/*          <Form.Control*/}
-
-            {/*            name="dateTime"*/}
-            {/*            type="text"*/}
-            {/*            value={date ? moment(date).format("MM/DD/YYYY HH:mm:ss") : ""}*/}
-            {/*            placeholder="Enter Date & Time"*/}
-            {/*            onFocus={openCalendar}*/}
-            {/*            onChange={() => {}}*/}
-            {/*          />*/}
-
-            {/*        </InputGroup>*/}
-
-
-            {/*      )}*/}
-            {/*    />*/}
-            {/*  </Form.Group>*/}
-            {/*</Col>*/}
+           
             <Col md={3} className="mb-3">
             <Form.Group id="inspectedBy">
               <Form.Label>Inspected By</Form.Label>
@@ -541,23 +516,26 @@ export const VI_Form = () => {
                 <Form.Check
                   type="radio"
                   name="option07"
-
                   label="Full - 3/4"
                   value="Full - 3/4"
+                  checked={selectedOption07 === "Full - 3/4"}
+                  onChange={(e7) => setSelectedOption07(e7.target.value)}
                 />
                 <Form.Check
                   type="radio"
                   name="option07"
-
                   label="1/2"
                   value="1/2"
+                  checked={selectedOption07 === "1/2"}
+                  onChange={(e7) => setSelectedOption07(e7.target.value)}
                 />
                 <Form.Check
                   type="radio"
                   name="option07"
-
                   label="1/4 or Less"
                   value="1/4 or Less"
+                  checked={selectedOption07 === "1/4 or Less"}
+                  onChange={(e7) => setSelectedOption07(e7.target.value)}
                 />
                 
               </Form.Group>
@@ -572,7 +550,8 @@ export const VI_Form = () => {
                   id="yes08"
                   label="Yes"
                   value="Yes"
-                  
+                  checked={selectedOption08 === "Yes"}
+                  onChange={(e8) => setSelectedOption08(e8.target.value)}
                 />
                 <Form.Check
                   type="radio"
@@ -580,8 +559,8 @@ export const VI_Form = () => {
                   id="no08"
                   label="No"
                   value="No"
-                  
-                  
+                  checked={selectedOption08 === "No"}
+                  onChange={(e8) => setSelectedOption08(e8.target.value)}
                 />
               </Form.Group>
               
@@ -1106,11 +1085,11 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if ((formData.notes).length > 0) {
-                await axios.post(sendEmail, {
-                    comment: `Daily Report submitted by ${formData.firstName} ${formData.lastName}`
-                });
-            }
+            // if ((formData.notes).length > 0) {
+            //     await axios.post(sendEmail, {
+            //         comment: `Daily Report submitted by ${formData.firstName} ${formData.lastName}`
+            //     });
+            // }
             const response = await axios.post(createDailyReports, {
                 userID: 1,
                 dateTime: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
