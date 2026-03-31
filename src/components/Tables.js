@@ -12,6 +12,7 @@ import S3FileList from "./S3FileList";
 import axios from 'axios'; 
 import moment from 'moment';
 import ExportCSV from "./ExportToCSV";
+import { downloadIncidentReportPdf } from "../helpers/incidentReportPdf";
 
 // PDF.js is loaded via CDN in index.html - access via global window.pdfjsLib
 const getPdfjsLib = () => {
@@ -1569,6 +1570,7 @@ export const IRTable = () => {
               <SortableHeader column="employeeSignDate">Employee Sign Date</SortableHeader>
               {/*<SortableHeader column="supervisorSign">Supervisor Signature</SortableHeader>*/}
               {/*<SortableHeader column="supervisorSignDate">Supervisor Sign Date</SortableHeader>*/}
+              <th className="border-bottom">PDF</th>
               <th className="border-bottom">Actions</th>
             </tr>
             </thead>
@@ -1590,6 +1592,22 @@ export const IRTable = () => {
                   <td>{form.employeeSignDate}</td>
                   {/*<td>{form.supervisorSign}</td>*/}
                   {/*<td>{form.supervisorSignDate}</td>*/}
+                  <td>
+                    <Button
+                      type="button"
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        downloadIncidentReportPdf(form);
+                      }}
+                      style={{ lineHeight: '0.5', padding: '10px' }}
+                      title="Download PDF"
+                    >
+                      <FontAwesomeIcon icon={faFilePdf} />
+                    </Button>
+                  </td>
                   <td>
                     <Button
                       type="button"

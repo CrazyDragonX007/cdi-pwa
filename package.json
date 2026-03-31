@@ -39,6 +39,7 @@
     "chartist-plugin-tooltips-updated": "^0.1.4",
     "dotenv": "^16.4.5",
     "firebase": "^10.9.0",
+    "jspdf": "^2.5.2",
     "moment-timezone": "^0.5.31",
     "pdfjs-dist": "^5.4.530",
     "react": "^16.13.1",
