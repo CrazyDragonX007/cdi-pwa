@@ -2088,6 +2088,8 @@ export const ProjectsTable = () => {
 
 export const ContractsTable = (props) => {
   const [contracts, setContracts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const [deletingId, setDeletingId] = useState(null);
@@ -2110,6 +2112,13 @@ export const ContractsTable = (props) => {
   useEffect(() => {
     fetchData();
   }, [projectId]);
+
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(contracts.length / itemsPerPage));
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [contracts, currentPage, itemsPerPage]);
 
   const handleDeleteContract = async (contract) => {
     const id = contract.id ?? contract.contractId ?? contract.contract_id ?? contract.contractID;
@@ -2276,6 +2285,13 @@ export const ContractsTable = (props) => {
   }
 
   // Otherwise, show the table
+  const indexOfLastContract = currentPage * itemsPerPage;
+  const indexOfFirstContract = indexOfLastContract - itemsPerPage;
+  const currentContracts = contracts.slice(indexOfFirstContract, indexOfLastContract);
+  const totalPages = Math.max(1, Math.ceil(contracts.length / itemsPerPage));
+  const showingStart = contracts.length === 0 ? 0 : indexOfFirstContract + 1;
+  const showingEnd = Math.min(indexOfLastContract, contracts.length);
+
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
@@ -2290,7 +2306,7 @@ export const ContractsTable = (props) => {
             </tr>
           </thead>
           <tbody>
-            {contracts.map((contract, index) => (
+            {currentContracts.map((contract, index) => (
               <tr key={contract.id != null ? contract.id : index}>
                 <td>{contract.contractID}</td>
                 <td>{contract.contractName}</td>
@@ -2329,17 +2345,31 @@ export const ContractsTable = (props) => {
         <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
           <Nav>
             <Pagination className="mb-2 mb-lg-0">
-              <Pagination.Prev>Previous</Pagination.Prev>
-              <Pagination.Item active>1</Pagination.Item>
-              <Pagination.Item>2</Pagination.Item>
-              <Pagination.Item>3</Pagination.Item>
-              <Pagination.Item>4</Pagination.Item>
-              <Pagination.Item>5</Pagination.Item>
-              <Pagination.Next>Next</Pagination.Next>
+              <Pagination.Prev
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Pagination.Prev>
+              {[...Array(totalPages).keys()].map((number) => (
+                <Pagination.Item
+                  key={number + 1}
+                  active={number + 1 === currentPage}
+                  onClick={() => setCurrentPage(number + 1)}
+                >
+                  {number + 1}
+                </Pagination.Item>
+              ))}
+              <Pagination.Next
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Pagination.Next>
             </Pagination>
           </Nav>
           <small className="fw-bold">
-            Showing <b>{contracts.length}</b> out of <b>25</b> entries
+            Showing <b>{showingStart}</b> to <b>{showingEnd}</b> out of <b>{contracts.length}</b> entries
           </small>
         </Card.Footer>
       </Card.Body>
@@ -2349,6 +2379,8 @@ export const ContractsTable = (props) => {
 
 export const DrawingsTable = (props) => {
   const [drawings, setDrawings] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const [deletingId, setDeletingId] = useState(null);
@@ -2371,6 +2403,13 @@ export const DrawingsTable = (props) => {
   useEffect(() => {
     fetchData();
   }, [projectId]);
+
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(drawings.length / itemsPerPage));
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [drawings, currentPage, itemsPerPage]);
 
   const handleDeleteDrawing = async (drawing) => {
     const id = drawing.id ?? drawing.drawingId ?? drawing.drawing_id ?? drawing.drawingID;
@@ -2527,6 +2566,13 @@ export const DrawingsTable = (props) => {
   }
 
   // Otherwise, show the table
+  const indexOfLastDrawing = currentPage * itemsPerPage;
+  const indexOfFirstDrawing = indexOfLastDrawing - itemsPerPage;
+  const currentDrawings = drawings.slice(indexOfFirstDrawing, indexOfLastDrawing);
+  const totalPages = Math.max(1, Math.ceil(drawings.length / itemsPerPage));
+  const showingStart = drawings.length === 0 ? 0 : indexOfFirstDrawing + 1;
+  const showingEnd = Math.min(indexOfLastDrawing, drawings.length);
+
   return (
     <Card border="light" className="table-wrapper table-responsive shadow-sm">
       <Card.Body className="pt-0">
@@ -2541,7 +2587,7 @@ export const DrawingsTable = (props) => {
             </tr>
           </thead>
           <tbody>
-            {drawings.map((drawing, index) => (
+            {currentDrawings.map((drawing, index) => (
               <tr key={drawing.id != null ? drawing.id : index}>
                 <td>{drawing.drawingID}</td>
                 <td>{drawing.drawingName}</td>
@@ -2580,17 +2626,31 @@ export const DrawingsTable = (props) => {
         <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
           <Nav>
             <Pagination className="mb-2 mb-lg-0">
-              <Pagination.Prev>Previous</Pagination.Prev>
-              <Pagination.Item active>1</Pagination.Item>
-              <Pagination.Item>2</Pagination.Item>
-              <Pagination.Item>3</Pagination.Item>
-              <Pagination.Item>4</Pagination.Item>
-              <Pagination.Item>5</Pagination.Item>
-              <Pagination.Next>Next</Pagination.Next>
+              <Pagination.Prev
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Pagination.Prev>
+              {[...Array(totalPages).keys()].map((number) => (
+                <Pagination.Item
+                  key={number + 1}
+                  active={number + 1 === currentPage}
+                  onClick={() => setCurrentPage(number + 1)}
+                >
+                  {number + 1}
+                </Pagination.Item>
+              ))}
+              <Pagination.Next
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Pagination.Next>
             </Pagination>
           </Nav>
           <small className="fw-bold">
-            Showing <b>{drawings.length}</b> out of <b>25</b> entries
+            Showing <b>{showingStart}</b> to <b>{showingEnd}</b> out of <b>{drawings.length}</b> entries
           </small>
         </Card.Footer>
       </Card.Body>
@@ -2600,6 +2660,8 @@ export const DrawingsTable = (props) => {
 
 export const FilesTable = (props) => {
   const [files, setFiles] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewType, setPreviewType] = useState('pdf'); // 'pdf', 'image', or 'excel'
   const [deletingId, setDeletingId] = useState(null);
@@ -2622,6 +2684,13 @@ export const FilesTable = (props) => {
   useEffect(() => {
     fetchData();
   }, [projectId]);
+
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(files.length / itemsPerPage));
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [files, currentPage, itemsPerPage]);
 
   const handleDeleteFile = async (file) => {
     const id = file.id ?? file.miscFileId ?? file.misc_file_id ?? file.miscFileID;
@@ -2778,6 +2847,13 @@ export const FilesTable = (props) => {
   }
 
   // Otherwise, show the table
+  const indexOfLastFile = currentPage * itemsPerPage;
+  const indexOfFirstFile = indexOfLastFile - itemsPerPage;
+  const currentFiles = files.slice(indexOfFirstFile, indexOfLastFile);
+  const totalPages = Math.max(1, Math.ceil(files.length / itemsPerPage));
+  const showingStart = files.length === 0 ? 0 : indexOfFirstFile + 1;
+  const showingEnd = Math.min(indexOfLastFile, files.length);
+
   return (
       <Card border="light" className="table-wrapper table-responsive shadow-sm">
         <Card.Body className="pt-0">
@@ -2792,7 +2868,7 @@ export const FilesTable = (props) => {
             </tr>
             </thead>
             <tbody>
-            {files.map((file, index) => (
+            {currentFiles.map((file, index) => (
                 <tr key={file.id != null ? file.id : index}>
                   <td>{file.miscFileID}</td>
                   <td>{file.miscFileName}</td>
@@ -2831,17 +2907,31 @@ export const FilesTable = (props) => {
           <Card.Footer className="px-3 border-0 d-lg-flex align-items-center justify-content-between">
             <Nav>
               <Pagination className="mb-2 mb-lg-0">
-                <Pagination.Prev>Previous</Pagination.Prev>
-                <Pagination.Item active>1</Pagination.Item>
-                <Pagination.Item>2</Pagination.Item>
-                <Pagination.Item>3</Pagination.Item>
-                <Pagination.Item>4</Pagination.Item>
-                <Pagination.Item>5</Pagination.Item>
-                <Pagination.Next>Next</Pagination.Next>
+                <Pagination.Prev
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Pagination.Prev>
+                {[...Array(totalPages).keys()].map((number) => (
+                  <Pagination.Item
+                    key={number + 1}
+                    active={number + 1 === currentPage}
+                    onClick={() => setCurrentPage(number + 1)}
+                  >
+                    {number + 1}
+                  </Pagination.Item>
+                ))}
+                <Pagination.Next
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Pagination.Next>
               </Pagination>
             </Nav>
             <small className="fw-bold">
-              Showing <b>{files.length}</b> out of <b>25</b> entries
+              Showing <b>{showingStart}</b> to <b>{showingEnd}</b> out of <b>{files.length}</b> entries
             </small>
           </Card.Footer>
         </Card.Body>
